@@ -2,6 +2,8 @@
 
 class Trade extends AppModel {
     var $name = 'Trade';
+	var $belongsTo = 'Fund';
+	var $hasOne = 'Sec,TradeType,Reason,Broker,Trader';
 	
 	var $validate = array(
 		'fund_id' => array(
