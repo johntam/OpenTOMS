@@ -1,0 +1,118 @@
+CREATE TABLE trades(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	fund_id INT NOT NULL,
+	sec_id INT NOT NULL,
+	trade_type_id INT NOT NULL,
+	reason_id INT NULL,
+	broker_id INT NULL,
+	trader_id INT NULL,
+	quantity DECIMAL(18,6) NOT NULL,
+	broker_contact VARCHAR(100),
+	trade_date date NOT NULL,
+	settlement_date date NULL,
+	currency VARCHAR(3) NOT NULL,
+	price DECIMAL(18,6) NOT NULL,
+	commission DECIMAL(18,6) NULL,
+	tax DECIMAL(18,6) NULL,
+	other_costs DECIMAL(18,6) NULL,
+	order_time datetime NULL,
+	decision_time datetime NULL,
+	notes VARCHAR(255) ,
+	cancelled bit NOT NULL,
+	executed bit NOT NULL,
+	consideration DECIMAL(18,6) NULL,
+	notional_value DECIMAL(18,6) NULL,
+	is_cfd bit NULL,
+	filled DECIMAL(18,6) NULL,
+	execution_price DECIMAL(18,6) NULL,
+	charge_accrual bit NULL
+);
+
+CREATE TABLE funds(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	fund_name VARCHAR(150) NULL,
+	fund_currency VARCHAR(3) NULL,
+	management_fee DECIMAL(6,4) NULL
+);
+
+CREATE TABLE secs (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	sectype_id INT NOT NULL,
+	sec_name VARCHAR(100)  NOT NULL,
+	ticker VARCHAR(50)  NULL,
+	country VARCHAR(50)  NULL,
+	underlying_secid VARCHAR(50)  NULL,
+	tradarid VARCHAR(50)  NULL,
+	sedol VARCHAR(50)  NULL,
+	beta DECIMAL(18,6) NULL,
+	delta DECIMAL(18,6) NULL,
+	prev_coupon_date date NULL,
+	valpoint DECIMAL(18,6) NULL,
+	isin_code VARCHAR(50) NULL,
+	industry VARCHAR(50)  NULL,
+	first_settles_date date NULL,
+	first_accrual_date date NULL,
+	exchange VARCHAR(50)  NULL,
+	first_coupon_date date NULL,
+	dividend_amount DECIMAL(18,6) NULL,
+	ex_date date NULL,
+	dividend_date date NULL,
+	cusip_code VARCHAR(50)  NULL,
+	coupon_pay DECIMAL(18,6) NULL,
+	coupon DECIMAL(18,6) NULL,
+	ric_code VARCHAR(50)  NULL,
+	price DECIMAL(18,6) NULL,
+	maturity date NULL,
+	currency VARCHAR(3)  NULL,
+	expiry_date date NULL,
+	price_source VARCHAR(20)  NULL,
+	amount_shares_out bigint NULL
+);
+
+CREATE TABLE trade_types (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	trade_type VARCHAR(50)  NOT NULL,
+	category VARCHAR(50)  NULL ,
+	credit_debit VARCHAR(6)  NULL
+);
+
+CREATE TABLE reasons (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	reason_desc VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE brokers (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	broker_name VARCHAR(50) NOT NULL,
+	broker_long_name VARCHAR(255) NULL,
+	commission_rate DECIMAL(6,4) NULL
+);
+
+CREATE TABLE traders (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	trader_name VARCHAR(100) NOT NULL,
+	trader_login VARCHAR(50) NULL
+);
+
