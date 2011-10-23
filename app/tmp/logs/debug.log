@@ -52,3 +52,4 @@
 2011-10-20 15:11:08 Debug: Notice (8): Undefined variable: trade_types in [C:\Users\JT\ASAP\app\views\trade_types\index.ctp, line 17]
 2011-10-20 15:39:16 Debug: Notice (8): Undefined variable: trade_types in [C:\Users\JT\ASAP\app\views\trade_types\index.ctp, line 17]
 2011-10-20 16:30:00 Debug: Notice (8): Undefined index: tradetype_id in [C:\Users\JT\ASAP\app\views\trades\index.ctp, line 26]
+2011-10-23 20:25:51 Debug: Notice (8): Undefined variable: tradetypes in [C:\Documents and Settings\John\My Documents\My Work\ASAP\app\views\trades\add.ctp, line 9]
