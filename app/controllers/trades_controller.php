@@ -5,7 +5,7 @@ class TradesController extends AppController {
 	var $funds = array();
 	
 	
-	function index() {
+	function index() {		
 		$this->setchoices();
 		$conditions=array(
 			'Trade.crd >' => date('Y-m-d', strtotime($this->data['Trade']['daterange'])),
@@ -32,6 +32,12 @@ class TradesController extends AppController {
 		//echo "$this->data";
 		//echo "funds=";
 		//print_r($this->Trade->$funds);	// view variable not visible to controller
+		
+		$this->set('title_for_layout', 'View Trades');
+
+        //$this->layout = 'default_small_ad';
+		
+		
 	}
 		
 	function add() {

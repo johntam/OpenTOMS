@@ -23,7 +23,7 @@
 
 /** General Style Info **/
 body {
-	background: #003d4c;
+	background: #ffffff;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
@@ -75,7 +75,6 @@ ul, li {
 }
 
 #header{
-	padding: 10px 20px;
 }
 #header h1 {
 	line-height:20px;
@@ -105,7 +104,60 @@ ul, li {
 	clear: both;
 	padding: 6px 10px;
 	text-align: right;
+	color: #000000;
 }
+
+
+
+/** navigation menu **/
+/** http://www.cssnewbie.com/easy-css-dropdown-menus/ **/
+#menu {
+	margin: 0;
+	padding: 0;
+	height: 1.5em;
+	width: 100%;
+	background-color: #F7BA2A;
+}
+#navbar {
+	margin: 0;
+	padding: 0;
+	height: 1em; 
+}
+#navbar li {
+	list-style: none;
+	float: left;
+}
+#navbar li a {
+	display: block;
+	padding: 3px 8px;
+	background-color: #F7BA2A;
+	color: #fff;
+	text-decoration: none;
+}
+#navbar li ul {
+	display: none; 
+	width: 10em; /* Width to help Opera out */
+	background-color: #F7BA2A;
+}
+#navbar li:hover ul {
+	display: block;
+	position: absolute;
+	margin: 0;
+	padding: 0;
+}	
+#navbar li:hover li {
+	float: none;
+}
+#navbar li:hover li a {
+	background-color: #F7BA2A;
+	border-bottom: 1px solid #fff;
+	color: #fff;
+}
+#navbar li li a:hover {
+	background-color: #F7D586;
+}
+
+
 
 /** containers **/
 div.form,
