@@ -34,6 +34,8 @@ show up on all of your views, include it here -->
 <!-- Here's where I want my views to be displayed -->
 <?php echo $content_for_layout ?>
 
+<?php echo $this->Session->flash('auth'); ?>
+
 <!-- Add a footer to each displayed page -->
 <div id="footer"></div>
 
