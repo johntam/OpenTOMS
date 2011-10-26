@@ -2697,3 +2697,4 @@ Aco: controllers/Pages/display in [C:\Users\JT\ASAP\cake\libs\controller\compone
     [Aro0.foreign_key] => 2
 )
 " in [C:\Users\JT\ASAP\cake\libs\model\db_acl.php, line 191]
+2011-10-26 15:32:38 Warning: Warning (512): <span style="color:Red;text-align:left"><b>SQL Error:</b> 1048: Column 'price' cannot be null</span> in [C:\Users\JT\ASAP\cake\libs\model\datasources\dbo_source.php, line 684]

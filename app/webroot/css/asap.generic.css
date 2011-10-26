@@ -24,7 +24,7 @@
 /** General Style Info **/
 body {
 	background: #ffffff;
-	color: #fff;
+	color: #000000;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
@@ -114,7 +114,7 @@ ul, li {
 #menu {
 	margin: 0;
 	padding: 0;
-	height: 1.5em;
+	height: 1.8em;
 	width: 100%;
 	background-color: #F7BA2A;
 }
@@ -246,13 +246,21 @@ div.paging {
 	clear:both;
 }
 div.paging span.disabled {
-	color: #ddd;
+	color: #000000;
 	display: inline;
 }
 div.paging span.current {
 	color: #c73e14;
 }
 div.paging span a {
+}
+div.paging span.next {
+	color: #000000;
+	display: inline;
+}
+div.paging span.prev {
+	color: #000000;
+	display: inline;
 }
 
 /** Scaffold View **/

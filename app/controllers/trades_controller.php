@@ -10,7 +10,8 @@ class TradesController extends AppController {
 		$conditions=array(
 			'Trade.crd >' => date('Y-m-d', strtotime($this->data['Trade']['daterange'])),
 			'Trade.fund_id =' => $this->data['Trade']['fundchosen'],
-			'Trade.broker_id =' => $this->data['Trade']['brokerchosen']
+			'Trade.broker_id =' => $this->data['Trade']['brokerchosen'],
+			'Trade.act =' => 1
 		);
 		
 	
@@ -44,9 +45,13 @@ class TradesController extends AppController {
 		$this->setchoices();
 	
 		if (!empty($this->data)) {
-			if ($this->Trade->saveAll($this->data)) {
-				$this->Session->setFlash('Your trade has been saved.');
-				$this->redirect(array('action' => 'index'));
+			if ($this->Trade->save($this->data)) {
+				//Do a second update to the same record to set the oid and act fields
+				$id = $this->Trade->id;
+				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
+					$this->Session->setFlash('Your trade has been saved.');
+					$this->redirect(array('action' => 'index'));
+				}
 			}
 		}
 	}
@@ -59,13 +64,40 @@ class TradesController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Trade->read();
 		} else {
+			$id = $this->Trade->id;
+			unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
+			$this->data['Trade']['act'] = 1;
+			$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
+			$this->Trade->create();
+			
 			if ($this->Trade->save($this->data)) {
-				$this->Session->setFlash('Your trade has been updated.');
-				$this->redirect(array('action' => 'index'));
+				$this->Trade->id = $id;
+				//Clear the active flag on the trade that was edited
+				if ($this->Trade->saveField('act',0)) {
+					$this->Session->setFlash('Your trade has been updated.');
+					$this->redirect(array('action' => 'index'));
+				}
 			}
+		}
+		
 	}
-}
-
+	
+	
+	function view($oid = null) {
+		$conditions=array(
+			'Trade.oid =' => $oid
+		);
+	
+		$params=array(
+			'conditions' => $conditions, //array of conditions
+			'limit' => 1,
+			'order' => array('Trade.crd DESC') //string or array defining order
+		);
+			
+		$this->paginate = $params;
+		$data=$this->paginate('Trade');
+		$this->set(compact('data'));
+	}
 	
 	function setchoices() {
 		$this->set('funds', $this->Trade->Fund->find('list', array('fields'=>array('Fund.fund_name'))));

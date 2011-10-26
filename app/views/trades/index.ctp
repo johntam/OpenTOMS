@@ -19,6 +19,7 @@
 <table>
 	<tr>
 		<th>Edit</th>
+		<th>View</th>
 		<th>Id</th>
 		<th>Fund Id</th>
 		<th>Security Id</th>
@@ -39,6 +40,7 @@
 	<?php foreach ($trades as $trade): ?>
 	<tr>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $trade['Trade']['id']));?></td>
+		<td><?php echo $this->Html->link('View', array('action' => 'view', $trade['Trade']['oid']));?></td>
 		<td><?php echo $trade['Trade']['id']; ?></td>
 		<td><?php echo $trade['Fund']['fund_name']; ?></td>
 		<td><?php echo $trade['Sec']['sec_name']; ?></td>

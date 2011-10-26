@@ -1,36 +1,81 @@
 <!-- File: /app/views/trades/add.ctp -->	
 	
 <h1>Add Trade</h1>
-<?php
-echo $this->Form->create('Trade');
-//echo $this->Form->input('Trade.Fund',array('type'=>'select','options'=>$funds));
-//echo $this->Form->input('fund_id', array('type'=>'select', 'options'=>$funds));
+<?php echo $this->Form->create('Trade'); ?>
 
-//print_r($tradetypes);
+<table>	
+	
+	<tr>
+		<td>Fund</td>
+		<td>Security Name</td>
+		<td>Security Type</td>
+		<td>Ticker</td>
+	</tr>
+	
+		<tr>
+			<td><?php echo $this->Form->input('fund_id'); ?></td>
+			<td><?php echo $this->Form->input('sec_id'); ?></td>
+			<td>...</td>
+			<td><?php echo $this->Form->input('ticker'); ?></td>
+		</tr>
+	
+	<tr>
+		<td>Trade Type</td>
+		<td>Quantity</td>
+		<td>Order Price</td>
+		<td>Trade Currency</td>
+	</tr>
+	
+		<tr>
+			<td><?php echo $this->Form->input('trade_type_id'); ?></td>
+			<td><?php echo $this->Form->input('quantity'); ?></td>
+			<td><?php echo $this->Form->input('price'); ?></td>
+			<td><?php echo $this->Form->input('currency'); ?></td>
+		</tr>
+	
+	<tr>
+		<td>Decision Time</td>
+		<td>Trade Date</td>
+		<td>Settlement Date</td>
+		<td>Trader</td>
+	</tr>
+	
+		<tr>
+			<td><?php echo $this->Form->input('decision_time'); ?></td>
+			<td><?php echo $this->Form->input('trade_date'); ?></td>
+			<td><?php echo $this->Form->input('settlement_date'); ?></td>
+			<td><?php echo $this->Form->input('trader_id'); ?></td>
+		</tr>
+		
+	<tr>
+		<td>Broker</td>
+		<td>Broker Contact</td>
+		<td>Order Time</td>
+		<td>Commission</td>
+	</tr>
+	
+		<tr>
+			<td><?php echo $this->Form->input('broker_id'); ?></td>
+			<td><?php echo $this->Form->input('broker_contact'); ?></td>
+			<td><?php echo $this->Form->input('order_time'); ?></td>
+			<td><?php echo $this->Form->input('commission'); ?></td>
+		</tr>
+	
 
-echo $this->Form->input('fund_id');
-echo $this->Form->input('sec_id');
-echo $this->Form->input('trade_type_id');
-echo $this->Form->input('reason_id');
-echo $this->Form->input('broker_id');
-echo $this->Form->input('trader_id');
-echo $this->Form->input('quantity');
-echo $this->Form->input('broker_contact');
-echo $this->Form->input('trade_date');
-echo $this->Form->input('price');
+	<tr>
+		<td>Trade Reason</td>
+		<td>Executed</td>
+		<td>Cancelled</td>
+		<td></td>
+	</tr>
 
-//$options=array('N'=>'No','Y'=>'Yes');
-//$attributes=array('value'=>'Y','separator'=>'</br>');
+		<tr>
+			<td><?php echo $this->Form->input('reason_id'); ?></td>
+			<td><?php echo $this->Form->input('executed'); ?></td>
+			<td><?php echo $this->Form->input('cancelled'); ?></td>
+			<td></td>
+		</tr>
+	
+</table>
 
-//echo $this->Form->checkbox('cancelled', array('label'=>true)); 
-//echo $this->Form->checkbox('executed'); 
-
-
-//echo $this->Form->radio('cancelled',$options,$attributes);
-//echo $this->Form->radio('executed',$options,$attributes);
-
-
-echo $this->Form->input('cancelled');
-echo $this->Form->input('executed');
-echo $this->Form->end('Save Trade');
-?>
+<?php echo $this->Form->end('Save Trade'); ?>
