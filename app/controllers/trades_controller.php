@@ -5,7 +5,25 @@ class TradesController extends AppController {
 	var $funds = array();
 	
 	
-	function index() {		
+	function index() {
+		$this->setchoices();
+		$conditions=array(
+			'Trade.crd >' => strtotime('-1 week'),
+			'Trade.act =' => 1
+		);
+	
+		$params=array(
+			'conditions' => $conditions, //array of conditions
+			'order' => array('Trade.crd DESC') //string or array defining order
+		);
+		
+		$this->set('trades', $this->Trade->find('all', $params));
+		$this->set('title_for_layout', 'View Trades');
+	}
+	
+	
+	
+	function indexFiltered() {		
 		$this->setchoices();
 		$conditions=array(
 			'Trade.crd >' => date('Y-m-d', strtotime($this->data['Trade']['daterange'])),
@@ -13,8 +31,6 @@ class TradesController extends AppController {
 			'Trade.broker_id =' => $this->data['Trade']['brokerchosen'],
 			'Trade.act =' => 1
 		);
-		
-	
 	
 		$params=array(
 			'conditions' => $conditions, //array of conditions
@@ -29,18 +45,11 @@ class TradesController extends AppController {
 		);
 		
 		$this->set('trades', $this->Trade->find('all', $params));
-		
-		//echo "$this->data";
-		//echo "funds=";
-		//print_r($this->Trade->$funds);	// view variable not visible to controller
-		
 		$this->set('title_for_layout', 'View Trades');
-
-        //$this->layout = 'default_small_ad';
-		
-		
 	}
-		
+	
+	
+	
 	function add() {
 		$this->setchoices();
 	
@@ -55,6 +64,7 @@ class TradesController extends AppController {
 			}
 		}
 	}
+	
 	
 	
 	function edit($id = null) {

@@ -18,7 +18,7 @@ class UsersController extends AppController {
 	function beforeFilter() {
 		parent::beforeFilter(); 
 		//$this->Auth->allow(array('*'));
-		$this->Auth->allowedActions = array('index');
+		$this->Auth->allowedActions = array('index','indexFiltered','build_acl','welcome');
 	}
 
 	function index() {
@@ -36,6 +36,7 @@ class UsersController extends AppController {
 		}
 	}
     
+	function welcome() {}
 	
 	function initDB() {
 		$group =& $this->User->Group;

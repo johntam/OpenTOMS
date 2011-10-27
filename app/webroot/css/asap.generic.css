@@ -41,14 +41,15 @@ a:hover {
 a img {
 	border:none;
 }
+
 h1, h2, h3, h4 {
-	font-weight: normal;
+	font-weight: bold;
 	margin-bottom:0.5em;
 }
 h1 {
 	background:#fff;
-	color: #003d4c;
-	font-size: 100%;
+	color: #3762F0;
+	font-size: 150%;
 }
 h2 {
 	background:#fff;
@@ -186,13 +187,16 @@ table {
 	clear: both;
 	color: #333;
 	margin-bottom: 10px;
-	width: 100%;
+	width: 80%;
+	margin-left:10%; 
+    margin-right:10%;
 }
 th {
 	border:0;
 	border-bottom:2px solid #555;
 	text-align: left;
 	padding:4px;
+	background: #61CFED;
 }
 th a {
 	display: block;
@@ -210,13 +214,15 @@ table tr td {
 	padding: 6px;
 	text-align: left;
 	vertical-align: top;
-	border-bottom:1px solid #ddd;
 }
 table tr:nth-child(2n) td {
 	background: #f5f5f5;
 }
 table .altrow td {
 	background: #f5f5f5;
+}
+table .highlight td {
+	background: #61CFED;
 }
 td.actions {
 	text-align: center;

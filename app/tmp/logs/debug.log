@@ -132,3 +132,4 @@
 2011-10-26 15:47:20 Debug: Notice (8): Undefined index: crd in [C:\Users\JT\ASAP\app\controllers\trades_controller.php, line 65]
 2011-10-26 15:51:20 Debug: Notice (8): Undefined index: crd in [C:\Users\JT\ASAP\app\controllers\trades_controller.php, line 65]
 2011-10-26 16:08:05 Debug: Notice (8): Trying to get property of non-object in [C:\Users\JT\ASAP\app\controllers\trades_controller.php, line 51]
+2011-10-27 08:02:58 Debug: Notice (8): A non well formed numeric value encountered in [C:\Users\JT\ASAP\app\controllers\trades_controller.php, line 11]

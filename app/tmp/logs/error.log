@@ -2698,3 +2698,1008 @@ Aco: controllers/Pages/display in [C:\Users\JT\ASAP\cake\libs\controller\compone
 )
 " in [C:\Users\JT\ASAP\cake\libs\model\db_acl.php, line 191]
 2011-10-26 15:32:38 Warning: Warning (512): <span style="color:Red;text-align:left"><b>SQL Error:</b> 1048: Column 'price' cannot be null</span> in [C:\Users\JT\ASAP\cake\libs\model\datasources\dbo_source.php, line 684]
+2011-10-27 08:06:57 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:07:15 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:08:13 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:11:00 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:11:07 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:12:45 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Groups/build_acl in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:13:06 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Groups/build_acl in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 08:13:47 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Groups/build_acl in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 09:22:21 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Groups/build_acl in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 09:26:06 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Trades/indexFiltered in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:46 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:46 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:47 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:48 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:49 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:50 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:50 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:51 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:52 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:53 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:54 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:54 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:55 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:57 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:57 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:58 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:41:59 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:00 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:01 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:01 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:02 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:03 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:04 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:04 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:05 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:06 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:07 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:08 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:09 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:10 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:11 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:12 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:12 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:13 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:14 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:15 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:15 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:16 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:17 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:18 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:19 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:20 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:21 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:21 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:22 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:23 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:24 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:24 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:25 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:26 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:27 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:28 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:28 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:29 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:30 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:31 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-27 11:42:32 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 5
+            [username] => JT355
+            [group_id] => 4
+            [created] => 2011-10-25 15:49:17
+            [modified] => 2011-10-25 15:49:17
+        )
+
+)
+
+Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]

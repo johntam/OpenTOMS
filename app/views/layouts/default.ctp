@@ -17,7 +17,10 @@ show up on all of your views, include it here -->
 <div id="header">
     <div id="menu">
 		<ul id="navbar">
-			<li><a href="/trades/">Ticket</a></li>
+			<li><a href="#">Trades</a><ul>
+				<li><a href="/trades/add">New</a></li>
+				<li><a href="/trades">Blotter</a></li></ul>
+			</li>
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
 				<li><a href="/secs">Securities</a></li>
@@ -26,15 +29,21 @@ show up on all of your views, include it here -->
 				<li><a href="/brokers">Brokers</a></li>
 				<li><a href="/traders">Traders</a></li></ul>
 			</li>
+			<li><a href="#">Security</a><ul>
+				<li><a href="/users">Users</a></li>
+				<li><a href="/groups">Groups</a></li></ul>
+			</li>
 			<!-- ... and so on ... -->
 		</ul>
 	</div>
 </div>
 
+<?php echo $this->Session->flash('auth'); ?>
+
 <!-- Here's where I want my views to be displayed -->
 <?php echo $content_for_layout ?>
 
-<?php echo $this->Session->flash('auth'); ?>
+
 
 <!-- Add a footer to each displayed page -->
 <div id="footer"></div>

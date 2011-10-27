@@ -1,10 +1,11 @@
 <!-- File: /app/views/trades/index.ctp -->
 
+<h2>Trades</h2>
+
+<?php echo $this->Html->link('Add Trade', array('controller' => 'trades', 'action' => 'add')); ?>
+
 <table>
 <tr>
-<td><h1>Trade Blotter</h1></td>
-</tr>
-<tr class="altrow">
 <?php echo $this->Form->create(null, array('url' => array('controller' => 'trades', 'action' => 'indexFiltered')));?>
 <td><?php echo $this->Form->input('daterange',array('type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?></td>
 <td><?php echo $this->Form->input('fundchosen',array('type'=>'select','options'=>$funds,'label'=>'Choose Fund'));?></td>
@@ -13,8 +14,9 @@
 </tr>
 </table>
 
+
+
 <table>
-	<tr><td colspan="15"><h4>Showing latest week's trades below</h4></td></tr>
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
@@ -36,7 +38,7 @@
 	<!-- Here is where we loop through our $trades array, printing out trade info -->
 
 	<?php foreach ($trades as $trade): ?>
-	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
+	<tr>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $trade['Trade']['id']));?></td>
 		<td><?php echo $this->Html->link('View', array('action' => 'view', $trade['Trade']['oid']));?></td>
 		<td><?php echo $trade['Trade']['id']; ?></td>

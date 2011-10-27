@@ -1,10 +1,13 @@
 <!-- File: /app/views/secs/index.ctp -->
 
-<h1>Securities</h1>
-
-<?php echo $this->Html->link('Add Security', array('controller' => 'secs', 'action' => 'add')); ?>
-
 <table>
+	<tr>
+		<td>
+			<h1>Securities</h1>
+
+			<?php echo $this->Html->link('Add Security', array('controller' => 'secs', 'action' => 'add')); ?>
+		</td>
+	</tr>
 	<tr>
 		<th>Id</th>
 		<th>Security Name</th>
@@ -19,7 +22,7 @@
 	<!-- Here is where we loop through our $secs array, printing out sec info -->
 
 	<?php foreach ($secs as $sec): ?>
-	<tr>
+	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 		<td><?php echo $sec['Sec']['id']; ?></td>
 		<td><?php echo $sec['Sec']['sec_name']; ?></td>
 		<td><?php echo $sec['Sec']['ticker']; ?></td>

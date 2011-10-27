@@ -14,7 +14,7 @@ class GroupsController extends AppController {
 	function beforeFilter() {
 		parent::beforeFilter(); 
 		//$this->Auth->allow(array('*'));
-		$this->Auth->allowedActions = array('index');
+		$this->Auth->allowedActions = array('index','indexFiltered','build_acl','welcome');
 	}
 
 	function index() {
