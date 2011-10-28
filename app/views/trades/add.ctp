@@ -7,7 +7,7 @@
 		<h1>Add Trade</h1>
 	</td>
 	</tr>
-	<tr class="highlight">
+	<tr class="head1">
 		<td>Fund</td>
 		<td>Security Name</td>
 		<td>Security Type</td>
@@ -21,7 +21,7 @@
 			<td><?php echo $this->Form->input('ticker'); ?></td>
 		</tr>
 	
-	<tr class="highlight">
+	<tr class="head1">
 		<td>Trade Type</td>
 		<td>Quantity</td>
 		<td>Order Price</td>
@@ -35,7 +35,7 @@
 			<td><?php echo $this->Form->input('currency'); ?></td>
 		</tr>
 	
-	<tr class="highlight">
+	<tr class="head1">
 		<td>Decision Time</td>
 		<td>Trade Date</td>
 		<td>Settlement Date</td>
@@ -49,7 +49,7 @@
 			<td><?php echo $this->Form->input('trader_id'); ?></td>
 		</tr>
 		
-	<tr class="highlight">
+	<tr class="head1">
 		<td>Broker</td>
 		<td>Broker Contact</td>
 		<td>Order Time</td>
@@ -64,7 +64,7 @@
 		</tr>
 	
 
-	<tr class="highlight">
+	<tr class="head1">
 		<td>Trade Reason</td>
 		<td>Executed</td>
 		<td>Cancelled</td>
@@ -80,9 +80,3 @@
 	
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
 </table>
-
-
-
-
-
-

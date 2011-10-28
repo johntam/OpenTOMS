@@ -221,7 +221,7 @@ table tr:nth-child(2n) td {
 table .altrow td {
 	background: #f5f5f5;
 }
-table .highlight td {
+table .head1 td {
 	background: #61CFED;
 }
 td.actions {
