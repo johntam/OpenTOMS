@@ -21,7 +21,3 @@ class User extends AppModel {
 		}
 	}
 }
-
-?>
-
-

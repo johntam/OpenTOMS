@@ -9,7 +9,3 @@ class Group extends AppModel {
 	}
 	
 }
-
-?>
-
-

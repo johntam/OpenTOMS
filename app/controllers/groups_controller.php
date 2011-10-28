@@ -231,4 +231,3 @@ class GroupsController extends AppController {
 
 	
 }
-?>
