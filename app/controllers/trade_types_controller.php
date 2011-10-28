@@ -10,7 +10,7 @@ class TradeTypesController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			if ($this->TradeType->save($this->data)) {
-				$this->Session->setFlash('Your trade type has been saved.');
+				$this->Session->setFlash('Trade type has been saved.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}

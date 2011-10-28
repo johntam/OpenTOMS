@@ -116,3 +116,20 @@ CREATE TABLE traders (
 	trader_login VARCHAR(50) NULL
 );
 
+CREATE TABLE sec_types (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	oid INT NULL,
+	sec_type INT NOT NULL,
+	sec_type_name VARCHAR(50) NOT NULL,
+	bond boolean NULL,
+	deriv boolean NULL,
+	exchrate boolean NULL,
+	cfd boolean NULL,
+	equity boolean NULL,
+	fx boolean NULL,
+	otc boolean NULL,
+	yellow_key VARCHAR(50) NULL,
+	supported boolean NULL
+);

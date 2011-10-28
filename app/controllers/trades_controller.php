@@ -59,7 +59,7 @@ class TradesController extends AppController {
 				$id = $this->Trade->id;
 				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
 					$this->Session->setFlash('Your trade has been saved.');
-					$this->redirect(array('action' => 'index'));
+					$this->redirect(array('action' => 'add'));
 				}
 			}
 		}

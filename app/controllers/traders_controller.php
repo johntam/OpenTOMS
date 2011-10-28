@@ -10,7 +10,7 @@ class TradersController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			if ($this->Trader->save($this->data)) {
-				$this->Session->setFlash('Your post has been saved.');
+				$this->Session->setFlash('Trader has been saved.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}

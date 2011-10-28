@@ -24,6 +24,7 @@ show up on all of your views, include it here -->
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
 				<li><a href="/secs">Securities</a></li>
+				<li><a href="/SecTypes">Sec Types</a></li>
 				<li><a href="/TradeTypes">Trade Types</a></li>
 				<li><a href="/reasons">Reasons</a></li>
 				<li><a href="/brokers">Brokers</a></li>
@@ -33,11 +34,13 @@ show up on all of your views, include it here -->
 				<li><a href="/users">Users</a></li>
 				<li><a href="/groups">Groups</a></li></ul>
 			</li>
+			<li><a href="/users/logout">Logout</a></li>
 			<!-- ... and so on ... -->
 		</ul>
 	</div>
 </div>
 
+<?php echo $this->Session->flash(); ?>
 <?php echo $this->Session->flash('auth'); ?>
 
 <!-- Here's where I want my views to be displayed -->

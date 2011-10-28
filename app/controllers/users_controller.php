@@ -12,13 +12,14 @@ class UsersController extends AppController {
  
 	function logout() {
 		$this->Session->setFlash('Good-Bye');
-		$this->redirect($this->Auth->logout());
+		//$this->redirect($this->Auth->logout());
+		$this->Auth->logout();
 	}
 
 	function beforeFilter() {
 		parent::beforeFilter(); 
 		//$this->Auth->allow(array('*'));
-		$this->Auth->allowedActions = array('index','indexFiltered','build_acl','welcome');
+		$this->Auth->allowedActions = array('initDB','welcome','logout');
 	}
 
 	function index() {
@@ -30,7 +31,7 @@ class UsersController extends AppController {
 	
 		if (!empty($this->data)) {
 			if ($this->User->saveAll($this->data)) {
-				$this->Session->setFlash('Your post has been saved.');
+				$this->Session->setFlash('User has been added.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}
@@ -44,11 +45,10 @@ class UsersController extends AppController {
 		$group->id = 4;     
 		$this->Acl->allow($group, 'controllers');
 	 
-		//allow managers to posts and widgets
+		//allow clients to enter new trades only
 		$group->id = 5;
 		$this->Acl->deny($group, 'controllers');
-		$this->Acl->allow($group, 'controllers/Trades');
-		$this->Acl->allow($group, 'controllers/Funds');
+		$this->Acl->allow($group, 'controllers/Trades/add');
 	 
 		//allow users to only add and edit on posts and widgets
 		//$group->id = 3;

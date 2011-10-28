@@ -3703,3 +3703,35 @@ Aro: Array
 )
 
 Aco: Users/welcome in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-28 13:00:26 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 8
+            [username] => client
+            [group_id] => 5
+            [created] => 2011-10-28 12:10:55
+            [modified] => 2011-10-28 12:10:55
+        )
+
+)
+
+Aco: Groups/build_acl in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-28 13:57:57 Warning: Warning (512): DbAcl::check() - Failed ARO/ACO node lookup in permissions check.  Node references:
+Aro: Array
+(
+    [User] => Array
+        (
+            [id] => 7
+            [username] => lprc
+            [group_id] => 4
+            [created] => 2011-10-28 12:10:01
+            [modified] => 2011-10-28 12:10:01
+        )
+
+)
+
+Aco: SecTypes/index in [C:\Users\JT\ASAP\cake\libs\controller\components\acl.php, line 273]
+2011-10-28 14:05:34 Warning: Warning (512): <span style="color:Red;text-align:left"><b>SQL Error:</b> 1054: Unknown column 'Trade.sec_type_id' in 'on clause'</span> in [C:\Users\JT\ASAP\cake\libs\model\datasources\dbo_source.php, line 684]
+2011-10-28 14:05:34 Warning: Warning (2): Invalid argument supplied for foreach() in [C:\Users\JT\ASAP\app\views\trades\index.ctp, line 38]

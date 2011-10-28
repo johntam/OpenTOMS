@@ -10,29 +10,29 @@
 	<tr class="highlight">
 		<td>Fund</td>
 		<td>Security Name</td>
-		<td>Security Type</td>
-		<td>Ticker</td>
+		<td>Notes</td>
+		<td>Trade Currency</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('fund_id'); ?></td>
 			<td><?php echo $this->Form->input('sec_id'); ?></td>
-			<td>...</td>
-			<td><?php echo $this->Form->input('ticker'); ?></td>
+			<td><?php echo $this->Form->input('notes'); ?></td>
+			<td><?php echo $this->Form->input('currency'); ?></td>
 		</tr>
 	
 	<tr class="highlight">
 		<td>Trade Type</td>
 		<td>Quantity</td>
 		<td>Order Price</td>
-		<td>Trade Currency</td>
+		<td>Execution Price</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('trade_type_id'); ?></td>
 			<td><?php echo $this->Form->input('quantity'); ?></td>
 			<td><?php echo $this->Form->input('price'); ?></td>
-			<td><?php echo $this->Form->input('currency'); ?></td>
+			<td><?php echo $this->Form->input('execution_price'); ?></td>
 		</tr>
 	
 	<tr class="highlight">

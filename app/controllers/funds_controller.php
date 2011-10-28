@@ -10,7 +10,7 @@ class FundsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			if ($this->Fund->save($this->data)) {
-				$this->Session->setFlash('Your fund has been saved.');
+				$this->Session->setFlash('Fund has been saved.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}

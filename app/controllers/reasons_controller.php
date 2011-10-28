@@ -10,7 +10,7 @@ class ReasonsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			if ($this->Reason->save($this->data)) {
-				$this->Session->setFlash('Your post has been saved.');
+				$this->Session->setFlash('Trade reason has been saved.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}

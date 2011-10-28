@@ -11,29 +11,29 @@
 	<tr class="highlight">
 		<td>Fund</td>
 		<td>Security Name</td>
-		<td>Security Type</td>
-		<td>Ticker</td>
+		<td>Notes</td>
+		<td>Trade Currency</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $trade['Fund']['fund_name']; ?></td>
 			<td><?php echo $trade['Sec']['sec_name']; ?></td>
-			<td>...</td>
-			<td><?php echo $trade['Sec']['ticker']; ?></td>
+			<td><?php echo $trade['Trade']['notes']; ?></td>
+			<td><?php echo $trade['Trade']['currency']; ?></td>
 		</tr>
 	
 	<tr class="highlight">
 		<td>Trade Type</td>
 		<td>Quantity</td>
 		<td>Order Price</td>
-		<td>Trade Currency</td>
+		<td>Execution Price</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $trade['TradeType']['trade_type']; ?></td>
 			<td><?php echo $trade['Trade']['quantity']; ?></td>
 			<td><?php echo $trade['Trade']['price']; ?></td>
-			<td><?php echo $trade['Trade']['currency']; ?></td>
+			<td><?php echo $trade['Trade']['execution_price']; ?></td>
 		</tr>
 	
 	<tr class="highlight">

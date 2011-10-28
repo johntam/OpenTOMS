@@ -14,7 +14,7 @@ class GroupsController extends AppController {
 	function beforeFilter() {
 		parent::beforeFilter(); 
 		//$this->Auth->allow(array('*'));
-		$this->Auth->allowedActions = array('index','indexFiltered','build_acl','welcome');
+		$this->Auth->allowedActions = array('build_acl');
 	}
 
 	function index() {
@@ -24,7 +24,7 @@ class GroupsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			if ($this->Group->save($this->data)) {
-				$this->Session->setFlash('Your post has been saved.');
+				$this->Session->setFlash('Group has been added.');
 				$this->redirect(array('action' => 'index'));
 			}
 		}
