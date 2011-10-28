@@ -3,7 +3,7 @@ class SecsController extends AppController {
 	var $helpers = array ('Html','Form');
 	var $name = 'Secs';
 
-	function index() {
+	function index() {		
 		$this->set('secs', $this->Sec->find('all'));
 	}
 	

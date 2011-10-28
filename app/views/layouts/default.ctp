@@ -5,6 +5,24 @@
 <title><?php echo $title_for_layout?></title>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <!-- Include external files and scripts here (See HTML helper for more info.) -->
+
+<!-- The javascript code below helps IE6 with the CSS navigation menu -->
+<!-- From http://www.cssnewbie.com/easy-css-dropdown-menus/ -->
+<script type="text/javascript">
+	sfHover = function() {
+		var sfEls = document.getElementById("navbar").getElementsByTagName("li");
+		for (var i=0; i<sfEls.length; i++) {
+			sfEls[i].onmouseover=function() {
+				this.className+=" hover";
+			}
+			sfEls[i].onmouseout=function() {
+				this.className=this.className.replace(new RegExp(" hover\\b"), "");
+			}
+		}
+	}
+	if (window.attachEvent) window.attachEvent("onload", sfHover);
+</script>
+
 <?php echo $scripts_for_layout ?>
 <?php echo $this->Html->css('asap.generic'); ?>
 </head>

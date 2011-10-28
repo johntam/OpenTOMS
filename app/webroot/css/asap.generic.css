@@ -141,16 +141,16 @@ ul, li {
 	width: 10em; /* Width to help Opera out */
 	background-color: #F7BA2A;
 }
-#navbar li:hover ul {
+#navbar li:hover ul, #navbar li.hover ul {
 	display: block;
 	position: absolute;
 	margin: 0;
 	padding: 0;
-}	
-#navbar li:hover li {
+}
+#navbar li:hover li, #navbar li.hover li {
 	float: none;
 }
-#navbar li:hover li a {
+#navbar li:hover li a, #navbar li.hover li a {
 	background-color: #F7BA2A;
 	border-bottom: 1px solid #fff;
 	color: #fff;
@@ -158,7 +158,6 @@ ul, li {
 #navbar li li a:hover {
 	background-color: #F7D586;
 }
-
 
 
 /** containers **/
