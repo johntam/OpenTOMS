@@ -31,5 +31,25 @@ class SecsController extends AppController {
 			}
 		}
 	}
+	
+	function edit($id = null) {
+		$this->Sec->id = $id;
+		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'))));
+		
+		if (empty($this->data)) {
+			$this->data = $this->Sec->read();
+		} else {
+			if ($this->Sec->save($this->data)) {
+				$this->Session->setFlash('Security has been updated.');
+				$this->redirect(array('action' => 'view',$id));
+			}
+		}
+	}
+	
+	function view($id = null) {
+		$this->Sec->id = $id;
+		$this->set('sec', $this->Sec->read());
+	}
+
 }
 ?>

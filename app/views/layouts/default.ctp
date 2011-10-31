@@ -48,7 +48,7 @@ show up on all of your views, include it here -->
 				<li><a href="/brokers">Brokers</a></li>
 				<li><a href="/traders">Traders</a></li></ul>
 			</li>
-			<li><a href="#">Security</a><ul>
+			<li><a href="#">Permissions</a><ul>
 				<li><a href="/users">Users</a></li>
 				<li><a href="/groups">Groups</a></li></ul>
 			</li>
