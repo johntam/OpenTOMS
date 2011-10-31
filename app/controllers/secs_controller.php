@@ -24,10 +24,12 @@ class SecsController extends AppController {
 	}
 	
 	function add() {
+		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'))));
+		
 		if (!empty($this->data)) {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been saved.');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'view', $this->Sec->id));
 			}
 		}
 	}
