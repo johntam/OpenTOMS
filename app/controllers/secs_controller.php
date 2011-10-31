@@ -4,7 +4,23 @@ class SecsController extends AppController {
 	var $name = 'Secs';
 
 	function index() {		
-		$this->set('secs', $this->Sec->find('all'));
+		if (!empty($this->params['pass'])) {
+			$a = $this->params['pass'][0];
+		} else {
+			$a = 'A';
+		};
+		
+		$conditions=array(
+			'Sec.sec_name LIKE ' => $a.'%'
+		);
+	
+		$params=array(
+			'conditions' => $conditions, 
+			'fields' => array('Sec.id', 'Sec.sec_name', 'ticker', 'tradarid', 'currency', 'valpoint'),
+			'order' => array('Sec.sec_name ASC') 
+		);
+		
+		$this->set('secs', $this->Sec->find('all', $params));
 	}
 	
 	function add() {

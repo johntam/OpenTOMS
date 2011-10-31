@@ -41,7 +41,7 @@ show up on all of your views, include it here -->
 			</li>
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
-				<li><a href="/secs">Securities</a></li>
+				<li><a href="/secs/index/A">Securities</a></li>
 				<li><a href="/SecTypes">Sec Types</a></li>
 				<li><a href="/TradeTypes">Trade Types</a></li>
 				<li><a href="/reasons">Reasons</a></li>
