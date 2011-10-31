@@ -3,7 +3,7 @@
 <table>	
 	<tr>
 		<td>
-			<h2>View Security</h2>
+			<h1>View Security</h1>
 		</td>
 	</tr>
 	
