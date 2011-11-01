@@ -136,11 +136,14 @@ CREATE TABLE sec_types (
 
 CREATE TABLE prices (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	act bit NOT NULL DEFAULT 1,
 	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	oid INT NULL,
 	price DECIMAL(18,6) NOT NULL,
 	sec_id INT NOT NULL,
 	price_source VARCHAR(50) NOT NULL,
 	price_date date NOT NULL
 );
+
+
+ALTER TABLE prices DROP COLUMN act;
+ALTER TABLE prices DROP COLUMN oid;
+ALTER TABLE prices ADD CONSTRAINT ux_prices UNIQUE (sec_id, price_source, price_date);

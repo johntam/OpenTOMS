@@ -119,6 +119,8 @@ class GroupsController extends AppController {
 		if(count($log)>0) {
 			debug($log);
 		}
+		
+		exit;
 	}
 
 	function _getClassMethods($ctrlName = null) {
