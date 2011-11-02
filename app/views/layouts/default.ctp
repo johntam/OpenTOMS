@@ -49,7 +49,7 @@ show up on all of your views, include it here -->
 				<li><a href="/traders">Traders</a></li></ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>
-				<li><a href="/prices/index/0/1">Maintain Prices</a></li></ul>
+				<li><a href="/prices/index/0/1">Maintenance</a></li></ul>
 			</li>
 			<li><a href="#">Permissions</a><ul>
 				<li><a href="/users">Users</a></li>

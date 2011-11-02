@@ -5,15 +5,46 @@
 <td><h1>Maintain Prices</h1></td>
 </tr>
 <tr class="altrow">
-<?php echo $this->Form->create(null, array('url' => array('controller' => 'prices', 'action' => 'index')));?>
-<td><?php echo $this->Form->input('secfilter',array('type'=>'text','label'=>'Enter a few characters of security name:','maxLength'=>10,'div'=>false));?>
-<?php echo $this->Form->end('Filter');?></td>
-<td colspan="4"></td>
+
+<td style="width: 30%;">
+	<?php echo $this->Form->create('Price', array('action' => 'index')); ?>
+	<?php echo $this->Form->input('secfilter',array('type'=>'text','label'=>'Enter a few characters of security name:','maxLength'=>10,'div'=>false));?>
+	<?php echo $this->Form->end('Filter'); ?>
+</td>
+<td style="width: 10%;"></td>
+<td style="width: 30%;">
+	<?php echo $this->Form->create('Price', array('action' => 'index')); ?>
+	<?php echo $this->Form->input('datefilter', array('label'=>'Enter a date to filter on','type'=>'date','default'=> strtotime('-1 day'))); ?>
+	<?php echo $this->Form->end('Filter'); ?>
+</td>
+
+<td colspan="2"></td>
 </tr>
 </table>
 
 <table>
-	<tr><td colspan="15"><h4>Showing prices between <?php echo $this->params['pass'][0];?> weeks and <?php echo $this->params['pass'][1];?> weeks ago</h4></td></tr>
+	<tr>
+		<td colspan="5">
+			<?php
+				if (isset($datefiltered)) {
+					echo '<i>Filtering on date: </i><b>'.$datefiltered.'</b>';
+				}
+				elseif (isset($secnamefiltered)) {
+					echo '<i>Filtering on characters: </i><b>'.str_replace('%','',$secnamefiltered).'</b>';
+				}
+				else {
+					echo '<i>Showing prices between '.$todate.' weeks and '.$fromdate.' weeks ago</i> (';
+					if ($todate == 0) {
+						echo 'Earlier';
+					}
+					else {
+						echo $this->Html->link('Earlier', array('action' => 'index', $todate-1, $fromdate-1));
+					}
+					echo '|'.$this->Html->link('Later', array('action' => 'index', $todate+1, $fromdate+1)).')';
+				}
+			?>	
+		</td>
+	</tr>
 	<tr>
 		<th>Date</th>
 		<th>Source</th>
@@ -22,12 +53,12 @@
 		<th>Edit</th>
 	</tr>
 
-	<tr>
+	<tr class="high2">
 		<?php echo $this->Form->create(null, array('url' => array('controller' => 'prices', 'action' => 'add')));?>
-		<td><?php echo $this->Form->input('price_date'); ?></td>
-		<td><?php echo $this->Form->input('price_source'); ?></td>
-		<td><?php echo $this->Form->input('sec_id'); ?></td>
-		<td><?php echo $this->Form->input('price',array('type'=>'text')); ?></td>
+		<td><?php echo $this->Form->input('price_date',array('label'=>false,'default'=> strtotime('-1 day'))); ?></td>
+		<td><?php echo $this->Form->input('price_source',array('label'=>false, 'options' => array('DFLT'=>'DFLT','USER'=>'USER'))); ?></td>
+		<td><?php echo $this->Form->input('sec_id',array('label'=>false)); ?></td>
+		<td><?php echo $this->Form->input('price',array('type'=>'text','label'=>false)); ?></td>
 		<td><?php echo $this->Form->end('Add'); ?></td>
 	</tr>
 

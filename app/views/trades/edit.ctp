@@ -16,10 +16,10 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('fund_id'); ?></td>
-			<td><?php echo $this->Form->input('sec_id'); ?></td>
-			<td><?php echo $this->Form->input('notes'); ?></td>
-			<td><?php echo $this->Form->input('currency'); ?></td>
+			<td><?php echo $this->Form->input('fund_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('sec_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('notes',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('currency',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -30,10 +30,10 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('trade_type_id'); ?></td>
-			<td><?php echo $this->Form->input('quantity'); ?></td>
-			<td><?php echo $this->Form->input('price'); ?></td>
-			<td><?php echo $this->Form->input('execution_price'); ?></td>
+			<td><?php echo $this->Form->input('trade_type_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('quantity',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('price',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('execution_price',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -44,10 +44,10 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('decision_time'); ?></td>
-			<td><?php echo $this->Form->input('trade_date'); ?></td>
-			<td><?php echo $this->Form->input('settlement_date'); ?></td>
-			<td><?php echo $this->Form->input('trader_id'); ?></td>
+			<td><?php echo $this->Form->input('decision_time',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('trade_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('settlement_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('trader_id',array('label'=>false)); ?></td>
 		</tr>
 		
 	<tr class="highlight">
@@ -58,10 +58,10 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('broker_id'); ?></td>
-			<td><?php echo $this->Form->input('broker_contact'); ?></td>
-			<td><?php echo $this->Form->input('order_time'); ?></td>
-			<td><?php echo $this->Form->input('commission'); ?></td>
+			<td><?php echo $this->Form->input('broker_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('broker_contact',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('order_time',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('commission',array('label'=>false)); ?></td>
 		</tr>
 	
 
@@ -73,9 +73,9 @@
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('reason_id'); ?></td>
-			<td><?php echo $this->Form->input('executed'); ?></td>
-			<td><?php echo $this->Form->input('cancelled'); ?></td>
+			<td><?php echo $this->Form->input('reason_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
 		</tr>
 	

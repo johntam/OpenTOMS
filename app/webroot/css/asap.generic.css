@@ -184,7 +184,7 @@ div.actions h3 {
 table {
 	background: #fff;
 	border-right:0;
-	clear: both;
+	clear: none;
 	color: #333;
 	margin-bottom: 10px;
 	width: 80%;
@@ -219,7 +219,11 @@ table .altrow td {
 	background: #f5f5f5;
 }
 table .highlight td {
-	background: #61CFED;
+	font-weight: bold;
+	background: #B6EAFA;
+}
+table .high2 td {
+	background: #EDBEED;
 }
 td.actions {
 	text-align: center;
@@ -289,7 +293,7 @@ dd {
 
 /** Forms **/
 form {
-	clear: both;
+	clear: none;
 	margin-right: 20px;
 	padding: 0;
 	width: 95%;
@@ -319,10 +323,10 @@ fieldset fieldset div {
 	margin: 0 20px;
 }
 form div {
-	clear: both;
-	margin-bottom: 1em;
-	padding: .5em;
-	vertical-align: text-top;
+	clear: none;
+	margin-bottom: 0em;
+	padding: 0em;
+	vertical-align: middle;
 }
 form .input {
 	color: #444;
@@ -337,8 +341,8 @@ form .required label:after {
 }
 form div.submit {
 	border: 0;
-	clear: both;
-	margin-top: 10px;
+	clear: none;
+	margin-top: 0px;
 }
 label {
 	display: block;
@@ -346,16 +350,16 @@ label {
 	margin-bottom:3px;
 }
 input, textarea {
-	clear: both;
-	font-size: 140%;
+	clear: none;
+	font-size: 100%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 1%;
-	width:98%;
+	padding: 0%;
+	width:100%;
 }
 select {
 	clear: both;
-	font-size: 120%;
-	vertical-align: text-bottom;
+	font-size: 100%;
+	vertical-align: middle;
 }
 select[multiple=multiple] {
 	width: 100%;

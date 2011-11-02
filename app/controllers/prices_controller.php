@@ -3,45 +3,65 @@ class PricesController extends AppController {
 	var $helpers = array ('Html','Form');
 	var $name = 'Prices';
 
-	function index() {
+	function index() {	
 		if (empty($this->params['pass'][0])) {
 			$to=0;
 		}
 		else {
-			$to=$this->params['pass'][0];
+			$to=max($this->params['pass'][0],0);
 		}
 		
 		if (empty($this->params['pass'][1])) {
 			$from=1;
 		}
 		else {
-			$from=$this->params['pass'][1];
+			$from=max($this->params['pass'][1],1);
 		}
 		
-		if (empty($this->data['Price']['secfilter'])) {
-			$secfilter='%';
+		if (!empty($this->data['Price']['secfilter'])) {
+			$secfilter='%'.$this->data['Price']['secfilter'].'%';
+			$this->set('secnamefiltered',$secfilter);
+		}
+		
+		if (!empty($this->data['Price']['datefilter'])) {
+			$datefilter = date('Y-m-d',
+						mktime(0,0,0,$this->data['Price']['datefilter']['month'],
+									$this->data['Price']['datefilter']['day'],
+									$this->data['Price']['datefilter']['year']));
+			$this->set('datefiltered',$datefilter);
+		}
+		
+		
+	
+		if (isset($datefilter)) {
+			$conditions=array(
+				'Price.price_date =' => $datefilter
+			);
+		}
+		elseif (isset($secfilter)) {
+			$conditions=array(
+				'Sec.sec_name LIKE' => $secfilter
+			);
 		}
 		else {
-			$secfilter='%'.$this->data['Price']['secfilter'].'%';
+			$conditions=array(
+				'Price.price_date >=' => date('Y-m-d',strtotime('-'.$from.' weeks')),
+				'Price.price_date <=' => date('Y-m-d',strtotime('-'.$to.' weeks'))
+			);
 		}
 		
-		$conditions=array(
-			'Sec.sec_name LIKE' => $secfilter,
-			'Price.price_date >=' => date('Y-m-d',strtotime('-'.$from.' weeks')),
-			'Price.price_date <=' => date('Y-m-d',strtotime('-'.$to.' weeks'))
-		);
-	
 		$params=array(
 			'conditions' => $conditions, //array of conditions
-			'order' => array('Price.crd DESC') //string or array defining order
-		);
+			'order' => array('Price.price_date DESC') //string or array defining order
+		);	
 		
-		//echo print_r($params);
-		//exit;
-		
+		$this->set('fromdate',$from);
+		$this->set('todate',$to);
 		$this->set('prices', $this->Price->find('all', $params));
-		$this->set('secs', $this->Price->Sec->find('list', array('fields'=>array('Sec.sec_name'))));
+		$this->set('secs', $this->Price->Sec->find('list', array('fields'=>array('Sec.sec_name'), 'order'=>array('Sec.sec_name'))));
 	}
+	
+	
 	
 	function add() {		
 		
@@ -55,11 +75,11 @@ class PricesController extends AppController {
 					}
 				}
 				else {
-					$this->Session->setFlash('Sorry, cannot enter duplicate price for given date, source and security.');
+					$this->Session->setFlash('Sorry, cannot enter price for duplicate date, source and security.');
 				}
 			}
 			else {
-				$this->Session->setFlash('Please leave no field blank whilst adding a new price');
+				$this->Session->setFlash('The price field cannot be blank');
 			}
 		}
 
@@ -97,15 +117,13 @@ class PricesController extends AppController {
 	
 	
 	function edit($id = null) {
-		$this->Sec->id = $id;
-		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'))));
 		
 		if (empty($this->data)) {
-			$this->data = $this->Sec->read();
+			$this->data = $this->Price->read();
 		} else {
-			if ($this->Sec->save($this->data)) {
-				$this->Session->setFlash('Security has been updated.');
-				$this->redirect(array('action' => 'view',$id));
+			if ($this->Price->save($this->data)) {
+				$this->Session->setFlash('Price has been updated.');
+				$this->redirect(array('action' => 'index'));
 			}
 		}
 	}
