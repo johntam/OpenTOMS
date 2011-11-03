@@ -110,16 +110,19 @@ class TradesController extends AppController {
 	}
 	
 	function setchoices() {
-		$this->set('funds', $this->Trade->Fund->find('list', array('fields'=>array('Fund.fund_name'))));
-		$this->set('secs', $this->Trade->Sec->find('list', array('fields'=>array('Sec.sec_name'))));
-		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'))));
-		$this->set('reasons', $this->Trade->Reason->find('list', array('fields'=>array('Reason.reason_desc'))));
-		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'))));
-		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'))));
-		
-		//if ($mode==1) {
-		//	array_unshift($brokers,"All","All");
-		//};
+		//Could be a lot of securities so cache this list
+		if (($secsCACHE = Cache::read('secs')) === false) {
+			$secsCACHE = $this->Trade->Sec->find('list', array('fields'=>array('Sec.sec_name'),'order'=>array('Sec.sec_name')));
+			Cache::write('secs', $secsCACHE);
+		}
+
+		$this->set('secs', $secsCACHE);
+		$this->set('funds', $this->Trade->Fund->find('list', array('fields'=>array('Fund.fund_name'),'order'=>array('Fund.fund_name'))));
+		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'),'order'=>array('TradeType.trade_type'))));
+		$this->set('reasons', $this->Trade->Reason->find('list', array('fields'=>array('Reason.reason_desc'),'order'=>array('Reason.reason_desc'))));
+		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'),'order'=>array('Broker.broker_name'))));
+		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'),'order'=>array('Trader.trader_name'))));
+		$this->set('currencies', $this->Trade->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
 	}
 }
 

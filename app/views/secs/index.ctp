@@ -43,7 +43,7 @@
 		<td><?php echo $sec['Sec']['sec_name']; ?></td>
 		<td><?php echo $sec['Sec']['ticker']; ?></td>
 		<td><?php echo $sec['Sec']['tradarid']; ?></td>
-		<td><?php echo $sec['Sec']['currency']; ?></td>
+		<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $sec['Sec']['valpoint']; ?></td>
 	</tr>
 	<?php endforeach; ?>

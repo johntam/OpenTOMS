@@ -15,5 +15,17 @@ class FundsController extends AppController {
 			}
 		}
 	}
+	
+	function edit($id = null) {
+		
+		if (empty($this->data)) {
+			$this->data = $this->Fund->read();
+		} else {
+			if ($this->Fund->save($this->data)) {
+				$this->Session->setFlash('Fund has been updated.');
+				$this->redirect(array('action' => 'index'));
+			}
+		}
+	}
 }
 ?>

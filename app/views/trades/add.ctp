@@ -18,7 +18,7 @@
 			<td><?php echo $this->Form->input('fund_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('sec_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('notes',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('currency',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('currency_id',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -43,7 +43,7 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('decision_time',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('decision_time',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('trade_date',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('settlement_date',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('trader_id',array('label'=>false)); ?></td>
@@ -59,7 +59,7 @@
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('broker_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('broker_contact',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('order_time',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('commission',array('label'=>false)); ?></td>
 		</tr>
 	

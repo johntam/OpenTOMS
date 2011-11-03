@@ -21,7 +21,7 @@
 			<td><?php echo $this->Form->input('sec_type_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('sec_name',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('ticker',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('country',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('country_id',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -49,11 +49,11 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('prev_coupon_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('prev_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('valpoint',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('isin_code',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('industry',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('first_settles_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('industry_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('first_settles_date',array('label'=>false,'empty'=>' ')); ?></td>
 		</tr>
 		
 	<tr class="highlight">
@@ -65,11 +65,11 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('first_accrual_date',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('exchange',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('first_coupon_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('first_accrual_date',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('exchange_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('first_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('dividend_amount',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('ex_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('ex_date',array('label'=>false,'empty'=>' ')); ?></td>
 		</tr>
 	
 
@@ -82,7 +82,7 @@
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('dividend_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('dividend_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('cusip_code',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('coupon_pay',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('coupon',array('label'=>false)); ?></td>
@@ -102,9 +102,9 @@
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('price',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('maturity',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('currency',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('expiry_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('maturity',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('currency_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('expiry_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('price_source',array('label'=>false)); ?></td>
 		</tr>
 	<tr class="highlight">

@@ -26,7 +26,7 @@
 			<td><?php echo $sec['SecType']['sec_type_name']; ?></td>
 			<td><?php echo $sec['Sec']['sec_name']; ?></td>
 			<td><?php echo $sec['Sec']['ticker']; ?></td>
-			<td><?php echo $sec['Sec']['country']; ?></td>
+			<td><?php echo $sec['Country']['country_name']; ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -57,7 +57,7 @@
 			<td><?php echo $sec['Sec']['prev_coupon_date']; ?></td>
 			<td><?php echo $sec['Sec']['valpoint']; ?></td>
 			<td><?php echo $sec['Sec']['isin_code']; ?></td>
-			<td><?php echo $sec['Sec']['industry']; ?></td>
+			<td><?php echo $sec['Industry']['industry_name']; ?></td>
 			<td><?php echo $sec['Sec']['first_settles_date']; ?></td>
 		</tr>
 		
@@ -71,7 +71,7 @@
 	
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['first_accrual_date']; ?></td>
-			<td><?php echo $sec['Sec']['exchange']; ?></td>
+			<td><?php echo $sec['Exchange']['exchange_name']; ?></td>
 			<td><?php echo $sec['Sec']['first_coupon_date']; ?></td>
 			<td><?php echo $sec['Sec']['dividend_amount']; ?></td>
 			<td><?php echo $sec['Sec']['ex_date']; ?></td>
@@ -108,7 +108,7 @@
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['price']; ?></td>
 			<td><?php echo $sec['Sec']['maturity']; ?></td>
-			<td><?php echo $sec['Sec']['currency']; ?></td>
+			<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 			<td><?php echo $sec['Sec']['expiry_date']; ?></td>
 			<td><?php echo $sec['Sec']['price_source']; ?></td>
 		</tr>

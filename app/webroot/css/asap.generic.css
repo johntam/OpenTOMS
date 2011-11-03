@@ -184,7 +184,7 @@ div.actions h3 {
 table {
 	background: #fff;
 	border-right:0;
-	clear: none;
+	clear: both;
 	color: #333;
 	margin-bottom: 10px;
 	width: 80%;
@@ -213,7 +213,7 @@ table tr td {
 	background: #fff;
 	padding: 6px;
 	text-align: left;
-	vertical-align: top;
+	vertical-align: middle;
 }
 table .altrow td {
 	background: #f5f5f5;

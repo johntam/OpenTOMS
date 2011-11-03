@@ -12,6 +12,7 @@
 		<th>Broker Code</th>
 		<th>Broker Long Name</th>
 		<th>Standard Commission Rate</th>
+		<th>Edit</th>
 	</tr>
 
 	<!-- Here is where we loop through our $brokers array, printing out broker info -->
@@ -22,6 +23,7 @@
 		<td><?php echo $broker['Broker']['broker_name']; ?></td>
 		<td><?php echo $broker['Broker']['broker_long_name']; ?></td>
 		<td><?php echo $broker['Broker']['commission_rate']; ?></td>
+		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $broker['Broker']['id']));?></td>
 	</tr>
 	<?php endforeach; ?>
 </table>

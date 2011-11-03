@@ -19,7 +19,7 @@
 			<td><?php echo $trade['Fund']['fund_name']; ?></td>
 			<td><?php echo $trade['Sec']['sec_name']; ?></td>
 			<td><?php echo $trade['Trade']['notes']; ?></td>
-			<td><?php echo $trade['Trade']['currency']; ?></td>
+			<td><?php echo $trade['Currency']['currency_iso_code']; ?></td>
 		</tr>
 	
 	<tr class="highlight">

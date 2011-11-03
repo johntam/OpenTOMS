@@ -45,6 +45,9 @@
 			?>	
 		</td>
 	</tr>
+</table>
+
+<table>	
 	<tr>
 		<th>Date</th>
 		<th>Source</th>

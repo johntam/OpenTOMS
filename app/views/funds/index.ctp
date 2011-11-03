@@ -12,6 +12,7 @@
 		<th>Fund Name</th>
 		<th>Fund Currency</th>
 		<th>Management Fee</th>
+		<th>Edit</th>
 	</tr>
 
 	<!-- Here is where we loop through our $funds array, printing out fund info -->
@@ -22,6 +23,7 @@
 		<td><?php echo $fund['Fund']['fund_name']; ?></td>
 		<td><?php echo $fund['Fund']['fund_currency']; ?></td>
 		<td><?php echo $fund['Fund']['management_fee']; ?></td>
+		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $fund['Fund']['id']));?></td>
 	</tr>
 	<?php endforeach; ?>
 </table>

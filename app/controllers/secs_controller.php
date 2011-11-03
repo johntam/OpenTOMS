@@ -16,7 +16,7 @@ class SecsController extends AppController {
 	
 		$params=array(
 			'conditions' => $conditions, 
-			'fields' => array('Sec.id', 'Sec.sec_name', 'ticker', 'tradarid', 'currency', 'valpoint'),
+			'fields' => array('Sec.id', 'Sec.sec_name', 'ticker', 'tradarid', 'Currency.currency_iso_code', 'valpoint'),
 			'order' => array('Sec.sec_name ASC') 
 		);
 		
@@ -24,11 +24,12 @@ class SecsController extends AppController {
 	}
 	
 	function add() {
-		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'))));
+		$this->setchoices();
 		
 		if (!empty($this->data)) {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been saved.');
+				Cache::delete('secs');	//clear cache
 				$this->redirect(array('action' => 'view', $this->Sec->id));
 			}
 		}
@@ -36,13 +37,14 @@ class SecsController extends AppController {
 	
 	function edit($id = null) {
 		$this->Sec->id = $id;
-		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'))));
+		$this->setchoices();
 		
 		if (empty($this->data)) {
 			$this->data = $this->Sec->read();
 		} else {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been updated.');
+				Cache::delete('secs');	//clear cache
 				$this->redirect(array('action' => 'view',$id));
 			}
 		}
@@ -52,6 +54,13 @@ class SecsController extends AppController {
 		$this->Sec->id = $id;
 		$this->set('sec', $this->Sec->read());
 	}
-
+	
+	function setchoices() {
+		$this->set('secTypes', $this->Sec->SecType->find('list', array('fields'=>array('SecType.sec_type_name'),'order'=>array('SecType.sec_type_name'))));
+		$this->set('countries', $this->Sec->Country->find('list', array('fields'=>array('Country.country_name'),'order'=>array('Country.country_name'))));
+		$this->set('exchanges', $this->Sec->Exchange->find('list', array('fields'=>array('Exchange.exchange_name'),'order'=>array('Exchange.exchange_name'))));
+		$this->set('industries', $this->Sec->Industry->find('list', array('fields'=>array('Industry.industry_name'),'order'=>array('Industry.industry_name'))));
+		$this->set('currencies', $this->Sec->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+	}
 }
 ?>

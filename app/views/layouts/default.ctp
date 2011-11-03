@@ -46,7 +46,12 @@ show up on all of your views, include it here -->
 				<li><a href="/TradeTypes">Trade Types</a></li>
 				<li><a href="/reasons">Reasons</a></li>
 				<li><a href="/brokers">Brokers</a></li>
-				<li><a href="/traders">Traders</a></li></ul>
+				<li><a href="/traders">Traders</a></li>
+				<li><a href="/countries">Countries</a></li>
+				<li><a href="/exchanges">Exchanges</a></li>
+				<li><a href="/industries">Industries</a></li>
+				<li><a href="/currencies">Currencies</a></li>
+				</ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>
 				<li><a href="/prices/index/0/1">Maintenance</a></li></ul>

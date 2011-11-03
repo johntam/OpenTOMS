@@ -25,6 +25,7 @@
 		<th>Reason Id</th>
 		<th>Broker Id</th>
 		<th>Trader Id</th>
+		<th>Currency</th>
 		<th>Quantity</th>
 		<th>Broker Contact</th>
 		<th>Trade Date</th>
@@ -46,6 +47,7 @@
 		<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		<td><?php echo $trade['Broker']['broker_name']; ?></td>
 		<td><?php echo $trade['Trader']['trader_name']; ?></td>
+		<td><?php echo $trade['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $trade['Trade']['quantity']; ?></td>
 		<td><?php echo $trade['Trade']['broker_contact']; ?></td>
 		<td><?php echo $trade['Trade']['trade_date']; ?></td>
