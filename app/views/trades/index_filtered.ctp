@@ -7,8 +7,8 @@
 <tr class="altrow">
 <?php echo $this->Form->create(null, array('url' => array('controller' => 'trades', 'action' => 'indexFiltered')));?>
 <td><?php echo $this->Form->input('daterange',array('type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?></td>
-<td><?php echo $this->Form->input('fundchosen',array('type'=>'select','options'=>$funds,'label'=>'Choose Fund'));?></td>
-<td><?php echo $this->Form->input('brokerchosen',array('type'=>'select','options'=>$brokers,'label'=>'Choose Broker'));?></td>
+<td><?php echo $this->Form->input('fundchosen',array('type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?></td>
+<td><?php echo $this->Form->input('brokerchosen',array('type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?></td>
 <td><?php echo $this->Form->end('Filter');?></td>
 </tr>
 </table>

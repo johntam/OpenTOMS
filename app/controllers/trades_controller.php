@@ -25,12 +25,19 @@ class TradesController extends AppController {
 	
 	function indexFiltered() {		
 		$this->setchoices();
+		
 		$conditions=array(
 			'Trade.crd >' => date('Y-m-d', strtotime($this->data['Trade']['daterange'])),
-			'Trade.fund_id =' => $this->data['Trade']['fundchosen'],
-			'Trade.broker_id =' => $this->data['Trade']['brokerchosen'],
 			'Trade.act =' => 1
 		);
+		
+		if (!empty($this->data['Trade']['fundchosen'])) {
+			$conditions['Trade.fund_id ='] = $this->data['Trade']['fundchosen'];
+		}
+		
+		if (!empty($this->data['Trade']['brokerchosen'])) {
+			$conditions['Trade.broker_id ='] = $this->data['Trade']['brokerchosen'];
+		}		
 	
 		$params=array(
 			'conditions' => $conditions, //array of conditions
