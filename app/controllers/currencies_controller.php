@@ -12,6 +12,7 @@ class CurrenciesController extends AppController {
 			if ($this->check_unique()) {
 				if ($this->Currency->save($this->data)) {
 					$this->Session->setFlash('Currency info has been saved.');
+					Cache::delete('currencies');	//clear cache
 					$this->redirect(array('action' => 'index'));
 				}
 			}
@@ -28,6 +29,7 @@ class CurrenciesController extends AppController {
 			if ($this->check_unique($id)) {
 				if ($this->Currency->save($this->data)) {
 					$this->Session->setFlash('Currency info has been updated.');
+					Cache::delete('currencies');	//clear cache
 					$this->redirect(array('action' => 'index'));
 				}
 			}

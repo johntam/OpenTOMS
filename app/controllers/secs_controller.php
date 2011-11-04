@@ -30,6 +30,7 @@ class SecsController extends AppController {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been saved.');
 				Cache::delete('secs');	//clear cache
+				Cache::delete('secid_ccy');	//clear cache
 				$this->redirect(array('action' => 'view', $this->Sec->id));
 			}
 		}
@@ -45,6 +46,7 @@ class SecsController extends AppController {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been updated.');
 				Cache::delete('secs');	//clear cache
+				Cache::delete('secid_ccy');	//clear cache
 				$this->redirect(array('action' => 'view',$id));
 			}
 		}

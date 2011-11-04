@@ -1,6 +1,5 @@
 <?php
 class TradesController extends AppController {
-	var $helpers = array ('Html','Form');
 	var $name = 'Trades';
 	var $funds = array();
 	
@@ -130,6 +129,32 @@ class TradesController extends AppController {
 		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'),'order'=>array('Broker.broker_name'))));
 		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'),'order'=>array('Trader.trader_name'))));
 		$this->set('currencies', $this->Trade->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+	}
+	
+	
+	function ajax_ccydropdown() {
+		// Fill select form field after Ajax request.
+		//The following caches a [Security Id, Currency] table for use when the user selects from the security dropdown list
+		if (($secid_ccyCACHE = Cache::read('secid_ccy')) === false) {
+			$sec_ccy = $this->Trade->Sec->find('all', array('fields' => 'Sec.id, Currency.currency_iso_code'));
+			$secid_ccyCACHE = array(); 
+			foreach($sec_ccy as $c) { 
+				$secid_ccyCACHE[$c['Sec']['id']] = $c['Currency']['currency_iso_code']; 
+			}
+			Cache::write('secid_ccy', $secid_ccyCACHE);
+		}
+		
+		//cache the currency list
+		if (($currenciesCACHE = Cache::read('currencies')) === false) {
+			$currenciesCACHE = $this->Trade->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code')));
+			Cache::write('currencies', $currenciesCACHE);
+		}
+		
+		//Retrieve the id of the security selected
+		$secid = $this->params['url']['data']['Trade']['sec_id'];
+		$this->set('selected', $secid_ccyCACHE[$secid]);
+		$this->set('options', $currenciesCACHE);
+		$this->render('/elements/ajax_dropdown', 'ajax');
 	}
 }
 

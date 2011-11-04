@@ -301,4 +301,4 @@
  *	));
  *
  */
-	Cache::config('default', array('engine' => 'File', 'duration'=>'+1 hours'));
+	Cache::config('default', array('engine' => 'File'));

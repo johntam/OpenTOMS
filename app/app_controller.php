@@ -1,7 +1,7 @@
 <?php
 class AppController extends Controller {
     var $components = array('Acl', 'Auth', 'Session');
-    var $helpers = array('Html', 'Form', 'Session','Cycle');
+    var $helpers = array('Html', 'Form', 'Session','Cycle','Js' => 'Jquery');
 
     function beforeFilter() {	
         //Configure AuthComponent

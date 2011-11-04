@@ -6,6 +6,8 @@ class Trade extends AppModel {
 	var $validate = array(
 		'quantity' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank'),
 		'price' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank'),
+		'sec_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a security'),
+		'currency_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a currency')
 	);
 }
 

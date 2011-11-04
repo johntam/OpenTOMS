@@ -16,9 +16,9 @@
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('fund_id',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('sec_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('sec_id',array('label'=>false, 'empty'=>'Select Security')); ?></td>
 			<td><?php echo $this->Form->input('notes',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('currency_id',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('currency_id',array('label'=>false, 'empty'=>' ')); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -77,6 +77,16 @@
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
 		</tr>
+	
+	<?php 
+		$this->Js->get('#TradeSecId')->event(
+			'change',
+			$this->Js->request(
+				array('controller'=>'trades','action'=>'ajax_ccydropdown'),
+				array('update' => '#TradeCurrencyId', 'dataExpression' => true, 'data' => '$("#TradeSecId").serialize()')
+			)
+		);
+	?>
 	
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
 </table>

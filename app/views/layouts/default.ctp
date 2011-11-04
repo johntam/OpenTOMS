@@ -23,6 +23,9 @@
 	if (window.attachEvent) window.attachEvent("onload", sfHover);
 </script>
 
+<!-- The following activates jquery -->
+<?php echo $this->Html->script('jquery-1.7.min'); // Include jQuery library ?>
+
 <?php echo $scripts_for_layout ?>
 <?php echo $this->Html->css('asap.generic'); ?>
 </head>
@@ -76,6 +79,9 @@ show up on all of your views, include it here -->
 
 <!-- Add a footer to each displayed page -->
 <div id="footer"></div>
+
+<!-- Need this for flushing the jquery buffer -->
+<?php echo $this->Js->writeBuffer(); // Write cached scripts ?>
 
 </body>
 </html>
