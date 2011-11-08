@@ -65,6 +65,7 @@ class TradesController extends AppController {
 				$id = $this->Trade->id;
 				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
 					$this->Session->setFlash('Your trade has been saved.');
+					$this->disableCache();	//clear cache for AJAX calls
 					$this->redirect(array('action' => 'add'));
 				}
 			}
@@ -155,6 +156,12 @@ class TradesController extends AppController {
 		$this->set('selected', $secid_ccyCACHE[$secid]);
 		$this->set('options', $currenciesCACHE);
 		$this->render('/elements/ajax_dropdown', 'ajax');
+	}
+	
+	function ajax_commission() {
+		$commission = $this->params['url']['data']['Trade']['price'];
+		$this->set('commission', $commission);
+		$this->render('/elements/ajax_commission', 'ajax');
 	}
 }
 

@@ -60,7 +60,7 @@
 			<td><?php echo $this->Form->input('broker_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('broker_contact',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
-			<td><?php echo $this->Form->input('commission',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
 		</tr>
 	
 
@@ -84,6 +84,14 @@
 			$this->Js->request(
 				array('controller'=>'trades','action'=>'ajax_ccydropdown'),
 				array('update' => '#TradeCurrencyId', 'dataExpression' => true, 'data' => '$("#TradeSecId").serialize()')
+			)
+		);
+		
+		$this->Js->get('#TradeQuantity')->event(
+			'change',
+			$this->Js->request(
+				array('controller'=>'trades','action'=>'ajax_commission'),
+				array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeQuantity").serialize()')
 			)
 		);
 	?>
