@@ -75,7 +75,7 @@
 			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
 			<td><?php echo $this->Form->input('tax',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('other_costs',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('consideration',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('consideration',array('label'=>false, 'div'=>array('id'=>'TradeConsiderationId'))); ?></td>
 		</tr>
 	
 	
@@ -108,6 +108,14 @@
 			$this->Js->request(
 				array('controller'=>'trades','action'=>'ajax_commission'),
 				array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
+			)
+		);
+		
+		$this->Js->get('#TradeCommId')->event(
+			'change',
+			$this->Js->request(
+				array('controller'=>'trades','action'=>'ajax_consideration'),
+				array('update' => '#TradeConsiderationId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
 			)
 		);
 	?>
