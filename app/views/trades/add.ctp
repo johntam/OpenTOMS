@@ -53,30 +53,46 @@
 		<td>Broker</td>
 		<td>Broker Contact</td>
 		<td>Order Time</td>
-		<td>Commission</td>
+		<td>Trade Reason</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('broker_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('broker_contact',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
-			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
+			<td><?php echo $this->Form->input('reason_id',array('label'=>false)); ?></td>
 		</tr>
 	
 
 	<tr class="highlight">
-		<td>Trade Reason</td>
+		<td>Commission</td>
+		<td>Tax</td>
+		<td>Other Costs</td>
+		<td>Total Consideration</td>
+	</tr>
+
+		<tr class="altrow">
+			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
+			<td><?php echo $this->Form->input('tax',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('other_costs',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('consideration',array('label'=>false)); ?></td>
+		</tr>
+	
+	
+	<tr class="highlight">
 		<td>Executed</td>
 		<td>Cancelled</td>
+		<td></td>
 		<td></td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('reason_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
+			<td></td>
 		</tr>
+		
 	
 	<?php 
 		$this->Js->get('#TradeSecId')->event(
@@ -91,7 +107,7 @@
 			'change',
 			$this->Js->request(
 				array('controller'=>'trades','action'=>'ajax_commission'),
-				array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeQuantity").serialize()')
+				array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
 			)
 		);
 	?>

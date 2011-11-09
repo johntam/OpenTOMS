@@ -47,7 +47,7 @@
 		<td><?php echo $trade['Trader']['trader_name']; ?></td>
 		<td><?php echo $trade['Trade']['quantity']; ?></td>
 		<td><?php echo $trade['Trade']['broker_contact']; ?></td>
-		<td><?php echo $trade['Trade']['trade_date']; ?></td>
+		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>
 		<td><?php echo $trade['Trade']['price']; ?></td>
 		<td><?php echo $trade['Trade']['cancelled']; ?></td>
 		<td><?php echo $trade['Trade']['executed']; ?></td>

@@ -159,8 +159,9 @@ class TradesController extends AppController {
 	}
 	
 	function ajax_commission() {
-		$commission = $this->params['url']['data']['Trade']['price'];
-		$this->set('commission', $commission);
+		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$price = $this->params['url']['data']['Trade']['price'];
+		$this->set('commission', $qty * $price);
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
 }

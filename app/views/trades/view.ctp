@@ -54,28 +54,41 @@
 		<td>Broker</td>
 		<td>Broker Contact</td>
 		<td>Order Time</td>
-		<td>Commission</td>
+		<td>Trade Reason</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $trade['Broker']['broker_name']; ?></td>
 			<td><?php echo $trade['Trade']['broker_contact']; ?></td>
 			<td><?php echo $trade['Trade']['order_time']; ?></td>
-			<td><?php echo $trade['Trade']['commission']; ?></td>
+			<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		</tr>
-	
 
 	<tr class="highlight">
-		<td>Trade Reason</td>
+		<td>Commission</td>
+		<td>Tax</td>
+		<td>Other Costs</td>
+		<td>Total Consideration</td>
+	</tr>
+
+		<tr class="altrow">
+			<td><?php echo $trade['Trade']['commission']; ?></td>
+			<td><?php echo $trade['Trade']['tax']; ?></td>
+			<td><?php echo $trade['Trade']['other_costs']; ?></td>
+			<td><?php echo $trade['Trade']['consideration']; ?></td>
+		</tr>
+
+	<tr class="highlight">
 		<td>Executed</td>
 		<td>Cancelled</td>
+		<td></td>
 		<td></td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 			<td><?php echo $trade['Trade']['executed']; ?></td>
 			<td><?php echo $trade['Trade']['cancelled']; ?></td>
+			<td></td>
 			<td></td>
 		</tr>
 	

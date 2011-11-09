@@ -50,7 +50,7 @@
 		<td><?php echo $trade['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $trade['Trade']['quantity']; ?></td>
 		<td><?php echo $trade['Trade']['broker_contact']; ?></td>
-		<td><?php echo $trade['Trade']['trade_date']; ?></td>
+		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>
 		<td><?php echo $trade['Trade']['price']; ?></td>
 		<td><?php echo $trade['Trade']['cancelled']; ?></td>
 		<td><?php echo $trade['Trade']['executed']; ?></td>
