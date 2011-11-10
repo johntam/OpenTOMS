@@ -95,30 +95,82 @@
 		
 	
 	<?php 
-		$this->Js->get('#TradeSecId')->event(
-			'change',
-			$this->Js->request(
-				array('controller'=>'trades','action'=>'ajax_ccydropdown'),
-				array('update' => '#TradeCurrencyId', 'dataExpression' => true, 'data' => '$("#TradeSecId").serialize()')
-			)
-		);
+		//$this->Js->get('#TradeSecId')->event(
+		//	'change',
+		//	$this->Js->request(
+		//		array('controller'=>'trades','action'=>'ajax_ccydropdown'),
+		//		array('update' => '#TradeCurrencyId', 'dataExpression' => true, 'data' => '$("#TradeSecId").serialize()')
+		//	)
+		//);
 		
-		$this->Js->get('#TradeQuantity')->event(
-			'change',
-			$this->Js->request(
-				array('controller'=>'trades','action'=>'ajax_commission'),
-				array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
-			)
-		);
+		//$this->Js->get('#TradeQuantity')->event(
+		//	'change',
+		//	$this->Js->request(
+		//		array('controller'=>'trades','action'=>'ajax_commission'),
+		//		array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
+		//	)
+		//);
 		
-		$this->Js->get('#TradeCommId')->event(
-			'change',
-			$this->Js->request(
-				array('controller'=>'trades','action'=>'ajax_consideration'),
-				array('update' => '#TradeConsiderationId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
-			)
-		);
+		//$this->Js->get('#TradeExecutionPrice')->event(
+		//	'change',
+		//	$this->Js->request(
+		//		array('controller'=>'trades','action'=>'ajax_commission'),
+		//		array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
+		//	)
+		//);
 	?>
 	
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
 </table>
+
+<script type="text/javascript">
+	setInterval(function() { 
+	$(document).ready(function() {
+			$("#TradeConsiderationId").html($("#TradeCommId").html());
+		}); 
+	}, 500);
+	
+	$(document).ready(function() {
+		$("#TradeSecId").change(function() {
+			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
+			$("#TradeQuantity").val("");
+			$("#TradeExecutionPrice").val("");
+			clearcosts();
+		});
+		
+		$("#TradeQuantity").change(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (checked) {
+				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+			}
+		});
+		
+		$("#TradeExecutionPrice").change(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (checked) {
+				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+			}
+		});
+		
+		$("#TradeExecuted").click(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (!checked) {
+				$("#TradeExecutionPrice").val("");
+				$("#TradeExecutionPrice").attr("readonly", "readonly");
+				clearcosts();
+			}
+			else {
+				$("#TradeExecutionPrice").removeAttr("readonly");
+			}
+		});
+		
+	});
+	
+	function clearcosts() {
+		$("#TradeCommission").val("");
+		$("#TradeTax").val("");
+		$("#TradeOtherCosts").val("");
+		$("#TradeConsideration").val("");
+	}
+	
+</script>

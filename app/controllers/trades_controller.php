@@ -65,7 +65,7 @@ class TradesController extends AppController {
 				$id = $this->Trade->id;
 				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
 					$this->Session->setFlash('Your trade has been saved.');
-					$this->disableCache();	//clear cache for AJAX calls
+					//$this->disableCache();	//clear cache for AJAX calls
 					$this->redirect(array('action' => 'add'));
 				}
 			}
@@ -160,16 +160,17 @@ class TradesController extends AppController {
 	
 	function ajax_commission() {
 		$qty = $this->params['url']['data']['Trade']['quantity'];
-		$price = $this->params['url']['data']['Trade']['price'];
-		$this->set('commission', $qty * $price);
+		$price = $this->params['url']['data']['Trade']['execution_price'];
+		$secid = $this->params['url']['data']['Trade']['sec_id'];
+		$brokerid = $this->params['url']['data']['Trade']['broker_id'];
+		
+		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
+		
+		$this->set('commission', $qty * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate']);
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
-	
-	function ajax_consideration() {
-		$consideration = $this->params['url']['data']['Trade']['commission'];
-		$this->set('consideration', $consideration);
-		$this->render('/elements/ajax_consideration', 'ajax');
-	}
+
 }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 class AppController extends Controller {
     var $components = array('Acl', 'Auth', 'Session');
-    var $helpers = array('Html', 'Form', 'Session','Cycle','Js' => 'Jquery');
+    var $helpers = array('Html', 'Form', 'Session','Cycle');
 
     function beforeFilter() {	
         //Configure AuthComponent
@@ -12,7 +12,6 @@ class AppController extends Controller {
         //$this->Auth->loginRedirect = array('controller' => 'trades', 'action' => 'add');
 		
 		$this->Auth->allowedActions = array('display');
-
     }
 }
 ?>

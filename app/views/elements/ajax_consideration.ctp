@@ -1,1 +1,0 @@
-<?php echo '<input name="data[Trade][consideration]" type="text" maxlength="25" id="TradeConsideration" value="'.$consideration.'" />' ?>
