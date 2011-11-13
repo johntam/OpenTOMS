@@ -164,6 +164,13 @@
 			}
 		});
 		
+		$("#TradeBrokerId").change(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (checked) {
+				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+			}
+		}); 
+		
 	});
 	
 	function clearcosts() {
