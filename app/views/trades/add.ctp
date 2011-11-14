@@ -73,8 +73,8 @@
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
-			<td><?php echo $this->Form->input('tax',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('other_costs',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('tax',array('label'=>false, 'div'=>array('id'=>'TradeTaxId'))); ?></td>
+			<td><?php echo $this->Form->input('other_costs',array('label'=>false, 'div'=>array('id'=>'TradeOtherCostsId'))); ?></td>
 			<td><?php echo $this->Form->input('consideration',array('label'=>false, 'div'=>array('id'=>'TradeConsiderationId'))); ?></td>
 		</tr>
 	
@@ -126,11 +126,20 @@
 <script type="text/javascript">
 	setInterval(function() { 
 	$(document).ready(function() {
-			$("#TradeConsiderationId").html($("#TradeCommId").html());
+			var comm = parseFloat($("#TradeCommission").val());
+			var tax = parseFloat($("#TradeTax").val());
+			var othercosts = parseFloat($("#TradeOtherCosts").val());
+			var totconsid = comm + tax + othercosts;
+			if (!isNaN(totconsid)) {
+				$("#TradeConsideration").val(totconsid);
+			}
 		}); 
 	}, 500);
 	
 	$(document).ready(function() {
+		$("#TradeExecutionPrice").attr("readonly", "readonly");
+		$("#TradeExecutionPrice").css("background-color","silver");
+	
 		$("#TradeSecId").change(function() {
 			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
 			$("#TradeQuantity").val("");
@@ -142,6 +151,8 @@
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
 			}
 		});
 		
@@ -149,6 +160,8 @@
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
 			}
 		});
 		
@@ -157,10 +170,12 @@
 			if (!checked) {
 				$("#TradeExecutionPrice").val("");
 				$("#TradeExecutionPrice").attr("readonly", "readonly");
+				$("#TradeExecutionPrice").css("background-color","silver");
 				clearcosts();
 			}
 			else {
 				$("#TradeExecutionPrice").removeAttr("readonly");
+				$("#TradeExecutionPrice").css("background-color","white");
 			}
 		});
 		
@@ -168,8 +183,24 @@
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
 			}
-		}); 
+		});
+		
+		$("#TradeCurrencyId").change(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (checked) {
+				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+			}
+		});
+		
+		$("#TradeTradeTypeId").change(function() {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			if (checked) {
+				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+			}
+		});
 		
 	});
 	

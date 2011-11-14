@@ -158,19 +158,61 @@ class TradesController extends AppController {
 		$this->render('/elements/ajax_dropdown', 'ajax');
 	}
 	
+	//work out the broker's commission
 	function ajax_commission() {
 		$qty = $this->params['url']['data']['Trade']['quantity'];
 		$price = $this->params['url']['data']['Trade']['execution_price'];
 		$secid = $this->params['url']['data']['Trade']['sec_id'];
 		$brokerid = $this->params['url']['data']['Trade']['broker_id'];
-		
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
 		
-		$this->set('commission', $qty * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate']);
+		$this->set('commission', round($qty * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
 
+	//tax costs, specifically stamp duty on purchases in the UK
+	function ajax_tax() {
+		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$price = $this->params['url']['data']['Trade']['execution_price'];
+		$secid = $this->params['url']['data']['Trade']['sec_id'];
+		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
+		$ttid = $this->params['url']['data']['Trade']['trade_type_id'];
+		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+		$ccy = $this->Trade->Currency->find('first', array('conditions'=> array('Currency.id =' => $ccyid)));
+		$tt = $this->Trade->TradeType->find('first', array('conditions'=> array('TradeType.id =' => $ttid)));
+		
+		if ((strtolower(substr($tt['TradeType']['trade_type'],0,3)) == 'buy') &&
+			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp')) {
+			$this->set('tax', round($qty * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
+		}
+		else {
+			$this->set('tax', 0);
+		}
+		
+		$this->render('/elements/ajax_tax', 'ajax');
+	}
+	
+	
+	//other costs, most notably the PTM Levy in the UK
+	function ajax_othercosts() {
+		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$price = $this->params['url']['data']['Trade']['execution_price'];
+		$secid = $this->params['url']['data']['Trade']['sec_id'];
+		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
+		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+		$ccy = $this->Trade->Currency->find('first', array('conditions'=> array('Currency.id =' => $ccyid)));
+		
+		if ((abs($qty * $price * $valpoint['Sec']['valpoint']) > 10000) &&
+			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp')) {
+			$this->set('othercosts', 1);
+		}
+		else {
+			$this->set('othercosts', 0);
+		}
+		
+		$this->render('/elements/ajax_othercosts', 'ajax');
+	}
 }
 
 ?>
