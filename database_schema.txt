@@ -175,3 +175,20 @@ CREATE TABLE currencies (
 	currency_iso_code VARCHAR(3) NOT NULL,
 	currency_name VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE portfolios (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	run_date DATE NOT NULL,
+	fund_id INT NOT NULL,
+	trade_id INT NOT NULL
+);
+
+CREATE TABLE reports (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	report_type VARCHAR(10) NOT NULL,
+	run_date DATE NOT NULL,
+	fund_id INT NOT NULL,
+	stock_portfolioid INT NOT NULL
+);

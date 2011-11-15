@@ -59,6 +59,9 @@ show up on all of your views, include it here -->
 			<li><a href="#">Pricing</a><ul>
 				<li><a href="/prices/index/0/1">Maintenance</a></li></ul>
 			</li>
+			<li><a href="#">Reports</a><ul>
+				<li><a href="/reports">Run</a></li></ul>
+			</li>
 			<li><a href="#">Permissions</a><ul>
 				<li><a href="/users">Users</a></li>
 				<li><a href="/groups">Groups</a></li></ul>
