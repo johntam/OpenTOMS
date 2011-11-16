@@ -60,6 +60,14 @@ class TradesController extends AppController {
 		$this->setchoices();
 	
 		if (!empty($this->data)) {
+			//If the trade type is a sell, then make sure that the quantity is a negative number
+			$ttid = $this->data['Trade']['trade_type_id'];
+			$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
+		
+			if ($is_sell) {
+				$this->data['Trade']['quantity'] = -abs($this->data['Trade']['quantity']);
+			}
+			
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
 				$id = $this->Trade->id;
@@ -69,6 +77,7 @@ class TradesController extends AppController {
 					$this->redirect(array('action' => 'add'));
 				}
 			}
+			
 		}
 	}
 	

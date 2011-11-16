@@ -8,15 +8,27 @@ class ReportsController extends AppController {
 		if (!empty($this->data)) {
 			//Run position report
 			
-			if ($this->data['Report']['report_type'] == 'Position') {
+			$report_type = $this->data['Report']['report_type'];
+			$fund_id = $this->data['Report']['fund_id'];
+			
+			if ($report_type == 'Position') {
 				$this->loadModel('Portfolio');
-				$this->Portfolio->fund_id = $this->data['Report']['fund_id'];
-				$this->Portfolio->get_trades('31 Dec 2010','15 Nov 2011');
+				$this->Portfolio->fund_id = $fund_id;
 				
+				
+				$start_date = date('Y-m-d',mktime(0,0,0,10,31,2011));
+				$end_date = date('Y-m-d',mktime(0,0,0,11,16,2011));
+
+				
+				$trades = $this->Portfolio->get_trades($fund_id,$start_date,$end_date);
+				
+				echo print_r($trades);
+				exit;
+				
+				
+				
+				$this->Session->write('trades', $trades); 
 				$this->redirect(array('controller'=>'portfolios','action' => 'index'));
-			
-			
-			
 			}
 			
 			
