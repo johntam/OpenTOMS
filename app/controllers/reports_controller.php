@@ -27,8 +27,8 @@ class ReportsController extends AppController {
 				
 				
 				
-				$this->Session->write('trades', $trades); 
-				$this->redirect(array('controller'=>'portfolios','action' => 'index'));
+				//$this->Session->write('trades', $trades); 
+				//$this->redirect(array('controller'=>'portfolios','action' => 'index'));
 			}
 			
 			

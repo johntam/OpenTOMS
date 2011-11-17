@@ -3,6 +3,7 @@
 class Portfolio extends AppModel {
     var $name = 'Portfolio';
 	var $belongsTo = 'Trade';
+	var $actsAs = array('Containable');
 	
 	//create an array of trades relevant to this portfolio
 	function get_trades($fund_id,$start_date, $end_date) {
@@ -15,11 +16,10 @@ class Portfolio extends AppModel {
 									'Trade.act =' => 1),
 			'order' => array('Trade.trade_date DESC'),
 			'contain' => false,
-			'fields' => array('Trade.id', 'Trade.sec_id','Trade.trade_date','SUM(Trade.quantity)','Trade.price','Trade.consideration','Trade.cancelled','Trade.executed'),
-			'group' => array('Trade.id', 'Trade.sec_id','Trade.trade_date','Trade.price','Trade.consideration','Trade.cancelled','Trade.executed')
+			'fields' => array('Trade.sec_id','SUM(Trade.quantity) AS quantity','SUM(Trade.consideration) AS consideration'),
+			'group' => array('Trade.sec_id')
 		);
 		
-		$this->Trade->Behaviors->attach('Containable');
 		return $this->Trade->find('all', $params);
 	}
 }

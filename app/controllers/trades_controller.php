@@ -59,15 +59,7 @@ class TradesController extends AppController {
 	function add() {
 		$this->setchoices();
 	
-		if (!empty($this->data)) {
-			//If the trade type is a sell, then make sure that the quantity is a negative number
-			$ttid = $this->data['Trade']['trade_type_id'];
-			$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
-		
-			if ($is_sell) {
-				$this->data['Trade']['quantity'] = -abs($this->data['Trade']['quantity']);
-			}
-			
+		if (!empty($this->data)) {			
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
 				$id = $this->Trade->id;
@@ -221,6 +213,57 @@ class TradesController extends AppController {
 		}
 		
 		$this->render('/elements/ajax_othercosts', 'ajax');
+	}
+	
+	//If the trade type is a sell, then make sure that the quantity is a negative number
+	function ajax_quantity() {
+		$ttid = $this->params['form']['tradetype'];
+		$qty = $this->params['form']['quantity'];
+		$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
+	
+		if ($is_sell) {
+			$quantity = -abs($qty);
+		}
+		else {
+			$quantity = abs($qty);
+		}
+	
+		$this->set('quantity', $quantity);
+		$this->render('/elements/ajax_quantity', 'ajax');
+	}
+	
+	
+	//Calculate the total consideration figure
+	function ajax_consid() {
+		$commission = $this->params['data']['Trade']['commission'];
+		$tax = $this->params['data']['Trade']['tax'];
+		$othercosts = $this->params['data']['Trade']['other_costs'];
+		$qty = $this->params['data']['Trade']['quantity'];
+		$price = $this->params['data']['Trade']['execution_price'];
+		$ttid = $this->params['data']['Trade']['trade_type_id'];
+		$secid = $this->params['data']['Trade']['sec_id'];
+		
+		if (!empty($secid) && !empty($ttid)) {
+			$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+		
+			//Check to see if this trade-type is a credit/debit to the trading cash ledger
+			$credit = $this->Trade->TradeType->find('first', array('conditions'=>array('TradeType.id =' => $ttid)));
+
+			//if ($credit['TradeType']['credit_debit'] == 'credit') {
+			//	$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+			//}
+			//else {
+			//	$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+			//}
+		
+			//if (!is_numeric($consideration)) {$consideration=''};
+			
+			$this->set('consid', $credit);
+			$this->render('/elements/ajax_consid', 'ajax');
+		}
+		else {
+			$this->autoRender=false;
+		}
 	}
 }
 

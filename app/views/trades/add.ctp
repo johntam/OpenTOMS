@@ -91,50 +91,18 @@
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
 			<td></td>
-		</tr>
-		
-	
-	<?php 
-		//$this->Js->get('#TradeSecId')->event(
-		//	'change',
-		//	$this->Js->request(
-		//		array('controller'=>'trades','action'=>'ajax_ccydropdown'),
-		//		array('update' => '#TradeCurrencyId', 'dataExpression' => true, 'data' => '$("#TradeSecId").serialize()')
-		//	)
-		//);
-		
-		//$this->Js->get('#TradeQuantity')->event(
-		//	'change',
-		//	$this->Js->request(
-		//		array('controller'=>'trades','action'=>'ajax_commission'),
-		//		array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
-		//	)
-		//);
-		
-		//$this->Js->get('#TradeExecutionPrice')->event(
-		//	'change',
-		//	$this->Js->request(
-		//		array('controller'=>'trades','action'=>'ajax_commission'),
-		//		array('update' => '#TradeCommId', 'dataExpression' => true, 'data' => '$("#TradeAddForm").serialize()')
-		//	)
-		//);
-	?>
-	
+		</tr>	
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
 </table>
+
+
 
 <script type="text/javascript">
 	setInterval(function() { 
 	$(document).ready(function() {
-			var comm = parseFloat($("#TradeCommission").val());
-			var tax = parseFloat($("#TradeTax").val());
-			var othercosts = parseFloat($("#TradeOtherCosts").val());
-			var totconsid = comm + tax + othercosts;
-			if (!isNaN(totconsid)) {
-				$("#TradeConsideration").val(totconsid);
-			}
+			clearcosts();
 		}); 
-	}, 500);
+	}, 5000);
 	
 	$(document).ready(function() {
 		$("#TradeExecutionPrice").attr("readonly", "readonly");
@@ -153,6 +121,14 @@
 				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
 				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
 				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
+						{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
+						function(data) {
+							$("#TradeQuantity").val(data);
+							alert("ouch!");
+						},
+						"text"
+				);
 			}
 		});
 		
@@ -199,6 +175,14 @@
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
+						{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
+						function(data) {
+							$("#TradeQuantity").val(data);
+							alert("ouch!");
+						},
+						"text"
+				);
 			}
 		});
 		
@@ -209,6 +193,16 @@
 		$("#TradeTax").val("");
 		$("#TradeOtherCosts").val("");
 		$("#TradeConsideration").val("");
+	}
+	
+	function calc_consideration() {
+		$.post("/trades/ajax_consid?" + (new Date()).getTime(),
+			$("#TradeAddForm").serialize(),
+			function(data) {
+				alert(data);
+			},
+			"text"
+		);
 	}
 	
 </script>
