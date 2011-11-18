@@ -29,8 +29,7 @@ class SecsController extends AppController {
 		if (!empty($this->data)) {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been saved.');
-				Cache::delete('secs');	//clear cache
-				Cache::delete('secid_ccy');	//clear cache
+				$this->clearcache();
 				$this->redirect(array('action' => 'view', $this->Sec->id));
 			}
 		}
@@ -45,8 +44,7 @@ class SecsController extends AppController {
 		} else {
 			if ($this->Sec->save($this->data)) {
 				$this->Session->setFlash('Security has been updated.');
-				Cache::delete('secs');	//clear cache
-				Cache::delete('secid_ccy');	//clear cache
+				$this->clearcache();
 				$this->redirect(array('action' => 'view',$id));
 			}
 		}
@@ -63,6 +61,12 @@ class SecsController extends AppController {
 		$this->set('exchanges', $this->Sec->Exchange->find('list', array('fields'=>array('Exchange.exchange_name'),'order'=>array('Exchange.exchange_name'))));
 		$this->set('industries', $this->Sec->Industry->find('list', array('fields'=>array('Industry.industry_name'),'order'=>array('Industry.industry_name'))));
 		$this->set('currencies', $this->Sec->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+	}
+	
+	function clearcache() {
+		Cache::delete('secs');	//clear cache
+		Cache::delete('secid_ccy');	//clear cache
+		Cache::delete('valpoint');	//clear cache
 	}
 }
 ?>

@@ -168,7 +168,7 @@ class TradesController extends AppController {
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
 		
-		$this->set('commission', round($qty * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
+		$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
 
@@ -185,7 +185,7 @@ class TradesController extends AppController {
 		
 		if ((strtolower(substr($tt['TradeType']['trade_type'],0,3)) == 'buy') &&
 			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp')) {
-			$this->set('tax', round($qty * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
+			$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
 		}
 		else {
 			$this->set('tax', 0);
@@ -244,21 +244,38 @@ class TradesController extends AppController {
 		$secid = $this->params['data']['Trade']['sec_id'];
 		
 		if (!empty($secid) && !empty($ttid)) {
-			$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+			//cache valpoints for speed
+			if (($valpointCACHE = Cache::read('valpoint')) === false) {
+				$readdb = $this->Trade->Sec->find('all', array('fields' => array('Sec.id','Sec.valpoint')));
+				$valpointCACHE = array(); 
+				foreach($readdb as $c) { 
+					$valpointCACHE[$c['Sec']['id']] = $c['Sec']['valpoint']; 
+				}
+				Cache::write('valpoint', $valpointCACHE);
+			}
+			$valpoint = $valpointCACHE[$secid];
 		
 			//Check to see if this trade-type is a credit/debit to the trading cash ledger
-			$credit = $this->Trade->TradeType->find('first', array('conditions'=>array('TradeType.id =' => $ttid)));
+			if (($creditCACHE = Cache::read('creditdebit')) === false) {
+				$readdb = $this->Trade->TradeType->find('all', array('fields' => array('TradeType.id', 'TradeType.credit_debit')));
+				$creditCACHE = array(); 
+				foreach($readdb as $c) { 
+					$creditCACHE[$c['TradeType']['id']] = $c['TradeType']['credit_debit']; 
+				}
+				Cache::write('creditdebit', $creditCACHE);
+			}
+			$credit = $creditCACHE[$ttid];
 
-			//if ($credit['TradeType']['credit_debit'] == 'credit') {
-			//	$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
-			//}
-			//else {
-			//	$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
-			//}
+			//handle cashflow differently for buys and sells
+			if ($credit == 'credit') {
+				$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+			}
+			else {
+				$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+			}
 		
-			//if (!is_numeric($consideration)) {$consideration=''};
-			
-			$this->set('consid', $credit);
+			$consid = round($consid, 4);	
+			$this->set('consid', $consid);
 			$this->render('/elements/ajax_consid', 'ajax');
 		}
 		else {

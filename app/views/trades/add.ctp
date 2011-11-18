@@ -65,10 +65,10 @@
 	
 
 	<tr class="highlight">
-		<td>Commission</td>
-		<td>Tax</td>
-		<td>Other Costs</td>
-		<td>Total Consideration</td>
+		<td><div>Commission<img src="/img/ajax-busy.gif" id="commission_busy"/></div></td>
+		<td><div>Tax<img src="/img/ajax-busy.gif" id="tax_busy"/></div></td>
+		<td><div>Other Costs<img src="/img/ajax-busy.gif" id="othercosts_busy"/></div></td>
+		<td><div>Total Consideration<img src="/img/ajax-busy.gif" id="consideration_busy"/></div></td>
 	</tr>
 
 		<tr class="altrow">
@@ -100,13 +100,16 @@
 <script type="text/javascript">
 	setInterval(function() { 
 	$(document).ready(function() {
-			clearcosts();
+			calc_consideration();
 		}); 
-	}, 5000);
+	}, 2500);
 	
 	$(document).ready(function() {
-		$("#TradeExecutionPrice").attr("readonly", "readonly");
-		$("#TradeExecutionPrice").css("background-color","silver");
+		handle_execute_checkbox();
+		$("#commission_busy").hide();
+		$("#tax_busy").hide();
+		$("#othercosts_busy").hide();
+		$("#consideration_busy").hide();
 	
 		$("#TradeSecId").change(function() {
 			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
@@ -118,75 +121,65 @@
 		$("#TradeQuantity").change(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
-				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
-						{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
-						function(data) {
-							$("#TradeQuantity").val(data);
-							alert("ouch!");
-						},
-						"text"
-				);
+				calc_commission();
+				calc_tax();
+				calc_othercosts();
+				calc_quantity();
 			}
 		});
 		
 		$("#TradeExecutionPrice").change(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
-				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				calc_commission();
+				calc_tax();
+				calc_othercosts();
 			}
 		});
 		
 		$("#TradeExecuted").click(function() {
-			var checked = $("#TradeExecuted:checked").val() != undefined;
-			if (!checked) {
-				$("#TradeExecutionPrice").val("");
-				$("#TradeExecutionPrice").attr("readonly", "readonly");
-				$("#TradeExecutionPrice").css("background-color","silver");
-				clearcosts();
-			}
-			else {
-				$("#TradeExecutionPrice").removeAttr("readonly");
-				$("#TradeExecutionPrice").css("background-color","white");
-			}
+			handle_execute_checkbox();
 		});
 		
 		$("#TradeBrokerId").change(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
-				$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				calc_commission();
+				calc_tax();
 			}
 		});
 		
 		$("#TradeCurrencyId").change(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
-				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
+				calc_tax();
+				calc_othercosts();
 			}
 		});
 		
 		$("#TradeTradeTypeId").change(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
-				$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize());
-				$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
-						{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
-						function(data) {
-							$("#TradeQuantity").val(data);
-							alert("ouch!");
-						},
-						"text"
-				);
+				calc_tax();
+				calc_quantity();
 			}
 		});
-		
 	});
+	
+	function handle_execute_checkbox() {
+		var checked = $("#TradeExecuted:checked").val() != undefined;
+		if (!checked) {
+			$("#TradeExecutionPrice").val("");
+			$("#TradeExecutionPrice").attr("readonly", "readonly");
+			$("#TradeExecutionPrice").css("background-color","silver");
+			clearcosts();
+		}
+		else {
+			$("#TradeExecutionPrice").removeAttr("readonly");
+			$("#TradeExecutionPrice").css("background-color","white");
+		}
+	}
+	
 	
 	function clearcosts() {
 		$("#TradeCommission").val("");
@@ -195,14 +188,41 @@
 		$("#TradeConsideration").val("");
 	}
 	
+	function calc_quantity() {
+		$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
+				{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
+				function(data) {
+					$("#TradeQuantity").val(data);
+				},
+				"text"
+		);
+	}
+	
 	function calc_consideration() {
 		$.post("/trades/ajax_consid?" + (new Date()).getTime(),
 			$("#TradeAddForm").serialize(),
 			function(data) {
-				alert(data);
+				if (data.length > 0) {
+					$("#TradeConsideration").val(data);
+					$("#consideration_busy").hide();
+				}
 			},
 			"text"
 		);
 	}
 	
+	function calc_commission() {
+		$("#commission_busy").show();
+		$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#commission_busy").hide(); $("#consideration_busy").show();});
+	}
+	
+	function calc_tax() {
+		$("#tax_busy").show();
+		$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#tax_busy").hide(); $("#consideration_busy").show();});
+	}
+	
+	function calc_othercosts() {
+		$("#othercosts_busy").show();
+		$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#othercosts_busy").hide(); $("#consideration_busy").show();});
+	}
 </script>

@@ -11,6 +11,7 @@ class TradeTypesController extends AppController {
 		if (!empty($this->data)) {
 			if ($this->TradeType->save($this->data)) {
 				$this->Session->setFlash('Trade type has been saved.');
+				Cache::delete('creditdebit');	//clear cache used in trades page
 				$this->redirect(array('action' => 'index'));
 			}
 		}

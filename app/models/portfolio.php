@@ -16,8 +16,8 @@ class Portfolio extends AppModel {
 									'Trade.act =' => 1),
 			'order' => array('Trade.trade_date DESC'),
 			'contain' => false,
-			'fields' => array('Trade.sec_id','SUM(Trade.quantity) AS quantity','SUM(Trade.consideration) AS consideration'),
-			'group' => array('Trade.sec_id')
+			'fields' => array('Sec.sec_name','SUM(Trade.quantity) AS quantity'),
+			'group' => array('Sec.sec_name')
 		);
 		
 		return $this->Trade->find('all', $params);

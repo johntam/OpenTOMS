@@ -1,1 +1,1 @@
-<?php echo print_r($consid); ?>
+<?php echo $consid; ?>

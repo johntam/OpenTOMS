@@ -1,6 +1,6 @@
 <!-- File: /app/views/reports/index.ctp -->
 
-<table>
+<table style="width: 30%;margin-left:35%;margin-right:35%;">
 	<tr>
 		<td>
 			<h1>Run Reports</h1>
