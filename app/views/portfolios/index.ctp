@@ -7,10 +7,10 @@
 		<th>Position</th>		
 	</tr>
 
-	<?php foreach ($trades as $trade): ?>
+	<?php foreach ($portfolio_data as $data): ?>
 	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
-		<td><?php echo $trade['Sec']['sec_name']; ?></td>
-		<td><?php echo $trade['0']['quantity']; ?></td>
+		<td><?php echo $data['Sec']['sec_name']; ?></td>
+		<td><?php echo $data['0']['quantity']; ?></td>
 	</tr>
 	<?php endforeach; ?>
 </table>

@@ -9,8 +9,8 @@ class PortfoliosController extends AppController {
 		//			array_push($trades, $t);
 		//			}
 		//	}
-		$trades = $this->Session->read('trades');	
-		$this->set('trades', $trades);
+		$portfolio_data = $this->Session->read('portfolio_data');	
+		$this->set('portfolio_data', $portfolio_data);
 	}
 }
 
