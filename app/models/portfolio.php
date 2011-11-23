@@ -1,5 +1,9 @@
 <?php
-
+/* There are different classes of portfolio handled by this class
+	port_type	description					used by
+	stock		securities only				positions report, nav report
+	cash		currencies only				nav report
+*/
 class Portfolio extends AppModel {
     var $name = 'Portfolio';
 	var $belongsTo = 'Trade';
@@ -11,11 +15,34 @@ class Portfolio extends AppModel {
 	var $end_date;
 	
 	
+	//create the array containing the portfolio
+	function create_portfolio() {
+		$trades = get_trades();
+		
+		if ($this->start_date != $this->end_date) {
+			//find the previously stored calculation results for report run date immeditately prior to this current one
+			$params=array(
+				'conditions' => array(  'Portfolio.report_id =' => $this->report_id, 
+										'Portfolio.portfolio_type >' => 'stock'),
+				'group' => array('Sec.sec_name','Sec.id')
+			);
+			
+			
+			//$prev_calc_results = 
+		
+		}
+	
+	
+		return($this->portfolio);
+	}
+	
+	
+	
 	//create an array of trades relevant to this portfolio
 	function get_trades() {
 		$params=array(
 			'conditions' => array(  'Trade.fund_id =' => $this->fund_id, 
-									'Trade.trade_date >=' => $this->start_date, 
+									'Trade.trade_date >' => $this->start_date, 
 									'Trade.trade_date <=' => $this->end_date, 
 									'Trade.cancelled <>' => 1,
 									'Trade.executed =' => 1,
@@ -26,8 +53,7 @@ class Portfolio extends AppModel {
 			'group' => array('Sec.sec_name','Sec.id')
 		);
 		
-		$this->portfolio = $this->Trade->find('all', $params);
-		return($this->portfolio);
+		return($this->Trade->find('all', $params));
 	}
 	
 	//save this portfolio to the portfolios table
