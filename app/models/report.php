@@ -3,6 +3,7 @@
 class Report extends AppModel {
     var $name = 'Report';
 	var $belongsTo = 'Portfolio, Fund';
+	var $prev_report_id;
 	
 	function position_report() {
 		$this->Portfolio->report_id = $this->report_id;
@@ -16,6 +17,7 @@ class Report extends AppModel {
 		}
 		else {
 			$this->Portfolio->start_date = $this->calc_start_date;
+			$this->Portfolio->prev_report_id = $this->prev_report_id;
 			$this->Portfolio->create_portfolio(2);
 		}
 		

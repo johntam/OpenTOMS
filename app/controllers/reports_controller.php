@@ -21,14 +21,14 @@ class ReportsController extends AppController {
 				if ($prev_report['run_date'] != $this->Report->end_date) {
 					//today's date has not been run yet so we need to run it
 					$this->Report->calc_start_date = $prev_report['run_date'];
-					$this->Report->save_report();
-					$this->Report->report_id = $prev_report['id'];
+					$this->Report->report_id = $this->Report->save_report();
+					$this->Report->prev_report_id = $prev_report['id'];
 				}
 				else {
 					//this run date has been done before so just retrieve the results from the portfolio table
 					
 				}
-			}			
+			}
 		
 			if ($this->Report->report_type == 'Position') {
 				//Run position report which is only made up of the stock portfolio

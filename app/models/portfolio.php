@@ -13,6 +13,7 @@ class Portfolio extends AppModel {
 	var $fund_id;
 	var $start_date;
 	var $end_date;
+	var $prev_report_id;
 	
 	
 	/* create the array containing the portfolio
@@ -24,16 +25,14 @@ class Portfolio extends AppModel {
 			
 	*/
 	function create_portfolio($merge) {
-	
+
 		if ($merge == 1) {
 			//Just get all the trades
 			$this->portfolio = $this->get_trades();
 		}
 		elseif ($merge == 2) {
 			//First get the old results
-			$prev_calc_results = $this->find('all', array('conditions' => array('Portfolio.report_id =' => $this->report_id, 'Portfolio.portfolio_type =' => 'stock'), 'contain'=>false));
-
-			
+			$prev_calc_results = $this->find('all', array('conditions' => array('Portfolio.report_id =' => $this->prev_report_id, 'Portfolio.portfolio_type =' => 'stock'), 'contain'=>false));
 			
 			//Get all the trades after the previous report end date above to the end of the current report end date
 			$trades_to_add = $this->get_trades();
