@@ -7,12 +7,15 @@ class TradesController extends AppController {
 	function index() {
 		$this->setchoices();
 		$conditions=array(
-			'Trade.crd >' => strtotime('-1 week'),
+			'Trade.crd >' => date('Y-m-d', strtotime('-1 week')),
 			'Trade.act =' => 1
 		);
 	
 		$params=array(
 			'conditions' => $conditions, //array of conditions
+			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
+								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.broker_contact','Trade.trade_date','Trade.price',
+								'Trade.cancelled','Trade.executed'),
 			'order' => array('Trade.crd DESC') //string or array defining order
 		);
 		
@@ -40,8 +43,10 @@ class TradesController extends AppController {
 	
 		$params=array(
 			'conditions' => $conditions, //array of conditions
+			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
+								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.broker_contact','Trade.trade_date','Trade.price',
+								'Trade.cancelled','Trade.executed'),
 			//'recursive' => 1, //int
-			//'fields' => array('Model.field1', 'DISTINCT Model.field2'), //array of field names
 			'order' => array('Trade.crd DESC') //string or array defining order
 			//'group' => array('Model.field'), //fields to GROUP BY
 			//'limit' => n, //int
