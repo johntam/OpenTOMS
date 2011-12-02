@@ -69,6 +69,7 @@ class TradesController extends AppController {
 				//Do a second update to the same record to set the oid and act fields
 				$id = $this->Trade->id;
 				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
+					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been saved.');
 					//$this->disableCache();	//clear cache for AJAX calls
 					$this->redirect(array('action' => 'add'));
@@ -97,12 +98,22 @@ class TradesController extends AppController {
 				$this->Trade->id = $id;
 				//Clear the active flag on the trade that was edited
 				if ($this->Trade->saveField('act',0)) {
+					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been updated.');
 					$this->redirect(array('action' => 'index'));
 				}
 			}
 		}
 		
+	}
+	
+	//If a trade has been added or changed, then deactivate any reports which have a run_date on or after the trade date of this trade.
+	//This is to make sure that any future run reports do not depend on these saved reports which could now be invalid.
+	function update_report_table() {
+		$this->loadModel('Report');
+		$this->Report->run_date = date('Y-m-d',mktime(0,0,0,$this->data['Trade']['trade_date']['month'],$this->data['Trade']['trade_date']['day'],$this->data['Trade']['trade_date']['year']));
+		$this->Report->fund_id = $this->data['Trade']['fund_id'];
+		$this->Report->deactivate();
 	}
 	
 	

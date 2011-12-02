@@ -2,28 +2,10 @@
 
 class Report extends AppModel {
     var $name = 'Report';
-	var $belongsTo = 'Portfolio, Fund';
+	//var $belongsTo = 'Portfolio, Fund';
 	var $prev_report_id;
 	
-	function position_report() {
-		$this->Portfolio->report_id = $this->report_id;
-		$this->Portfolio->fund_id = $this->fund_id;
-		$this->Portfolio->port_type = 'stock';
-		$this->Portfolio->end_date = $this->end_date;
-		
-		if ($this->calc_start_date == null) {
-			$this->Portfolio->start_date = '1999-12-31';
-			$this->Portfolio->create_portfolio(1);
-		}
-		else {
-			$this->Portfolio->start_date = $this->calc_start_date;
-			$this->Portfolio->prev_report_id = $this->prev_report_id;
-			$this->Portfolio->create_portfolio(2);
-		}
-		
-		$this->Portfolio->save_portfolio();		
-		return($this->Portfolio->portfolio);
-	}
+	
 	
 	//save report metadata in the reports table
 	function save_report() {
@@ -39,7 +21,6 @@ class Report extends AppModel {
 	
 	//find if a an active report for this report type and the specified run-date exists already
 	function get_prev_report() {
-		$this->recursive = -1;
 		$params=array(
 			'conditions' => array(  'Report.act =' => 1, 
 									'Report.report_type =' => $this->report_type, 
@@ -53,11 +34,31 @@ class Report extends AppModel {
 	
 	//fetch the whole data for a report run previously
 	function get_prev_report_data() {
-		$this->recursive = -1;
-		$data = $this->Portfolio->find('all', array('conditions'=>array('Portfolio.report_id ='=>$this->report_id)));
+		ClassRegistry::init('Portfolio');	//must use this outside of a controller
+		$data = $this->find('all', array('conditions'=>array('Portfolio.report_id ='=>$this->report_id)));
 		
+		$portfolio = array();
+		foreach ($data as $d) {
+			$portfolio[] = array('0'=>array('quantity'=>$d['Portfolio']['position']),
+										 'Sec'=>array('sec_name'=>$d['Portfolio']['sec_name'],
+													  'id'=>$d['Portfolio']['sec_id']));
+		}		
+		return $portfolio;
+	}
 	
+	//deactivate all previous reports with the given run_date
+	//uses updateAll(array $fields, array $conditions)
+	//NB assumes that run_date and fund_id have been set
+	function deactivate() {
+		
+		//echo 'in deactivate()</br>';
+		//echo 'run_date='.$this->run_date;
+		//echo 'fund_id='.$this->fund_id;
+		//exit;
 	
+		$this->updateAll(array('act' => 0),
+						 array( 'Report.run_date >=' => $this->run_date,
+								'Report.fund_id =' => $this->fund_id));
 	}
 }
 
