@@ -28,6 +28,7 @@ class ReportsController extends AppController {
 					$this->Report->calc_start_date = $prev_report['run_date'];
 					$this->Report->id = $this->Report->save_report();
 					$this->Report->prev_report_id = $prev_report['id'];
+					
 				}
 				else {
 					//this run date has been done before so just retrieve the results from the portfolio table
@@ -38,12 +39,9 @@ class ReportsController extends AppController {
 				}
 			}		
 		
-			if ($this->Report->report_type == 'Position') {
-				//Run position report which is only made up of the stock portfolio
-				$portfolio_data = $this->Report->position_report();
-				$this->Session->write('portfolio_data', $portfolio_data); 
-				$this->redirect(array('controller'=>'portfolios','action' => 'index'));
-			}
+			$portfolio_data = $this->Report->run_report();
+			$this->Session->write('portfolio_data', $portfolio_data); 
+			$this->redirect(array('controller'=>'portfolios','action' => 'index'));
 		}
 	}
 		

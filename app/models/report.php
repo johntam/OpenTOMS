@@ -4,33 +4,32 @@ class Report extends AppModel {
     var $name = 'Report';
 	var $prev_report_id;
 	
-	function position_report() {
+	function run_report() {
 		App::import('model','Portfolio');
 		$port = new Portfolio();
 		
 		$port->report_id = $this->id;
 		$port->fund_id = $this->fund_id;
-		$port->portfolio_type = 'stock';
 		$port->run_date = $this->run_date;
+		$port->calc_start_date = $this->calc_start_date;
+		$port->prev_report_id = $this->prev_report_id;
 		
-		if ($this->calc_start_date == null) {
-			$port->calc_start_date = '1999-12-31';
-			$port->create_portfolio(1);
+		//this will hold the final portfolio to display for this fund
+		$portfolio = array();
+	
+		//different report types consist of different portfolios aggregated together
+		switch ($this->report_type) {
+			case 'Position':
+				$portfolio = array_merge($portfolio, $port->get_portfolio('stock'));
+				break;
+			
+			case 'NAV':
+				$portfolio = array_merge($portfolio, $port->get_portfolio('stock'));
+				$portfolio = array_merge($portfolio, $port->get_portfolio('cash'));
+				break;
 		}
-		else {
-			$port->calc_start_date = $this->calc_start_date;
-			$port->prev_report_id = $this->prev_report_id;
-			$port->create_portfolio(2);
-		}
-		
-		$port->save_portfolio();		
-		return($port->portfolio);
-	}
 	
-	function nav_report() {
-	
-	
-	
+		return $portfolio;
 	}
 	
 	//save report metadata in the reports table

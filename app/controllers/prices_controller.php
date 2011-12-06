@@ -51,6 +51,23 @@ class PricesController extends AppController {
 		}
 		
 		$params=array(
+			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type'),
+			'joins' => array(
+							array('table'=>'secs',
+								  'alias'=>'Sec',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Price.sec_id=Sec.id ')
+								  ),
+							array('table'=>'sec_types',
+								  'alias'=>'SecType',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('SecType.id=Sec.sec_type_id ')
+								  )
+							),
 			'conditions' => $conditions, //array of conditions
 			'order' => array('Price.price_date DESC') //string or array defining order
 		);	
@@ -58,7 +75,11 @@ class PricesController extends AppController {
 		$this->set('fromdate',$from);
 		$this->set('todate',$to);
 		$this->set('prices', $this->Price->find('all', $params));
-		$this->set('secs', $this->Price->Sec->find('list', array('fields'=>array('Sec.sec_name'), 'order'=>array('Sec.sec_name'))));
+		
+		//Get list of security names
+		App::import('model','Sec');
+		$sec = new Sec();
+		$this->set('secs', $sec->find('list', array('fields'=>array('Sec.sec_name'), 'order'=>array('Sec.sec_name'))));
 	}
 	
 	
