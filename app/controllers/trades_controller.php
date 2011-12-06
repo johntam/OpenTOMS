@@ -110,10 +110,11 @@ class TradesController extends AppController {
 	//If a trade has been added or changed, then deactivate any reports which have a run_date on or after the trade date of this trade.
 	//This is to make sure that any future run reports do not depend on these saved reports which could now be invalid.
 	function update_report_table() {
-		$this->loadModel('Report');
-		$this->Report->run_date = date('Y-m-d',mktime(0,0,0,$this->data['Trade']['trade_date']['month'],$this->data['Trade']['trade_date']['day'],$this->data['Trade']['trade_date']['year']));
-		$this->Report->fund_id = $this->data['Trade']['fund_id'];
-		$this->Report->deactivate();
+		App::import('model','Report');
+		$report = new Report();
+		$report->run_date = date('Y-m-d',mktime(0,0,0,$this->data['Trade']['trade_date']['month'],$this->data['Trade']['trade_date']['day'],$this->data['Trade']['trade_date']['year']));
+		$report->fund_id = $this->data['Trade']['fund_id'];
+		$report->deactivate();
 	}
 	
 	
@@ -142,7 +143,7 @@ class TradesController extends AppController {
 
 		$this->set('secs', $secsCACHE);
 		$this->set('funds', $this->Trade->Fund->find('list', array('fields'=>array('Fund.fund_name'),'order'=>array('Fund.fund_name'))));
-		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'),'order'=>array('TradeType.trade_type'))));
+		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'),'order'=>array('TradeType.id'))));
 		$this->set('reasons', $this->Trade->Reason->find('list', array('fields'=>array('Reason.reason_desc'),'order'=>array('Reason.reason_desc'))));
 		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'),'order'=>array('Broker.broker_name'))));
 		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'),'order'=>array('Trader.trader_name'))));
