@@ -57,7 +57,9 @@ show up on all of your views, include it here -->
 				</ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>
-				<li><a href="/prices/index/0/1">Maintenance</a></li></ul>
+				<li><a href="/prices/index/0/1">Securities</a></li>
+				<li><a href="/prices/fxrates">FX Rates</a></li>
+				</ul>
 			</li>
 			<li><a href="#">Reports</a><ul>
 				<li><a href="/reports">Run</a></li></ul>

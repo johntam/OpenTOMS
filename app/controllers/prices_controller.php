@@ -30,8 +30,6 @@ class PricesController extends AppController {
 									$this->data['Price']['datefilter']['year']));
 			$this->set('datefiltered',$datefilter);
 		}
-		
-		
 	
 		if (isset($datefilter)) {
 			$conditions=array(
@@ -85,7 +83,6 @@ class PricesController extends AppController {
 	
 	
 	function add() {		
-		
 		if (!empty($this->data)) {
 			$this->Price->set($this->data);
 			
@@ -148,6 +145,41 @@ class PricesController extends AppController {
 			}
 		}
 	}
-
+	
+	
+	/////////////////////
+	//Pricing of FX rates
+	function fxrates() {
+		if (!empty($this->data['Price']['date_1'])) {
+			$this->Price->save_fxrates($this->data['Price']);
+			$this->Session->setFlash('FX rates have been updated.');
+			$this->Session->write('datefilter', $this->data['Price']['datefilter']);
+			$this->redirect(array('action' => 'fxrates'));
+		}
+		
+		$saved_datefilter = $this->Session->read('datefilter');
+		if (!empty($this->data['Price']['datefilter'])) {			
+			$datefilter = date('Y-m-d',
+						mktime(0,0,0,$this->data['Price']['datefilter']['month'],
+									$this->data['Price']['datefilter']['day'],
+									$this->data['Price']['datefilter']['year']));
+		}
+		elseif ($saved_datefilter) {
+			
+			$datefilter = date('Y-m-d',
+						mktime(0,0,0,$saved_datefilter['month'],
+									$saved_datefilter['day'],
+									$saved_datefilter['year']));
+		}
+		else {
+			$datefilter = date('Y-m-d',strtotime('-1 day'));
+		}
+		
+		//debug($this->Price->get_fxrates($datefilter));
+		
+		$this->set('datefiltered', $datefilter);
+		$this->set('prices', $this->Price->get_fxrates($datefilter));
+		
+	}
 }
 ?>
