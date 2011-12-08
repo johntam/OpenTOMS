@@ -178,6 +178,9 @@ div.actions h3 {
 	padding-top:0;
 	color:#777;
 }
+div.high {
+	background: #C9F0C9;
+}
 
 
 /** Tables **/

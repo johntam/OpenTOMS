@@ -4,75 +4,27 @@ class PricesController extends AppController {
 	var $name = 'Prices';
 
 	function index() {	
-		if (empty($this->params['pass'][0])) {
-			$to=0;
-		}
-		else {
-			$to=max($this->params['pass'][0],0);
-		}
+		$secfilter= 0;
+		$datefilter = 0;
+		$to=max($this->params['pass'][0],0);
+		$from=max($this->params['pass'][1],1);
 		
-		if (empty($this->params['pass'][1])) {
-			$from=1;
-		}
-		else {
-			$from=max($this->params['pass'][1],1);
-		}
-		
-		if (!empty($this->data['Price']['secfilter'])) {
+		if ($this->params['pass'][2]) {
 			$secfilter='%'.$this->data['Price']['secfilter'].'%';
 			$this->set('secnamefiltered',$secfilter);
 		}
 		
-		if (!empty($this->data['Price']['datefilter'])) {
+		if ($this->params['pass'][3]) {
 			$datefilter = date('Y-m-d',
 						mktime(0,0,0,$this->data['Price']['datefilter']['month'],
 									$this->data['Price']['datefilter']['day'],
 									$this->data['Price']['datefilter']['year']));
 			$this->set('datefiltered',$datefilter);
 		}
-	
-		if (isset($datefilter)) {
-			$conditions=array(
-				'Price.price_date =' => $datefilter
-			);
-		}
-		elseif (isset($secfilter)) {
-			$conditions=array(
-				'Sec.sec_name LIKE' => $secfilter
-			);
-		}
-		else {
-			$conditions=array(
-				'Price.price_date >=' => date('Y-m-d',strtotime('-'.$from.' weeks')),
-				'Price.price_date <=' => date('Y-m-d',strtotime('-'.$to.' weeks'))
-			);
-		}
-		
-		$params=array(
-			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type'),
-			'joins' => array(
-							array('table'=>'secs',
-								  'alias'=>'Sec',
-								  'type'=>'inner',
-								  'foreignKey'=>false,
-								  'conditions'=>
-										array('Price.sec_id=Sec.id ')
-								  ),
-							array('table'=>'sec_types',
-								  'alias'=>'SecType',
-								  'type'=>'inner',
-								  'foreignKey'=>false,
-								  'conditions'=>
-										array('SecType.id=Sec.sec_type_id ')
-								  )
-							),
-			'conditions' => $conditions, //array of conditions
-			'order' => array('Price.price_date DESC') //string or array defining order
-		);	
 		
 		$this->set('fromdate',$from);
 		$this->set('todate',$to);
-		$this->set('prices', $this->Price->find('all', $params));
+		$this->set('prices', $this->Price->get_securities($to, $from, $secfilter, $datefilter, $this->data['Price']));
 		
 		//Get list of security names
 		App::import('model','Sec');
@@ -89,7 +41,7 @@ class PricesController extends AppController {
 			if ($this->Price->validates()) {
 				if ($this->check_unique()) {
 					if ($this->Price->save($this->data)) {
-						$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1));
+						$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
 					}
 				}
 				else {
@@ -101,7 +53,7 @@ class PricesController extends AppController {
 			}
 		}
 
-		$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1));
+		$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
 	}
 
 	
@@ -137,11 +89,12 @@ class PricesController extends AppController {
 	function edit($id = null) {
 		
 		if (empty($this->data)) {
-			$this->data = $this->Price->read();
-		} else {
+			$dataset = $this->Price->get_sec_row($id);
+			$this->data = $dataset['0'];
+		} else {			
 			if ($this->Price->save($this->data)) {
 				$this->Session->setFlash('Price has been updated.');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index',0,1,0,0));
 			}
 		}
 	}
@@ -149,37 +102,32 @@ class PricesController extends AppController {
 	
 	/////////////////////
 	//Pricing of FX rates
-	function fxrates() {
+	function fxrates($datefilter=null) {	
+
 		if (!empty($this->data['Price']['date_1'])) {
+			//When Submit button has been pressed	
 			$this->Price->save_fxrates($this->data['Price']);
 			$this->Session->setFlash('FX rates have been updated.');
-			$this->Session->write('datefilter', $this->data['Price']['datefilter']);
-			$this->redirect(array('action' => 'fxrates'));
+			$this->redirect(array('action' => '/fxrates/'.$datefilter));
 		}
-		
-		$saved_datefilter = $this->Session->read('datefilter');
-		if (!empty($this->data['Price']['datefilter'])) {			
-			$datefilter = date('Y-m-d',
-						mktime(0,0,0,$this->data['Price']['datefilter']['month'],
-									$this->data['Price']['datefilter']['day'],
-									$this->data['Price']['datefilter']['year']));
+		elseif (!empty($this->data['Price']['datefilter'])) {
+			//When Filter button has been pressed
+			if (is_array($this->data['Price']['datefilter'])) {
+				$datefilter = date('Y-m-d',
+											mktime(0,0,0,$this->data['Price']['datefilter']['month'],
+														$this->data['Price']['datefilter']['day'],
+														$this->data['Price']['datefilter']['year']));
+			}
+			else {
+				$datefilter = $this->data['Price']['datefilter'];
+			}
 		}
-		elseif ($saved_datefilter) {
-			
-			$datefilter = date('Y-m-d',
-						mktime(0,0,0,$saved_datefilter['month'],
-									$saved_datefilter['day'],
-									$saved_datefilter['year']));
-		}
-		else {
+		elseif (!$datefilter) {
 			$datefilter = date('Y-m-d',strtotime('-1 day'));
 		}
-		
-		//debug($this->Price->get_fxrates($datefilter));
-		
-		$this->set('datefiltered', $datefilter);
+				
+		$this->set('datefilter', $datefilter);
 		$this->set('prices', $this->Price->get_fxrates($datefilter));
-		
 	}
 }
 ?>

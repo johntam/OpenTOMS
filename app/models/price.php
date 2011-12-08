@@ -7,12 +7,58 @@ class Price extends AppModel {
 		'price_source' => array('rule' => 'notEmpty', 'message' => 'Price Source cannot be blank')
 	);
 	
+	
+	function get_securities($to, $from, $secfilter, $datefilter, $data) {
+	
+		if ($datefilter) {
+			$conditions=array(
+				'Price.price_date =' => $datefilter
+			);
+		}
+		elseif ($secfilter) {
+			$conditions=array(
+				'Sec.sec_name LIKE' => $secfilter
+			);
+		}
+		else {
+			$conditions=array(
+				'Price.price_date >=' => date('Y-m-d',strtotime('-'.$from.' weeks')),
+				'Price.price_date <=' => date('Y-m-d',strtotime('-'.$to.' weeks'))
+			);
+		}
+		
+		$params=array(
+			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type'),
+			'joins' => array(
+							array('table'=>'secs',
+								  'alias'=>'Sec',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Price.sec_id=Sec.id ')
+								  ),
+							array('table'=>'sec_types',
+								  'alias'=>'SecType',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('SecType.id=Sec.sec_type_id ')
+								  )
+							),
+			'conditions' => $conditions, //array of conditions
+			'order' => array('Price.price_date DESC') //string or array defining order
+		);
+		
+		return($this->find('all', $params));
+	}
+	
+	
 	function get_fxrates($pricedate) {
 		App::import('model','Sec');
 		$sec = new Sec();
 		
 		$params=array(
-			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type', 'Sec.id'),
+			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type', 'Price.fx_rate', 'Sec.id'),
 			'joins' => array(
 							array('table'=>'sec_types',
 								  'alias'=>'SecType',
@@ -68,13 +114,34 @@ class Price extends AppModel {
 			if (!empty($o['price']['0'])) {
 				$this->create(array('Price' => array( 	'id'=>$o['priceid']['0'],
 														'crd'=>DboSource::expression('NOW()'),
-														'price' => $o['price']['0'],
+														'price' => 1,
 														'sec_id' => $key,
 														'price_source' => $o['source']['0'],
-														'price_date' => $o['date']['0'])));
+														'price_date' => $o['date']['0'],
+														'fx_rate' => $o['price']['0'])));
 				$this->save();
 			}
 		}
+	}
+	
+	//Return row of data for editing
+	function get_sec_row($id) {
+	
+		$params=array(
+			'fields' => array('Price.id', 'Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price'),
+			'joins' => array(
+							array('table'=>'secs',
+								  'alias'=>'Sec',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Price.sec_id=Sec.id ')
+								  )
+							),
+			'conditions' => array('Price.id =' => $id)
+		);
+		
+		return($this->find('all', $params));
 	}
 }
 

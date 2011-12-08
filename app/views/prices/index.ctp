@@ -7,15 +7,19 @@
 <tr class="altrow">
 
 <td style="width: 30%;">
-	<?php echo $this->Form->create('Price', array('action' => 'index')); ?>
-	<?php echo $this->Form->input('secfilter',array('type'=>'text','label'=>'Enter a few characters of security name:','maxLength'=>10,'div'=>false));?>
-	<?php echo $this->Form->end('Filter'); ?>
+	<div <?php if (isset($secnamefiltered)) {echo 'class="high"';} ?>>
+		<?php echo $this->Form->create('Price', array('action' => 'index/0/1/1/0')); ?>
+		<?php echo $this->Form->input('secfilter',array('type'=>'text','label'=>'Enter a few characters of security name:','maxLength'=>10,'div'=>false));?>
+		<?php echo $this->Form->end('Filter'); ?>
+	</div>
 </td>
 <td style="width: 10%;"></td>
 <td style="width: 30%;">
-	<?php echo $this->Form->create('Price', array('action' => 'index')); ?>
-	<?php echo $this->Form->input('datefilter', array('label'=>'Enter a date to filter on','type'=>'date','default'=> strtotime('-1 day'))); ?>
-	<?php echo $this->Form->end('Filter'); ?>
+	<div <?php if (isset($datefiltered)) {echo 'class="high"';} ?>>
+		<?php echo $this->Form->create('Price', array('action' => 'index/0/1/0/1')); ?>
+		<?php echo $this->Form->input('datefilter', array('label'=>'Enter a date to filter on','type'=>'date','default'=> strtotime('-1 day'))); ?>
+		<?php echo $this->Form->end('Filter'); ?>
+	<div>
 </td>
 
 <td colspan="2"></td>
@@ -28,9 +32,11 @@
 			<?php
 				if (isset($datefiltered)) {
 					echo '<i>Filtering on date: </i><b>'.$datefiltered.'</b>';
+					echo $this->Html->image("red_cross.jpeg", array("alt" => "Remove Filter",'url' => array('controller' => 'prices', 'action' => 'index', 0, 1, 0, 0)));
 				}
 				elseif (isset($secnamefiltered)) {
 					echo '<i>Filtering on characters: </i><b>'.str_replace('%','',$secnamefiltered).'</b>';
+					echo $this->Html->image("red_cross.jpeg", array("alt" => "Remove Filter",'url' => array('controller' => 'prices', 'action' => 'index', 0, 1, 0, 0)));
 				}
 				else {
 					echo '<i>Showing prices between '.$todate.' weeks and '.$fromdate.' weeks ago</i> (';
@@ -38,9 +44,9 @@
 						echo 'Earlier';
 					}
 					else {
-						echo $this->Html->link('Earlier', array('action' => 'index', $todate-1, $fromdate-1));
+						echo $this->Html->link('Earlier', array('action' => 'index', $todate-1, $fromdate-1, 0, 0));
 					}
-					echo '|'.$this->Html->link('Later', array('action' => 'index', $todate+1, $fromdate+1)).')';
+					echo '|'.$this->Html->link('Later', array('action' => 'index', $todate+1, $fromdate+1, 0, 0)).')';
 				}
 			?>	
 		</td>
