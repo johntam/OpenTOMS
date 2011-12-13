@@ -6,7 +6,5 @@ class Currency extends AppModel {
 		'currency_iso_code' => array('rule' => 'notEmpty', 'message' => 'Code cannot be blank'),
 		'currency_name' => array('rule' => 'notEmpty', 'message' => 'Name cannot be blank')
 	);
-	
 }
-
 ?>

@@ -13,6 +13,7 @@ class Report extends AppModel {
 		$port->run_date = $this->run_date;
 		$port->calc_start_date = $this->calc_start_date;
 		$port->prev_report_id = $this->prev_report_id;
+		$port->report_type = $this->report_type;
 		
 		//this will hold the final portfolio to display for this fund
 		$portfolio = array();
@@ -25,7 +26,7 @@ class Report extends AppModel {
 			
 			case 'NAV':
 				$portfolio = array_merge($portfolio, $port->get_portfolio('stock'));
-				$portfolio = array_merge($portfolio, $port->get_portfolio('cash'));
+				$portfolio = array_merge($portfolio, $port->get_portfolio('cash'));	
 				break;
 		}
 	
@@ -65,10 +66,20 @@ class Report extends AppModel {
 		$data = $port->find('all', array('conditions'=>array('Portfolio.report_id ='=>$this->report_id)));
 		
 		$portfolio = array();
-		foreach ($data as $d) {
-			$portfolio[] = array('0'=>array('quantity'=>$d['Portfolio']['position']),
-										 'Sec'=>array('sec_name'=>$d['Portfolio']['sec_name'],
-													  'id'=>$d['Portfolio']['sec_id']));
+		switch ($this->report_type) {
+			case 'Position':
+				foreach ($data as $d) {
+					$portfolio[] = array('0'=>array('position'=>$d['Portfolio']['position']),
+												 'Sec'=>array('sec_name'=>$d['Portfolio']['sec_name'],
+															  'id'=>$d['Portfolio']['sec_id']));
+				}
+				break;
+				
+			case 'NAV':
+				foreach ($data as $d) {
+					$portfolio[] = $d['Portfolio'];
+				}
+				break;
 		}		
 		return $portfolio;
 	}

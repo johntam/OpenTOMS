@@ -27,21 +27,20 @@ class ReportsController extends AppController {
 					//today's date has not been run yet so we need to run it
 					$this->Report->calc_start_date = $prev_report['run_date'];
 					$this->Report->id = $this->Report->save_report();
-					$this->Report->prev_report_id = $prev_report['id'];
-					
+					$this->Report->prev_report_id = $prev_report['id'];					
 				}
 				else {
 					//this run date has been done before so just retrieve the results from the portfolio table
 					$this->Report->report_id = $prev_report['id'];
-					$portfolio_data = $this->Report->get_prev_report_data();	
+					$portfolio_data = $this->Report->get_prev_report_data();
 					$this->Session->write('portfolio_data', $portfolio_data); 
-					$this->redirect(array('controller'=>'portfolios','action' => 'index'));
+					$this->redirect(array('controller'=>'portfolios','action' => 'index', $this->Report->report_type));
 				}
 			}		
 		
 			$portfolio_data = $this->Report->run_report();
 			$this->Session->write('portfolio_data', $portfolio_data); 
-			$this->redirect(array('controller'=>'portfolios','action' => 'index'));
+			$this->redirect(array('controller'=>'portfolios','action' => 'index', $this->Report->report_type));
 		}
 	}
 		

@@ -58,8 +58,15 @@ class Price extends AppModel {
 		$sec = new Sec();
 		
 		$params=array(
-			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type', 'Price.fx_rate', 'Sec.id'),
+			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type', 'Price.fx_rate', 'Sec.id', 'Currency.id'),
 			'joins' => array(
+							array('table'=>'currencies',
+								  'alias'=>'Currency',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Sec.currency_id = Currency.id')
+								  ),
 							array('table'=>'sec_types',
 								  'alias'=>'SecType',
 								  'type'=>'inner',
@@ -82,7 +89,7 @@ class Price extends AppModel {
 			'order' => array('Sec.sec_name') //string or array defining order
 		);
 		
-		$sec->unBindModel(array('belongsTo' => array('SecType')));
+		$sec->unBindModel(array('belongsTo' => array('SecType','Currency')));
 		return($sec->find('all', $params));
 	}
 	
