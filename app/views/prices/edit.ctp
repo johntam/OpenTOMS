@@ -22,6 +22,7 @@
 			<td><?php echo $this->Form->input('price', array('label'=>false)); ?></td>
 			<td><?php
 				echo $this->Form->input('id', array('type' => 'hidden')); 
+				echo $this->Form->input('price_date', array('type' => 'hidden')); 
 				echo $this->Form->end('Update Price');
 			?></td>
 		</tr>

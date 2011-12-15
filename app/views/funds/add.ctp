@@ -5,7 +5,7 @@
 
 <?php echo $this->Form->create('Fund'); ?>
 <tr><td><?php echo $this->Form->input('fund_name'); ?></td></tr>
-<tr><td><?php echo $this->Form->input('fund_currency'); ?></td></tr>
+<tr><td><?php echo $this->Form->input('currency_id'); ?></td></tr>
 <tr><td><?php echo $this->Form->input('management_fee'); ?></td></tr>
 <tr><td><?php echo $this->Form->end('Save Fund'); ?></td></tr>
 </table>

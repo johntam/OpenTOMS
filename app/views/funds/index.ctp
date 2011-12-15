@@ -21,7 +21,7 @@
 	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 		<td><?php echo $fund['Fund']['id']; ?></td>
 		<td><?php echo $fund['Fund']['fund_name']; ?></td>
-		<td><?php echo $fund['Fund']['fund_currency']; ?></td>
+		<td><?php echo $fund['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $fund['Fund']['management_fee']; ?></td>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $fund['Fund']['id']));?></td>
 	</tr>

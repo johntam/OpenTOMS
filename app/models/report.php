@@ -87,11 +87,25 @@ class Report extends AppModel {
 	//deactivate all previous reports with the given run_date
 	//uses updateAll(array $fields, array $conditions)
 	//NB assumes that run_date and fund_id have been set
-	function deactivate() {	
-		$this->updateAll(array('act' => 0),
-						 array( 'Report.run_date >=' => $this->run_date,
-								'Report.fund_id =' => $this->fund_id));
+	//
+	//else if $id is passed as a parameter, then specifically deactivate that particular report
+	function deactivate($id=null) {
+		if (empty($id)) {
+			$this->updateAll(array('act' => 0),
+							 array( 'Report.run_date >=' => $this->run_date,
+									'Report.fund_id =' => $this->fund_id));
+		}
+		else {
+			$this->delete($id, false);
+		}
 	}
+	
+	//deactivate all reports run on $this->run_date for all funds and all report types
+	//run this if a price or an FX rate has been updated for this run_date
+	function deactivateDate() {	
+		$this->updateAll(array('act' => 0),
+							 array( 'Report.run_date =' => $this->run_date));
+	}	
 }
 
 ?>

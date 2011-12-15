@@ -31,7 +31,7 @@
 	<?php foreach ($prices as $price): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td style="width: 25%;">
-				<?php echo $this->Form->input("date_{$price['Sec']['id']}", array('label'=>false,'type'=>'date','default'=> $datefilter)); ?>
+				<?php echo $datefilter; ?>
 			</td>
 			<td style="width: 10%;">
 				<?php echo $this->Form->input("source_{$price['Sec']['id']}", array('label'=>false,'options' => array('DFLT'=>'DFLT','USER'=>'USER'),'default'=>$price['Price']['price_source'])); ?>
@@ -40,14 +40,23 @@
 				<?php echo $price['Sec']['sec_name']; ?>
 			</td>
 			<td style="width: 15%;">
-				<?php echo $this->Form->input("price_{$price['Sec']['id']}", array('label'=>false,'default'=>$price['Price']['fx_rate'])); ?>
+				<?php if ($price['Sec']['id'] == 1) {
+						//USD
+						echo '1.000000';
+						echo $this->Form->input("price_{$price['Sec']['id']}", array('type'=>'hidden','default'=>1));
+					}
+					else {
+						echo $this->Form->input("price_{$price['Sec']['id']}", array('label'=>false,'default'=>$price['Price']['fx_rate']));
+					} ?>
 				<?php echo $this->Form->input("priceid_{$price['Sec']['id']}", array('type' => 'hidden','default'=>$price['Price']['id'])); ?>
+				<?php echo $this->Form->input("date_{$price['Sec']['id']}", array('label'=>false,'type'=>'hidden','default'=> $datefilter)); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 	
 	<tr>
 		<td colspan="4">
+			<?php echo $this->Form->input("fx_date", array('type'=>'hidden','default'=> $datefilter)); ?>
 			<?php echo $this->Form->end('Submit'); ?>
 		</td>
 	</tr>

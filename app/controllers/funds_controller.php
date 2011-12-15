@@ -8,6 +8,10 @@ class FundsController extends AppController {
 	}
 	
 	function add() {
+		$this->set('currencies', $this->Fund->Currency->find('list', 
+										array('fields'=>array(
+																'Currency.currency_iso_code'),
+																'order'=>array('Currency.currency_iso_code'))));
 		if (!empty($this->data)) {
 			if ($this->Fund->save($this->data)) {
 				$this->Session->setFlash('Fund has been saved.');
@@ -17,7 +21,10 @@ class FundsController extends AppController {
 	}
 	
 	function edit($id = null) {
-		
+		$this->set('currencies', $this->Fund->Currency->find('list', 
+										array('fields'=>array(
+																'Currency.currency_iso_code'),
+																'order'=>array('Currency.currency_iso_code'))));
 		if (empty($this->data)) {
 			$this->data = $this->Fund->read();
 		} else {

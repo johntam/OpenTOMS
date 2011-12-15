@@ -87,13 +87,13 @@ class PricesController extends AppController {
 	
 	
 	function edit($id = null) {
-		
 		if (empty($this->data)) {
 			$dataset = $this->Price->get_sec_row($id);
 			$this->data = $dataset['0'];
-		} else {			
+		} else {		
 			if ($this->Price->save($this->data)) {
 				$this->Session->setFlash('Price has been updated.');
+				$this->update_report_table($this->data['Price']['price_date']);
 				$this->redirect(array('action' => 'index',0,1,0,0));
 			}
 		}
@@ -103,11 +103,11 @@ class PricesController extends AppController {
 	/////////////////////
 	//Pricing of FX rates
 	function fxrates($datefilter=null) {	
-
 		if (!empty($this->data['Price']['date_1'])) {
 			//When Submit button has been pressed	
-			$this->Price->save_fxrates($this->data['Price']);
+			$this->Price->save_fxrates($this->data['Price']);			
 			$this->Session->setFlash('FX rates have been updated.');
+			$this->update_report_table($this->data['Price']['fx_date']);
 			$this->redirect(array('action' => '/fxrates/'.$datefilter));
 		}
 		elseif (!empty($this->data['Price']['datefilter'])) {
@@ -128,6 +128,15 @@ class PricesController extends AppController {
 				
 		$this->set('datefilter', $datefilter);
 		$this->set('prices', $this->Price->get_fxrates($datefilter));
+	}
+	
+	//If a price has been edited, then deactivate any reports which have a run_date on this price date.
+	//This is to make sure that any future run reports do not depend on these saved reports which could now be invalid.
+	function update_report_table($date) {
+		App::import('model','Report');
+		$report = new Report();
+		$report->run_date = $date;
+		$report->deactivateDate();
 	}
 }
 ?>

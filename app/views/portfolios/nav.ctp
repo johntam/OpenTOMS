@@ -9,6 +9,7 @@
 		<th>Price</th>
 		<th>Market Val (Local)</th>
 		<th>Market Val (Fund)</th>
+		<th>Errors</th>
 	</tr>
 
 	<?php foreach ($portfolio_data as $data): ?>
@@ -19,6 +20,7 @@
 		<td><?php echo $data['price']; ?></td>
 		<td><?php echo $data['mkt_val_local']; ?></td>
 		<td><?php echo $data['mkt_val_fund']; ?></td>
+		<td><?php if (isset($data['message'])) {echo $data['message'];} ?></td>
 	</tr>
 	<?php endforeach; ?>
 </table>

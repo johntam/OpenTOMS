@@ -6,12 +6,12 @@
 */
 class Portfolio extends AppModel {
     var $name = 'Portfolio';
-	//var $belongsTo = 'Trade';
 	var $actsAs = array('Containable');
 	var $calc_start_date;
 	var $prev_report_id;
 	var $portfolio;
 	var $report_type;
+	var $savedata;	//determines whether we may save the current portfolio or not
 	
 	/* create the array containing the portfolio
 		The paramter merge has the following possible values
@@ -80,7 +80,6 @@ class Portfolio extends AppModel {
 	
 	//create an array of trades relevant to this portfolio
 	function get_trades() {
-		
 		if ($this->portfolio_type == 'stock') {
 			return $this->get_stock_trades();
 		}
@@ -143,17 +142,25 @@ class Portfolio extends AppModel {
 		return $trades_conv;
 	}
 	
-	
-	function save_portfolio() {
-		switch ($this->report_type) {
-			case 'Position':
-				$this->save_portfolio_simple();
-				break;
-				
-			case 'NAV':
-				$this->save_portfolio_extra();
-				break;
-				
+	//Only save data to portfolios table if the $savedata variable is set to true
+	function save_portfolio() {	
+		if ($this->savedata) {
+			switch ($this->report_type) {
+				case 'Position':
+					$this->save_portfolio_simple();
+					break;
+					
+				case 'NAV':
+					$this->save_portfolio_extra();
+					break;
+					
+			}
+		}
+		else {
+			//delete the report record as well
+			App::import('model','Report');
+			$report = new Report();
+			$report->deactivate($this->report_id);
 		}
 	}
 	
@@ -209,15 +216,14 @@ class Portfolio extends AppModel {
 								  'type'=>'left',
 								  'foreignKey'=>false,
 								  'conditions'=>
-										array('Price.sec_id=Sec.id ')
+										array('Price.sec_id=Sec.id',
+											  "Price.price_date = '$this->run_date'")
 								  )
-							),
-			'conditions' => array('Price.price_date =' => $this->run_date)
+							)
 		);
-		
 		$dataset = $sec->find('all', $params);
-		//flatten $sec_price
 		
+		//flatten $sec_price
 		$sec_price	= array();
 		foreach ($dataset as $d) {
 			$sec_price[$d['Sec']['id']]['sec_type_id'] = $d['Sec']['sec_type_id'];
@@ -234,6 +240,10 @@ class Portfolio extends AppModel {
 		//Get fx rates for this date.
 		$fxrates = $this->get_fx();
 		
+		//Set the class variable $savedata to true to start with. If the nav calculation cannot be completed due to
+		//missing prices or fx rates, then set it to false.
+		$this->savedata = true;
+		
 		$nav = array();
 		foreach ($this->portfolio as $p) {
 			$id = $p['Sec']['id'];
@@ -243,9 +253,19 @@ class Portfolio extends AppModel {
 			$valp = $sec_price[$id]['valpoint'];
 			$ccyid = $sec_price[$id]['currency_id'];
 			$fx_to_base = $fxrates[$ccyid]['fx_rate'] / $fxrates[$fund_ccyid]['fx_rate'];
+			$msg = null;
 			
-			debug($price);
-			debug($fx_to_base);
+			if (empty($price)) {
+				$price=0;
+				$msg=$msg.'Price missing. ';
+				$this->savedata = false;
+			}
+			
+			if (empty($fx_to_base)) {
+				$fx_to_base = 0;
+				$msg=$msg.'FX rate missing. ';
+				$this->savedata = false;
+			}
 			
 			$nav[] = array( 'id'=>$id, 
 							'sec_name'=>$name,
@@ -253,10 +273,11 @@ class Portfolio extends AppModel {
 							'currency'=>$fxrates[$ccyid]['ccy'],
 							'price'=>$price,
 							'mkt_val_local'=>$qty*$price*$valp,
-							'mkt_val_fund'=>$qty*$price*$valp*$fx_to_base
+							'mkt_val_fund'=>$qty*$price*$valp*$fx_to_base,
+							'message'=>$msg
 							);
 		}
-		
+				
 		$this->portfolio = $nav;
 		return($this->portfolio);
 	}

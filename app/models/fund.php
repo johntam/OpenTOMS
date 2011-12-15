@@ -2,6 +2,7 @@
 
 class Fund extends AppModel {
     var $name = 'Fund';
+	var $belongsTo ='Currency';
 	
 	function get_fund_ccy($fund_id) {
 		$this->id = $fund_id;

@@ -100,6 +100,7 @@ class Price extends AppModel {
 			$field = $part['0'];
 			$id = $part['1'];
 			
+			//n.b. don't add "fx" as one of the cases below!
 			switch ($field) {
 				case 'date':
 					$out[$id]['date'][] = $d;
