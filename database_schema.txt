@@ -192,3 +192,12 @@ CREATE TABLE reports (
 	fund_id INT NOT NULL,
 	stock_portfolioid INT NOT NULL
 );
+
+CREATE TABLE holidays(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	country_id INT NOT NULL,
+	holiday_day TINYINT NOT NULL,
+	holiday_month TINYINT NOT NULL,
+	holiday_desc VARCHAR(100) NULL
+);
