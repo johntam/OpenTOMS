@@ -55,6 +55,7 @@ show up on all of your views, include it here -->
 				<li><a href="/industries">Industries</a></li>
 				<li><a href="/currencies">Currencies</a></li>
 				<li><a href="/holidays">Holiday Dates</a></li>
+				<li><a href="/settlements">Settlement Rules</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>

@@ -43,19 +43,97 @@
 
 	<?php foreach ($holidays as $holiday): ?>
 	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
+		<?php 
+			if (isset($editmode)) {
+				if ($editmode == $holiday['Holiday']['id']) {
+					echo $this->Form->create('Holiday', array('action' => 'edit'));
+				}
+			}
+		?>
 		<td>
-			<?php echo $holiday['Country']['country_name']; ?>
+			<?php
+				if (isset($editmode)) {
+					if ($editmode == $holiday['Holiday']['id']) {
+						 echo $this->Form->input('country_id', array('label'=>false, 'default'=>$countryid));
+					}
+					else {
+						echo $holiday['Country']['country_name'];
+					}
+				}
+				else {
+					echo $holiday['Country']['country_name'];
+				}
+				
+			?>
 		</td>
 		<td>
-			<?php echo $holiday['Holiday']['holiday_day']; ?>
+			<?php
+				if (isset($editmode)) {
+					if ($editmode == $holiday['Holiday']['id']) {
+						echo $this->Form->input('holiday_day', array('label'=>false, 'default'=>$holiday['Holiday']['holiday_day']));
+					}
+					else {
+						echo $holiday['Holiday']['holiday_day'];
+					}
+				}
+				else {
+					echo $holiday['Holiday']['holiday_day'];
+				}
+				
+			?>
 		</td>
 		<td>
-			<?php echo $holiday['Holiday']['holiday_month']; ?>
+			<?php
+				if (isset($editmode)) {
+					if ($editmode == $holiday['Holiday']['id']) {
+						echo $this->Form->input('holiday_month', array('label'=>false, 'options' => array(1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9,10=>10,11=>11,12=>12),'default'=>$holiday['Holiday']['holiday_month']));
+					}
+					else {
+						echo $holiday['Holiday']['holiday_month'];
+					}
+				}
+				else {
+					echo $holiday['Holiday']['holiday_month'];
+				}
+				
+			?>
 		</td>
 		<td>
-			<?php echo $holiday['Holiday']['holiday_desc']; ?>
+			<?php
+				if (isset($editmode)) {
+					if ($editmode == $holiday['Holiday']['id']) {
+						echo $this->Form->input('holiday_desc', array('label'=>false, 'default'=>$holiday['Holiday']['holiday_desc']));
+					}
+					else {
+						echo $holiday['Holiday']['holiday_desc'];
+					}
+				}
+				else {
+					echo $holiday['Holiday']['holiday_desc'];
+				}
+			?>
+		</td>
+		<td>
+			<?php
+				if (isset($editmode)) {
+					if ($editmode == $holiday['Holiday']['id']) {
+						echo $this->Form->input('id', array('type'=>'hidden', 'default'=>$holiday['Holiday']['id']));
+						echo $this->Form->end('Submit');
+					}
+					else {
+						echo $this->Html->link('Edit', '/holidays/edit/'.$holiday['Holiday']['id'].'/'.$countryid);
+						echo '&nbsp';
+						echo $this->Html->link('Del', '/holidays/delete/'.$holiday['Holiday']['id'].'/'.$countryid);
+					}
+				}
+				else {
+					echo $this->Html->link('Edit', '/holidays/edit/'.$holiday['Holiday']['id'].'/'.$countryid);
+					echo '&nbsp';
+					echo $this->Html->link('Del', '/holidays/delete/'.$holiday['Holiday']['id'].'/'.$countryid);
+				}
+			?>
 		</td>
 	</tr>
 	<?php endforeach; ?>
-	
+
 </table>

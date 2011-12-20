@@ -201,3 +201,11 @@ CREATE TABLE holidays(
 	holiday_month TINYINT NOT NULL,
 	holiday_desc VARCHAR(100) NULL
 );
+
+CREATE TABLE settlements(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	country_id INT NOT NULL,
+	sectype_id INT NOT NULL,
+	settlement_days TINYINT NOT NULL
+);
