@@ -67,6 +67,7 @@ class SecsController extends AppController {
 		Cache::delete('secs');	//clear cache
 		Cache::delete('secid_ccy');	//clear cache
 		Cache::delete('valpoint');	//clear cache
+		Cache::delete('settdate');	//clear cache
 	}
 }
 ?>

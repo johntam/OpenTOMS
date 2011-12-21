@@ -38,7 +38,7 @@
 	<tr class="highlight">
 		<td>Decision Time</td>
 		<td>Trade Date</td>
-		<td>Settlement Date</td>
+		<td>Settlement Date<img src="/img/ajax-busy.gif" id="settdate_busy"/></td>
 		<td>Trader</td>
 	</tr>
 	
@@ -91,16 +91,16 @@
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
 			<td></td>
-		</tr>	
+		</tr>
+		
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
 </table>
-
-
 
 <script type="text/javascript">
 	setInterval(function() { 
 	$(document).ready(function() {
 			calc_consideration();
+			calc_settdate();
 		}); 
 	}, 2500);
 	
@@ -110,12 +110,14 @@
 		$("#tax_busy").hide();
 		$("#othercosts_busy").hide();
 		$("#consideration_busy").hide();
+		$("#settdate_busy").hide();
 	
 		$("#TradeSecId").change(function() {
 			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
 			$("#TradeQuantity").val("");
 			$("#TradeExecutionPrice").val("");
 			clearcosts();
+			$("#settdate_busy").show();
 		});
 		
 		$("#TradeQuantity").change(function() {
@@ -164,6 +166,18 @@
 				calc_quantity();
 			}
 		});
+		
+		$("#TradeTradeDateMonth").change(function() {
+			$("#settdate_busy").show();
+		});
+		
+		$("#TradeTradeDateDay").change(function() {
+			$("#settdate_busy").show();
+		});
+		
+		$("#TradeTradeDateYear").change(function() {
+			$("#settdate_busy").show();
+		});
 	});
 	
 	function handle_execute_checkbox() {
@@ -210,6 +224,23 @@
 			"text"
 		);
 	}
+	
+	function calc_settdate() {
+		$.post("/trades/ajax_settdate?" + (new Date()).getTime(),
+			$("#TradeAddForm").serialize(),
+			function(data) {
+				if (data.indexOf("-") > 0) {
+					var myDate = data.split("-");
+					$("#TradeSettlementDateMonth").val(myDate[1]);
+					$("#TradeSettlementDateDay").val(myDate[2]);
+					$("#TradeSettlementDateYear").val(myDate[0]);
+					$("#settdate_busy").hide();
+				}
+			},
+			"text"
+		);
+	}
+	
 	
 	function calc_commission() {
 		$("#commission_busy").show();

@@ -299,6 +299,85 @@ class TradesController extends AppController {
 			$this->autoRender=false;
 		}
 	}
+	
+	//calculate settlement date
+	function ajax_settdate() {
+		$td_year = $this->params['data']['Trade']['trade_date']['year'];
+		$td_month = $this->params['data']['Trade']['trade_date']['month'];
+		$td_day = $this->params['data']['Trade']['trade_date']['day'];
+		$td = mktime(0,0,0,$td_month,$td_day,$td_year);
+		$sec_id = $this->params['data']['Trade']['sec_id'];
+	
+		if (!empty($sec_id)) {
+			//Cache data needed from the secs table to improve speed
+			if (($settdateCACHE = Cache::read('settdate')) === false) {
+				$sett = $this->Trade->Sec->find('all', array('fields' => 'Sec.id, Sec.sec_type_id, Sec.country_id'));
+				$settdateCACHE = array(); 
+				foreach($sett as $s) { 
+					$settdateCACHE[$s['Sec']['id']]['sec_type_id'] = $s['Sec']['sec_type_id'];
+					$settdateCACHE[$s['Sec']['id']]['country_id'] = $s['Sec']['country_id'];
+				}
+				Cache::write('settdate', $settdateCACHE);
+			}
+			$sec_sectype_id =  $settdateCACHE[$sec_id]['sec_type_id'];
+			$sec_country_id = $settdateCACHE[$sec_id]['country_id'];
+		
+			//Look up the settlement date for this $sec_sectype and $sec_country (from the Settlement model).
+			App::import('model','Settlement');
+			$settle = new Settlement();
+			
+			//Find the default settlement rule for this sec type
+			$default_settle = $settle->SecType->default_settlement($sec_sectype_id);
+			
+			//Find any exceptions in the settlements table
+			$params=array(
+				'conditions' => array(  'Settlement.sec_type_id =' => $sec_sectype_id, 
+										'Settlement.country_id =' => $sec_country_id),
+				'fields' => array('Settlement.settlement_days')
+			);
+			$sett_days_find = $settle->find('all', $params);
+			if (empty($sett_days_find)) {
+				$sett_days = $default_settle;
+			}
+			else {
+				$sett_days = $sett_days_find['0']['Settlement']['settlement_days'];
+			}
+			
+			//Find all holiday dates relevant to the security country
+			App::import('model','Holiday');
+			$hol = new Holiday();
+			$hols = $hol->find('all', array('conditions'=>array('Holiday.country_id =' => $sec_country_id), 'fields'=>array('Holiday.holiday_day','Holiday.holiday_month')));
+			$holidays = array();
+			foreach ($hols as $h) {
+				$holidays[$h['Holiday']['holiday_month']][$h['Holiday']['holiday_day']] = 1;
+			}
+			
+			//Loop through each day starting from the trade date for the required settlement period, skipping any weekends and holidays.
+			$final_settle_date = $td;
+			while ($sett_days > 0) {
+				$final_settle_date = strtotime(date("Y-m-d", $final_settle_date) . " +1 day");
+				
+				if ((date('l', $final_settle_date) == 'Saturday') || (date('l', $final_settle_date) == 'Sunday')) {
+					$sett_days++;
+				}
+				
+				if (isset($holidays[date('m', $final_settle_date)][date('d', $final_settle_date)])) {
+					$sett_days++;
+				}
+				$sett_days--;
+			}
+			
+			
+			$this->set('settdate', date('Y-m-d', $final_settle_date));
+			
+		}
+		else {
+			$this->set('settdate', null);
+		}
+		
+		$this->render('/elements/ajax_settdate', 'ajax');
+	}
+	
 }
 
 ?>
