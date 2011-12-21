@@ -378,6 +378,30 @@ class TradesController extends AppController {
 		$this->render('/elements/ajax_settdate', 'ajax');
 	}
 	
+	//Check price entered is not too far away from a price in the price history table
+	function ajax_checkprice() {
+		$exec_price = $this->params['data']['Trade']['execution_price'];
+		$trade_date = $this->params['data']['Trade']['trade_date'];
+		$sec_id = $this->params['data']['Trade']['sec_id'];
+		$this->set('checkprice', null);
+		
+		if (!empty($exec_price) && !empty($sec_id)) {
+			//Check price using Price Model
+			App::import('model','Price');
+			$price = new Price();
+			$stored_price = $price->get_price($sec_id, $trade_date);
+			
+			if ($stored_price) {
+				//Check to see if the entered price is more than 10% away from the stored price.
+				if (abs(($stored_price-$exec_price)/$stored_price) >0.1) {
+					$this->set('checkprice', 'Warning: The execution price entered is more than 10% away from the price history table.');
+				}
+			}
+		}
+		
+		$this->render('/elements/ajax_checkprice', 'ajax');
+	}
+	
 }
 
 ?>

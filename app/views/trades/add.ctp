@@ -120,7 +120,7 @@
 			$("#settdate_busy").show();
 		});
 		
-		$("#TradeQuantity").change(function() {
+		$("#TradeQuantity").focusout(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				calc_commission();
@@ -130,7 +130,7 @@
 			}
 		});
 		
-		$("#TradeExecutionPrice").change(function() {
+		$("#TradeExecutionPrice").focusout(function() {
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				calc_commission();
@@ -168,15 +168,22 @@
 		});
 		
 		$("#TradeTradeDateMonth").change(function() {
+			check_price();
 			$("#settdate_busy").show();
 		});
 		
 		$("#TradeTradeDateDay").change(function() {
+			check_price();
 			$("#settdate_busy").show();
 		});
 		
 		$("#TradeTradeDateYear").change(function() {
+			check_price();
 			$("#settdate_busy").show();
+		});
+		
+		$("#TradeExecutionPrice").focusout(function() {
+			check_price();
 		});
 	});
 	
@@ -235,6 +242,18 @@
 					$("#TradeSettlementDateDay").val(myDate[2]);
 					$("#TradeSettlementDateYear").val(myDate[0]);
 					$("#settdate_busy").hide();
+				}
+			},
+			"text"
+		);
+	}
+	
+	function check_price() {
+		$.post("/trades/ajax_checkprice?" + (new Date()).getTime(),
+			$("#TradeAddForm").serialize(),
+			function(data) {
+				if (data.length > 0) {
+					alert(data);
 				}
 			},
 			"text"
