@@ -100,7 +100,6 @@
 	setInterval(function() { 
 	$(document).ready(function() {
 			calc_consideration();
-			calc_settdate();
 		}); 
 	}, 2500);
 	
@@ -117,16 +116,17 @@
 			$("#TradeQuantity").val("");
 			$("#TradeExecutionPrice").val("");
 			clearcosts();
-			$("#settdate_busy").show();
+			calc_settdate();
 		});
 		
 		$("#TradeQuantity").focusout(function() {
+			calc_quantity();
+			
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				calc_commission();
 				calc_tax();
 				calc_othercosts();
-				calc_quantity();
 			}
 		});
 		
@@ -160,26 +160,27 @@
 		});
 		
 		$("#TradeTradeTypeId").change(function() {
+			calc_quantity();
+			
 			var checked = $("#TradeExecuted:checked").val() != undefined;
 			if (checked) {
 				calc_tax();
-				calc_quantity();
 			}
 		});
 		
 		$("#TradeTradeDateMonth").change(function() {
 			check_price();
-			$("#settdate_busy").show();
+			calc_settdate();
 		});
 		
 		$("#TradeTradeDateDay").change(function() {
 			check_price();
-			$("#settdate_busy").show();
+			calc_settdate();
 		});
 		
 		$("#TradeTradeDateYear").change(function() {
 			check_price();
-			$("#settdate_busy").show();
+			calc_settdate();
 		});
 		
 		$("#TradeExecutionPrice").focusout(function() {

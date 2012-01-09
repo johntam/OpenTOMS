@@ -25,6 +25,7 @@
 		<th>Broker Id</th>
 		<th>Trader Id</th>
 		<th>Quantity</th>
+		<th>Consideration</th>
 		<th>Broker Contact</th>
 		<th>Trade Date</th>
 		<th>Price</th>
@@ -45,7 +46,8 @@
 		<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		<td><?php echo $trade['Broker']['broker_name']; ?></td>
 		<td><?php echo $trade['Trader']['trader_name']; ?></td>
-		<td><?php echo $trade['Trade']['quantity']; ?></td>
+		<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
+		<td style="text-align: right;"><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
 		<td><?php echo $trade['Trade']['broker_contact']; ?></td>
 		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>
 		<td><?php echo $trade['Trade']['price']; ?></td>

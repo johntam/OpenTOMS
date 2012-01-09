@@ -31,9 +31,9 @@
 	
 		<tr class="altrow">
 			<td><?php echo $trade['TradeType']['trade_type']; ?></td>
-			<td><?php echo $trade['Trade']['quantity']; ?></td>
-			<td><?php echo $trade['Trade']['price']; ?></td>
-			<td><?php echo $trade['Trade']['execution_price']; ?></td>
+			<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
+			<td><?php echo number_format($trade['Trade']['price'],4); ?></td>
+			<td><?php echo number_format($trade['Trade']['execution_price'],4); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -72,10 +72,10 @@
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $trade['Trade']['commission']; ?></td>
-			<td><?php echo $trade['Trade']['tax']; ?></td>
-			<td><?php echo $trade['Trade']['other_costs']; ?></td>
-			<td><?php echo $trade['Trade']['consideration']; ?></td>
+			<td><?php echo number_format($trade['Trade']['commission'],2); ?></td>
+			<td><?php echo number_format($trade['Trade']['tax'],2); ?></td>
+			<td><?php echo number_format($trade['Trade']['other_costs'],2); ?></td>
+			<td><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
 		</tr>
 
 	<tr class="highlight">
@@ -86,8 +86,8 @@
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $trade['Trade']['executed']; ?></td>
-			<td><?php echo $trade['Trade']['cancelled']; ?></td>
+			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
+			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td></td>
 			<td></td>
 		</tr>

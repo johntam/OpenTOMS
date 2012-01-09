@@ -14,7 +14,7 @@ class TradesController extends AppController {
 		$params=array(
 			'conditions' => $conditions, //array of conditions
 			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.broker_contact','Trade.trade_date','Trade.price',
+								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
 								'Trade.cancelled','Trade.executed'),
 			'order' => array('Trade.crd DESC') //string or array defining order
 		);
@@ -44,7 +44,7 @@ class TradesController extends AppController {
 		$params=array(
 			'conditions' => $conditions, //array of conditions
 			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.broker_contact','Trade.trade_date','Trade.price',
+								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
 								'Trade.cancelled','Trade.executed'),
 			//'recursive' => 1, //int
 			'order' => array('Trade.crd DESC') //string or array defining order
@@ -64,7 +64,11 @@ class TradesController extends AppController {
 	function add() {
 		$this->setchoices();
 	
-		if (!empty($this->data)) {			
+		if (!empty($this->data)) {	
+			//remove any commas from quantity and consideration
+			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
+			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
+		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
 				$id = $this->Trade->id;
@@ -178,7 +182,7 @@ class TradesController extends AppController {
 	
 	//work out the broker's commission
 	function ajax_commission() {
-		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
 		$price = $this->params['url']['data']['Trade']['execution_price'];
 		$secid = $this->params['url']['data']['Trade']['sec_id'];
 		$brokerid = $this->params['url']['data']['Trade']['broker_id'];
@@ -191,7 +195,7 @@ class TradesController extends AppController {
 
 	//tax costs, specifically stamp duty on purchases in the UK
 	function ajax_tax() {
-		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
 		$price = $this->params['url']['data']['Trade']['execution_price'];
 		$secid = $this->params['url']['data']['Trade']['sec_id'];
 		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
@@ -214,7 +218,7 @@ class TradesController extends AppController {
 	
 	//other costs, most notably the PTM Levy in the UK
 	function ajax_othercosts() {
-		$qty = $this->params['url']['data']['Trade']['quantity'];
+		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
 		$price = $this->params['url']['data']['Trade']['execution_price'];
 		$secid = $this->params['url']['data']['Trade']['sec_id'];
 		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
@@ -235,7 +239,7 @@ class TradesController extends AppController {
 	//If the trade type is a sell, then make sure that the quantity is a negative number
 	function ajax_quantity() {
 		$ttid = $this->params['form']['tradetype'];
-		$qty = $this->params['form']['quantity'];
+		$qty = str_replace(',','',$this->params['form']['quantity']);
 		$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
 	
 		if ($is_sell) {
@@ -245,7 +249,7 @@ class TradesController extends AppController {
 			$quantity = abs($qty);
 		}
 	
-		$this->set('quantity', $quantity);
+		$this->set('quantity', number_format($quantity));
 		$this->render('/elements/ajax_quantity', 'ajax');
 	}
 	
@@ -255,7 +259,7 @@ class TradesController extends AppController {
 		$commission = $this->params['data']['Trade']['commission'];
 		$tax = $this->params['data']['Trade']['tax'];
 		$othercosts = $this->params['data']['Trade']['other_costs'];
-		$qty = $this->params['data']['Trade']['quantity'];
+		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
 		$price = $this->params['data']['Trade']['execution_price'];
 		$ttid = $this->params['data']['Trade']['trade_type_id'];
 		$secid = $this->params['data']['Trade']['sec_id'];
@@ -292,7 +296,7 @@ class TradesController extends AppController {
 			}
 		
 			$consid = round($consid, 4);	
-			$this->set('consid', $consid);
+			$this->set('consid', number_format($consid,4));
 			$this->render('/elements/ajax_consid', 'ajax');
 		}
 		else {
