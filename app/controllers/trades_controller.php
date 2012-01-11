@@ -7,58 +7,93 @@ class TradesController extends AppController {
 	function index() {
 		$this->setchoices();
 		$conditions=array(
-			'Trade.crd >' => date('Y-m-d', strtotime('-1 week')),
 			'Trade.act =' => 1
 		);
-	
-		$params=array(
-			'conditions' => $conditions, //array of conditions
-			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
-								'Trade.cancelled','Trade.executed'),
-			'order' => array('Trade.crd DESC') //string or array defining order
-		);
 		
-		$this->set('trades', $this->Trade->find('all', $params));
-		$this->set('title_for_layout', 'View Trades');
-	}
-	
-	
-	
-	function indexFiltered() {		
-		$this->setchoices();
+		$daterange = '-1 week';
+		$fundchosen = null;
+		$brokerchosen = null;
 		
-		$conditions=array(
-			'Trade.crd >' => date('Y-m-d', strtotime($this->data['Trade']['daterange'])),
-			'Trade.act =' => 1
-		);
+		//new filter to apply
+		if (!empty($this->data['Trade']['daterange'])) {
+			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($this->data['Trade']['daterange']));
+			$daterange = $this->data['Trade']['daterange'];
+		}
+		else {
+			$conditions['Trade.crd >'] = date('Y-m-d', strtotime('-1 week'));
+		}
 		
 		if (!empty($this->data['Trade']['fundchosen'])) {
 			$conditions['Trade.fund_id ='] = $this->data['Trade']['fundchosen'];
+			$fundchosen = $this->data['Trade']['fundchosen'];
 		}
 		
 		if (!empty($this->data['Trade']['brokerchosen'])) {
 			$conditions['Trade.broker_id ='] = $this->data['Trade']['brokerchosen'];
-		}		
+			$brokerchosen = $this->data['Trade']['brokerchosen'];
+			
+		}
+		
+		//excel icon pressed
+		if (isset($this->params['pass'][0])) {
+			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($this->params['pass'][0]));
+			
+			if ($this->params['pass'][1] != 0) {
+				$conditions['Trade.fund_id ='] = $this->params['pass'][1];
+			}
+			
+			if ($this->params['pass'][2] != 0) {
+				$conditions['Trade.broker_id ='] = $this->params['pass'][2];
+			}
+		}
 	
 		$params=array(
-			'conditions' => $conditions, //array of conditions
+			'conditions' => $conditions,
 			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
 								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
 								'Trade.cancelled','Trade.executed'),
-			//'recursive' => 1, //int
-			'order' => array('Trade.crd DESC') //string or array defining order
-			//'group' => array('Model.field'), //fields to GROUP BY
-			//'limit' => n, //int
-			//'page' => n, //int
-			//'offset'=>n, //int   
-			//'callbacks' => true //other possible values are false, 'before', 'after'
+			'order' => array('Trade.crd DESC')
 		);
 		
-		$this->set('trades', $this->Trade->find('all', $params));
-		$this->set('title_for_layout', 'View Trades');
+		$data = $this->Trade->find('all', $params);
+		
+		if (!isset($this->params['pass'][0])) {	//filter button pressed
+			$this->set('trades', $data);
+			$this->set('title_for_layout', 'View Trades');
+			$this->set('filter', array($daterange,$fundchosen,$brokerchosen));
+		}
+		else {
+			//prepare data for output to csv file
+			$out = array();
+			$row = array();
+			foreach ($data as $d) {
+				$row = array(
+								$d['Trade']['id'],
+								$d['Fund']['fund_name'],
+								$d['Sec']['sec_name'],
+								$d['TradeType']['trade_type'],
+								$d['Reason']['reason_desc'],
+								$d['Broker']['broker_name'],
+								$d['Trader']['trader_name'],
+								$d['Currency']['currency_iso_code'],
+								$d['Trade']['quantity'],
+								$d['Trade']['consideration'],
+								$d['Trade']['broker_contact'],
+								$d['Trade']['trade_date'],
+								$d['Trade']['price'],
+								$d['Trade']['cancelled'],
+								$d['Trade']['executed']
+							);
+				array_push($out, $row);
+			}
+			array_unshift($out, array('Id','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Broker Contact','Trade Date','Price','Cancelled','Executed')); //headers
+		
+			Configure::write('debug',0);
+			$this->layout = 'csv';
+			$this->set('data',$out);
+			$this->render('/trades/export');
+		}
 	}
-	
 	
 	
 	function add() {

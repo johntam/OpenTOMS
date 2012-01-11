@@ -5,26 +5,48 @@
 <td><h1>Trade Blotter</h1></td>
 </tr>
 <tr class="altrow">
-<?php echo $this->Form->create(null, array('url' => array('controller' => 'trades', 'action' => 'indexFiltered')));?>
-<td><?php echo $this->Form->input('daterange',array('type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?></td>
-<td><?php echo $this->Form->input('fundchosen',array('type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?></td>
-<td><?php echo $this->Form->input('brokerchosen',array('type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?></td>
-<td><?php echo $this->Form->end('Filter');?></td>
+	<?php echo $this->Form->create(null, array('url' => array('controller' => 'trades', 'action' => 'index')));?>
+	<td>
+		<div class="high">
+			<?php echo $this->Form->input('daterange',array('default'=> $filter[0],'type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?>
+		</div>
+	</td>
+	<td>
+		<div <?php if (isset($filter[1])) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('fundchosen',array('default'=> $filter[1],'type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?>
+		</div>
+	</td>
+	<td>
+		<div <?php if (isset($filter[2])) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('brokerchosen',array('default'=> $filter[2], 'type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?>
+		</div>
+	</td>
+	<td><?php echo $this->Form->end('Filter');?></td>
+	<?php
+		if (empty($filter[1])) {
+			$filter[1] = 0;
+		}
+		
+		if (empty($filter[2])) {
+			$filter[2] = 0;
+		}
+	?>
+	<td><?php echo $html->link($html->image("/img/Excel-32.gif"), array('action' => 'index/'.$filter[0].'/'.$filter[1].'/'.$filter[2]), array('escape' => false));?></td>
 </tr>
 </table>
 
 <table>
-	<tr><td colspan="15"><h4>Showing latest week's trades below</h4></td></tr>
+	<tr><td colspan="15"><h4>Filters in use above are shown in green background</h4></td></tr>
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
 		<th>Id</th>
-		<th>Fund Id</th>
-		<th>Security Id</th>
-		<th>Trade Type Id</th>
-		<th>Reason Id</th>
-		<th>Broker Id</th>
-		<th>Trader Id</th>
+		<th>Fund</th>
+		<th>Security</th>
+		<th>Trade Type</th>
+		<th>Reason</th>
+		<th>Broker</th>
+		<th>Trader</th>
 		<th>Currency</th>
 		<th>Quantity</th>
 		<th>Consideration</th>
