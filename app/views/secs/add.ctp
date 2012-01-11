@@ -109,7 +109,7 @@
 		</tr>
 	<tr class="highlight">
 		<td>Amount Shares Out</td>
-		<td></td>
+		<td>Active</td>
 		<td></td>
 		<td></td>
 		<td></td>
@@ -117,7 +117,7 @@
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('amount_shares_out', array('label'=>false)); ?></td>
-			<td></td>
+			<td><?php echo $this->Form->input('act',array('options' => array(0=>'No',1=>'Yes'), 'label'=>false, 'default'=>1)); ?></td>
 			<td></td>
 			<td></td>
 			<td></td>

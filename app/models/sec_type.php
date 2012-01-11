@@ -13,6 +13,12 @@ class SecType extends AppModel {
 			return 3;
 		}
 	}
+	
+	//set the act flag in the model table
+	function status($id, $val) {
+		$this->id = $id;
+		$this->saveField('act', $val);
+	}
 }
 
 ?>

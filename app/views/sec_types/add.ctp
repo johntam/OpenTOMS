@@ -15,7 +15,7 @@
 <tr><td><?php echo $this->Form->input('fx'); ?></td></tr>
 <tr><td><?php echo $this->Form->input('otc'); ?></td></tr>
 <tr><td><?php echo $this->Form->input('yellow_key'); ?></td></tr>
-<tr><td><?php echo $this->Form->input('supported'); ?></td></tr>
+<tr><td><?php echo $this->Form->input('act',array('options' => array(0=>'No',1=>'Yes'), 'default'=>1)); ?></td></tr>
 <tr><td><?php echo $this->Form->end('Save Security Type'); ?></td></tr>
 
 </table>

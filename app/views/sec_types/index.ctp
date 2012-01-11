@@ -19,7 +19,7 @@
 		<th>FX</th>
 		<th>OTC</th>
 		<th>Bloomberg Yellow Key</th>
-		<th>Supported</th>
+		<th>Active</th>
 	</tr>
 
 	<?php foreach ($sectypes as $sectype): ?>
@@ -35,7 +35,16 @@
 			<td><?php echo $sectype['SecType']['fx']; ?></td>
 			<td><?php echo $sectype['SecType']['otc']; ?></td>
 			<td><?php echo $sectype['SecType']['yellow_key']; ?></td>
-			<td><?php echo $sectype['SecType']['supported']; ?></td>
+			<td><?php 
+					
+					if ($sectype['SecType']['act']==0) {
+						echo $this->Html->link('Activate', array('action' => 'activate', $sectype['SecType']['id']));
+					} 
+					else {
+						echo $this->Html->link('Deactivate', array('action' => 'deactivate', $sectype['SecType']['id']));
+					}
+					  
+				?></td>
 		</tr>
 	<?php endforeach; ?>
 </table>

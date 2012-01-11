@@ -32,6 +32,7 @@
 		<th>Tradar ID</th>
 		<th>Currency</th>
 		<th>Valpoint</th>
+		<th>Active</th>
 	</tr>
 
 	<!-- Here is where we loop through our $secs array, printing out sec info -->
@@ -45,6 +46,16 @@
 		<td><?php echo $sec['Sec']['tradarid']; ?></td>
 		<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $sec['Sec']['valpoint']; ?></td>
+		<td><?php 
+					
+					if ($sec['Sec']['act']==0) {
+						echo $this->Html->link('Activate', array('action' => 'activate', $sec['Sec']['id'], $this->params['pass'][0]));
+					} 
+					else {
+						echo $this->Html->link('Deactivate', array('action' => 'deactivate', $sec['Sec']['id'], $this->params['pass'][0]));
+					}
+					  
+				?></td>
 	</tr>
 	<?php endforeach; ?>
 </table>

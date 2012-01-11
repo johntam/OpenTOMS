@@ -15,5 +15,16 @@ class SecTypesController extends AppController {
 			}
 		}
 	}
+	
+	function activate($id) {
+		$this->SecType->status($id, 1);
+		$this->redirect(array('action' => 'index'));
+	}
+	
+	
+	function deactivate($id) {
+		$this->SecType->status($id, 0);
+		$this->redirect(array('action' => 'index'));
+	}
 }
 ?>

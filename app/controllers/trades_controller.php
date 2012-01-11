@@ -141,7 +141,7 @@ class TradesController extends AppController {
 	function setchoices() {
 		//Could be a lot of securities so cache this list
 		if (($secsCACHE = Cache::read('secs')) === false) {
-			$secsCACHE = $this->Trade->Sec->find('list', array('fields'=>array('Sec.sec_name'),'order'=>array('Sec.sec_name')));
+			$secsCACHE = $this->Trade->Sec->find('list', array('fields'=>array('Sec.sec_name'),'order'=>array('Sec.sec_name'),'conditions'=>array('Sec.act =' => 1)));
 			Cache::write('secs', $secsCACHE);
 		}
 

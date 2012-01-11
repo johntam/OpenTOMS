@@ -114,7 +114,7 @@
 		</tr>
 	<tr class="highlight">
 		<td>Amount Shares Out</td>
-		<td></td>
+		<td>Active</td>
 		<td></td>
 		<td></td>
 		<td></td>
@@ -122,7 +122,7 @@
 
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['amount_shares_out']; ?></td>
-			<td></td>
+			<td><?php if ($sec['Sec']['act']==0) {echo 'No';} else {echo 'Yes';}; ?></td>
 			<td></td>
 			<td></td>
 			<td></td>
