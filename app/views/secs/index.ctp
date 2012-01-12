@@ -4,8 +4,9 @@
 	<tr>
 		<td>
 			<h1>Securities</h1>
-
-			<?php echo $this->Html->link('Add Security', array('controller' => 'secs', 'action' => 'add')); ?>
+			<div class="high">
+				<?php echo $this->Html->link('Add Security', array('controller' => 'secs', 'action' => 'add')); ?>
+			</div>
 		</td>
 	</tr>
 	
@@ -19,7 +20,7 @@
 	</tr>
 	
 	<tr>
-		<td colspan="8"><h4>
+		<td colspan="9"><h4>
 			Securities beginning with the letter <?php echo $this->params['pass'][0];?></h4>
 		</td>
 	</tr>
@@ -29,7 +30,8 @@
 		<th>View</th>
 		<th>Security Name</th>
 		<th>Ticker</th>
-		<th>Tradar ID</th>
+		<th>ISIN</th>
+		<th>Sedol</th>
 		<th>Currency</th>
 		<th>Valpoint</th>
 		<th>Active</th>
@@ -43,7 +45,8 @@
 		<td style="width: 5%;"><?php echo $this->Html->link('View', array('action' => 'view', $sec['Sec']['id']));?></td>
 		<td><?php echo $sec['Sec']['sec_name']; ?></td>
 		<td><?php echo $sec['Sec']['ticker']; ?></td>
-		<td><?php echo $sec['Sec']['tradarid']; ?></td>
+		<td><?php echo $sec['Sec']['isin_code']; ?></td>
+		<td><?php echo $sec['Sec']['sedol']; ?></td>
 		<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo $sec['Sec']['valpoint']; ?></td>
 		<td><?php 

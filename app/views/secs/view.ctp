@@ -4,6 +4,9 @@
 	<tr>
 		<td>
 			<h1>View Security</h1>
+			<div class="high">
+				<?php echo $this->Html->link('Add Security', array('controller' => 'secs', 'action' => 'add')); ?>
+			</div>
 		</td>
 	</tr>
 	

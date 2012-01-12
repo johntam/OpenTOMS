@@ -12,6 +12,40 @@ class Sec extends AppModel {
 		$this->id = $id;
 		$this->saveField('act', $val);
 	}
+	
+	//See if another security already exists with the same Name, ISIN or Sedol
+	//Optional parameter, if passed, will ignore security with that id (used for updating existing security).
+	function check_duplicate($data, $id) {
+		$name = $data['Sec']['sec_name'];
+		$isin = $data['Sec']['isin_code'];
+		$sedol = $data['Sec']['sedol'];
+		$output = '';
+		if ($id) {
+			$cond = array('Sec.id <>' => $id);
+		}
+		else {
+			$cond = array();
+		}
+		
+		
+		if ($this->find('count', array('conditions'=>array_merge($cond, array('Sec.sec_name =' => $name)))) >0) {
+			$output .= 'Name ';
+		}
+		
+		if ($isin) {
+			if ($this->find('count', array('conditions'=>array_merge($cond, array('Sec.isin_code =' => $isin)))) >0) {
+				$output .= 'ISIN ';
+			}
+		}
+		
+		if ($sedol) {
+			if ($this->find('count', array('conditions'=>array_merge($cond, array('Sec.sedol =' => $sedol)))) >0) {
+				$output .= 'SEDOL ';
+			}
+		}
+		
+		return $output;
+	}
 }
 
 ?>

@@ -52,7 +52,7 @@
 		<th>Consideration</th>
 		<th>Broker Contact</th>
 		<th>Trade Date</th>
-		<th>Price</th>
+		<th>Order Price</th>
 		<th>Cancelled Flag</th>
 		<th>Executed Flag</th>
 	</tr>

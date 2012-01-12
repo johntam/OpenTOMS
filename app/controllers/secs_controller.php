@@ -16,7 +16,7 @@ class SecsController extends AppController {
 	
 		$params=array(
 			'conditions' => $conditions, 
-			'fields' => array('Sec.id', 'Sec.sec_name', 'ticker', 'tradarid', 'Currency.currency_iso_code', 'valpoint','Sec.act'),
+			'fields' => array('Sec.id', 'Sec.sec_name', 'Sec.ticker', 'Sec.isin_code', 'Sec.sedol', 'Currency.currency_iso_code', 'Sec.valpoint','Sec.act'),
 			'order' => array('Sec.sec_name ASC') 
 		);
 		
@@ -27,10 +27,17 @@ class SecsController extends AppController {
 		$this->setchoices();
 		
 		if (!empty($this->data)) {
-			if ($this->Sec->save($this->data)) {
-				$this->Session->setFlash('Security has been saved.');
-				$this->clearcache();
-				$this->redirect(array('action' => 'view', $this->Sec->id));
+			$duplicated = $this->has_duplicate(null);
+			
+			if (!$duplicated) {
+				if ($this->Sec->save($this->data)) {
+					$this->Session->setFlash('Security has been saved.');
+					$this->clearcache();
+					$this->redirect(array('action' => 'view', $this->Sec->id));
+				}
+			}
+			else {
+				$this->Session->setFlash('A security with the following duplicated fields has been found: '.$duplicated);
 			}
 		}
 	}
@@ -42,10 +49,17 @@ class SecsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Sec->read();
 		} else {
-			if ($this->Sec->save($this->data)) {
-				$this->Session->setFlash('Security has been updated.');
-				$this->clearcache();
-				$this->redirect(array('action' => 'view',$id));
+			$duplicated = $this->has_duplicate($id);
+			
+			if (!$duplicated) {
+				if ($this->Sec->save($this->data)) {
+					$this->Session->setFlash('Security has been updated.');
+					$this->clearcache();
+					$this->redirect(array('action' => 'view',$id));
+				}
+			}
+			else {
+				$this->Session->setFlash('A security with the following duplicated fields has been found: '.$duplicated);
 			}
 		}
 	}
@@ -81,6 +95,10 @@ class SecsController extends AppController {
 		Cache::delete('secid_ccy');	//clear cache
 		Cache::delete('valpoint');	//clear cache
 		Cache::delete('settdate');	//clear cache
+	}
+	
+	function has_duplicate($id) {
+		return($this->Sec->check_duplicate($this->data, $id));
 	}
 }
 ?>
