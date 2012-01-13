@@ -29,7 +29,7 @@ class PricesController extends AppController {
 		//Get list of security names
 		App::import('model','Sec');
 		$sec = new Sec();
-		$this->set('secs', $sec->find('list', array('conditions'=>array('Sec.act =' => 1), 'fields'=>array('Sec.sec_name'), 'order'=>array('Sec.sec_name'))));
+		$this->set('secs', $sec->find('list', array('conditions'=>array('Sec.act =' => 1, 'Sec.sec_type_id >' => 2), 'fields'=>array('Sec.sec_name'), 'order'=>array('Sec.sec_name'))));
 	}
 	
 	
