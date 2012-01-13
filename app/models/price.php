@@ -27,6 +27,9 @@ class Price extends AppModel {
 			);
 		}
 		
+		//exclude cash from this securities list
+		$conditions = array_merge($conditions, array('SecType.sec_type >' => 1));
+		
 		$params=array(
 			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type'),
 			'joins' => array(
