@@ -3,12 +3,20 @@ class TradesController extends AppController {
 	var $name = 'Trades';
 	var $funds = array();
 	
-	
 	function index() {
+		$this->paginate = array(
+								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
+														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
+														'Trade.cancelled','Trade.executed'),
+								'limit' => 1000,
+								'order' => 	array('Trade.id' => 'desc')
+		);
+	
 		$this->setchoices();
 		$conditions=array(
 			'Trade.act =' => 1
 		);
+		
 		
 		$daterange = '-1 week';
 		$fundchosen = null;
@@ -31,7 +39,6 @@ class TradesController extends AppController {
 		if (!empty($this->data['Trade']['brokerchosen'])) {
 			$conditions['Trade.broker_id ='] = $this->data['Trade']['brokerchosen'];
 			$brokerchosen = $this->data['Trade']['brokerchosen'];
-			
 		}
 		
 		//excel icon pressed
@@ -55,7 +62,10 @@ class TradesController extends AppController {
 			'order' => array('Trade.crd DESC')
 		);
 		
-		$data = $this->Trade->find('all', $params);
+		
+		//$data = $this->Trade->find('all', $params);
+		$data = $this->paginate('Trade', $conditions);
+
 		
 		if (!isset($this->params['pass'][0])) {	//filter button pressed
 			$this->set('trades', $data);
@@ -140,6 +150,10 @@ class TradesController extends AppController {
 					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been updated.');
 					$this->redirect(array('action' => 'index'));
+				}
+				else {
+					$this->Session->setFlash('Warning: There was a problem deactivating the prior trade id='.$id.'. Please manually cancel this duplicate (below).');
+					$this->redirect(array('action' => 'edit', $id));
 				}
 			}
 		}
