@@ -1,5 +1,5 @@
 <!-- File: /app/views/trades/index.ctp -->
-
+<?php $paginator->options(array('url' => $this->passedArgs)); ?>
 <table>
 <tr>
 <td><h1>Trade Blotter</h1></td>
@@ -40,21 +40,21 @@
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
-		<th>Id</th>
-		<th>Fund</th>
-		<th>Security</th>
-		<th>Trade Type</th>
-		<th>Reason</th>
-		<th>Broker</th>
-		<th>Trader</th>
-		<th>Currency</th>
-		<th>Quantity</th>
-		<th>Consideration</th>
-		<th>Broker Contact</th>
-		<th>Trade Date</th>
-		<th>Order Price</th>
-		<th>Cancelled Flag</th>
-		<th>Executed Flag</th>
+		<th><?php echo $this->Paginator->sort('Id', 'id'); ?></th>
+		<th><?php echo $this->Paginator->sort('Fund', 'Fund.fund_name'); ?></th>
+		<th><?php echo $this->Paginator->sort('Security', 'Sec.sec_name'); ?></th>
+		<th><?php echo $this->Paginator->sort('Trade Type', 'TradeType.trade_type'); ?></th>
+		<th><?php echo $this->Paginator->sort('Reason', 'Reason.reason_desc'); ?></th>
+		<th><?php echo $this->Paginator->sort('Broker', 'Broker.broker_name'); ?></th>
+		<th><?php echo $this->Paginator->sort('Trader', 'Trader.trader_name'); ?></th>
+		<th><?php echo $this->Paginator->sort('Currency', 'Currency.currency_iso_code'); ?></th>
+		<th><?php echo $this->Paginator->sort('Quantity', 'Trade.quantity'); ?></th>
+		<th><?php echo $this->Paginator->sort('Consideration', 'Trade.consideration'); ?></th>
+		<th><?php echo $this->Paginator->sort('Broker Contact', 'Trade.broker_contact'); ?></th>
+		<th><?php echo $this->Paginator->sort('Trade Date', 'Trade.trade_date'); ?></th>
+		<th><?php echo $this->Paginator->sort('Order Price', 'Trade.price'); ?></th>
+		<th><?php echo $this->Paginator->sort('Cancelled', 'Trade.cancelled'); ?></th>
+		<th><?php echo $this->Paginator->sort('Executed', 'Trade.executed'); ?></th>
 	</tr>
 
 	<!-- Here is where we loop through our $trades array, printing out trade info -->
