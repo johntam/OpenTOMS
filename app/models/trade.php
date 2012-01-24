@@ -10,5 +10,4 @@ class Trade extends AppModel {
 		'currency_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a currency')
 	);
 }
-
 ?>

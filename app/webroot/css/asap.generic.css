@@ -1,4 +1,4 @@
-/**
+﻿/**
  *
  * Generic CSS for CakePHP
  *
@@ -212,12 +212,19 @@ th a.asc:after {
 th a.desc:after {
 	content: ' ⇡';
 }
+
 table tr td {
 	background: #fff;
 	padding: 6px;
 	text-align: left;
 	vertical-align: middle;
 }
+
+
+
+
+
+
 table .altrow td {
 	background: #f5f5f5;
 }

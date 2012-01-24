@@ -3,7 +3,7 @@ class TradesController extends AppController {
 	var $name = 'Trades';
 	var $funds = array();
 	
-	function index() {
+	function index($pass = null) {
 		$this->paginate = array(
 								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
 														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
@@ -17,60 +17,102 @@ class TradesController extends AppController {
 			'Trade.act =' => 1
 		);
 		
+		//If this page accessed with a url request variable of 'begin'
+		//then delete all session variables relating to the filer
+		if ($pass == 'begin') {
+			if ($this->Session->check('trades_sort_daterange')) {
+				$this->Session->delete('trades_sort_daterange');
+			}
+			
+			if ($this->Session->check('trades_sort_fundchosen')) {
+				$this->Session->delete('trades_sort_fundchosen');
+			}
+			
+			if ($this->Session->check('trades_sort_brokerchosen')) {
+				$this->Session->delete('trades_sort_brokerchosen');
+			}
+			
+			if ($this->Session->check('trades_sort_oid')) {
+				$this->Session->delete('trades_sort_oid');
+			}
+		}
 		
-		$daterange = '-1 week';
-		$fundchosen = null;
-		$brokerchosen = null;
 		
-		//new filter to apply
-		if (!empty($this->data['Trade']['daterange'])) {
-			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($this->data['Trade']['daterange']));
-			$daterange = $this->data['Trade']['daterange'];
+		//date dropdown
+		if (isset($this->params['url']['daterange'])) {
+			 $daterange = $this->params['url']['daterange'];
+			 $this->Session->write('trades_sort_daterange', $daterange);
+		}
+		else if ($this->Session->check('trades_sort_daterange')) {
+			$daterange = $this->Session->read('trades_sort_daterange');
 		}
 		else {
-			$conditions['Trade.crd >'] = date('Y-m-d', strtotime('-1 week'));
+			$daterange = '-1 week';
 		}
 		
-		if (!empty($this->data['Trade']['fundchosen'])) {
-			$conditions['Trade.fund_id ='] = $this->data['Trade']['fundchosen'];
-			$fundchosen = $this->data['Trade']['fundchosen'];
+		
+		//fund dropdown
+		if (isset($this->params['url']['fundchosen'])) {
+			 $fundchosen = $this->params['url']['fundchosen'];
+			 $this->Session->write('trades_sort_fundchosen', $fundchosen);
+		}
+		else if ($this->Session->check('trades_sort_fundchosen')) {
+			$fundchosen = $this->Session->read('trades_sort_fundchosen');
+		}
+		else {
+			$fundchosen = null;
 		}
 		
-		if (!empty($this->data['Trade']['brokerchosen'])) {
-			$conditions['Trade.broker_id ='] = $this->data['Trade']['brokerchosen'];
-			$brokerchosen = $this->data['Trade']['brokerchosen'];
+		//broker dropdown
+		if (isset($this->params['url']['brokerchosen'])) {
+			 $brokerchosen = $this->params['url']['brokerchosen'];
+			 $this->Session->write('trades_sort_brokerchosen', $brokerchosen);
+		}
+		else if ($this->Session->check('trades_sort_brokerchosen')) {
+			$brokerchosen = $this->Session->read('trades_sort_brokerchosen');
+		}
+		else {
+			$brokerchosen = null;
 		}
 		
-		//excel icon pressed
-		if (isset($this->params['pass'][0])) {
-			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($this->params['pass'][0]));
-			
-			if ($this->params['pass'][1] != 0) {
-				$conditions['Trade.fund_id ='] = $this->params['pass'][1];
+		//oid
+		if (isset($this->params['url']['oid'])) {
+			 $oid = $this->params['url']['oid'];
+			 $this->Session->write('trades_sort_oid', $oid);
+		}
+		else if ($this->Session->check('trades_sort_oid')) {
+			$oid = $this->Session->read('trades_sort_oid');
+		}
+		else {
+			$oid = null;
+		}
+		
+		
+		
+		//add extra conditions to sql query
+		if ($oid) {
+			$conditions['Trade.oid ='] = $oid;
+			$fundchosen = null;
+			$brokerchosen = null;
+		}
+		else {
+			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($daterange));
+			if ($fundchosen) {
+				$conditions['Trade.fund_id ='] = $fundchosen;
 			}
-			
-			if ($this->params['pass'][2] != 0) {
-				$conditions['Trade.broker_id ='] = $this->params['pass'][2];
+			if ($brokerchosen) {
+				$conditions['Trade.broker_id ='] = $brokerchosen;
 			}
 		}
-	
-		$params=array(
-			'conditions' => $conditions,
-			'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-								'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
-								'Trade.cancelled','Trade.executed'),
-			'order' => array('Trade.crd DESC')
-		);
 		
 		
-		//$data = $this->Trade->find('all', $params);
+		//get data from the model		
 		$data = $this->paginate('Trade', $conditions);
-
 		
-		if (!isset($this->params['pass'][0])) {	//filter button pressed
+		if (!isset($this->params['url']['Submit_x'])) {	//filter button pressed
 			$this->set('trades', $data);
 			$this->set('title_for_layout', 'View Trades');
-			$this->set('filter', array($daterange,$fundchosen,$brokerchosen));
+			$this->set('filter', array($daterange,$fundchosen,$brokerchosen, $oid));
 		}
 		else {
 			//prepare data for output to csv file
@@ -79,6 +121,7 @@ class TradesController extends AppController {
 			foreach ($data as $d) {
 				$row = array(
 								$d['Trade']['id'],
+								$d['Trade']['oid'],
 								$d['Fund']['fund_name'],
 								$d['Sec']['sec_name'],
 								$d['TradeType']['trade_type'],
@@ -96,7 +139,7 @@ class TradesController extends AppController {
 							);
 				array_push($out, $row);
 			}
-			array_unshift($out, array('Id','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Broker Contact','Trade Date','Price','Cancelled','Executed')); //headers
+			array_unshift($out, array('Id','oid','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Broker Contact','Trade Date','Price','Cancelled','Executed')); //headers
 		
 			Configure::write('debug',0);
 			$this->layout = 'csv';

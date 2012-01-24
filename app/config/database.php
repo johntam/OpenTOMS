@@ -82,7 +82,7 @@ class DATABASE_CONFIG {
 		'password' => 'templ88',
 		'database' => 'ASAPDB01',
 		'prefix' => '',
-		//'encoding' => 'utf8',
+		'encoding' => 'utf8'
 	);
 
 	var $test = array(
@@ -93,6 +93,6 @@ class DATABASE_CONFIG {
 		'password' => 'password',
 		'database' => 'test_database_name',
 		'prefix' => '',
-		//'encoding' => 'utf8',
+		'encoding' => 'utf8'
 	);
 }

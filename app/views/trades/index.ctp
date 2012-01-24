@@ -5,33 +5,36 @@
 <td><h1>Trade Blotter</h1></td>
 </tr>
 <tr class="altrow">
-	<?php echo $this->Form->create(null, array('url' => array('controller' => 'trades', 'action' => 'index')));?>
+	<?php echo $this->Form->create('Trade', array('type'=>'get'));?>
 	<td>
-		<div class="high">
+		<div <?php if (!$filter[3]) {echo 'class="high"';} ?>>
 			<?php echo $this->Form->input('daterange',array('default'=> $filter[0],'type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?>
 		</div>
 	</td>
 	<td>
-		<div <?php if (isset($filter[1])) {echo 'class="high"';} ?>>
+		<div <?php if ($filter[1]) {echo 'class="high"';} ?>>
 			<?php echo $this->Form->input('fundchosen',array('default'=> $filter[1],'type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?>
 		</div>
 	</td>
 	<td>
-		<div <?php if (isset($filter[2])) {echo 'class="high"';} ?>>
+		<div <?php if ($filter[2]) {echo 'class="high"';} ?>>
 			<?php echo $this->Form->input('brokerchosen',array('default'=> $filter[2], 'type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?>
 		</div>
 	</td>
-	<td><?php echo $this->Form->end('Filter');?></td>
-	<?php
-		if (empty($filter[1])) {
-			$filter[1] = 0;
-		}
-		
-		if (empty($filter[2])) {
-			$filter[2] = 0;
-		}
-	?>
-	<td><?php echo $html->link($html->image("/img/Excel-32.gif"), array('action' => 'index/'.$filter[0].'/'.$filter[1].'/'.$filter[2]), array('escape' => false));?></td>
+	<td width="150px">
+		<div <?php if ($filter[3]) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('oid',array('default'=> $filter[3], 'type'=>'text', 'label'=>'Original Order Id'));?>
+		</div>
+	</td>
+	<td>
+		<?php echo $this->Form->submit('Filter', array('name'=>'Submit', 'value' => 'Filter'));?>
+	</td>
+	<td>
+		<div style="width: 35px; height: 35px;">
+			<?php echo $this->Form->submit('Excel-32.gif', array('name'=>'Submit', 'value' => 'Excel'));?>
+		</div>
+	</td>
+	<?php echo $this->Form->end();?>
 </tr>
 </table>
 
@@ -40,7 +43,8 @@
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
-		<th><?php echo $this->Paginator->sort('Id', 'id'); ?></th>
+		<th><?php echo $this->Paginator->sort('Id', 'Trade.id'); ?></th>
+		<th><?php echo $this->Paginator->sort('Orig Id', 'Trade.oid'); ?></th>
 		<th><?php echo $this->Paginator->sort('Fund', 'Fund.fund_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Security', 'Sec.sec_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Trade Type', 'TradeType.trade_type'); ?></th>
@@ -64,6 +68,7 @@
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $trade['Trade']['id']));?></td>
 		<td><?php echo $this->Html->link('View', array('action' => 'view', $trade['Trade']['oid']));?></td>
 		<td><?php echo $trade['Trade']['id']; ?></td>
+		<td><?php echo $trade['Trade']['oid']; ?></td>
 		<td><?php echo $trade['Fund']['fund_name']; ?></td>
 		<td><?php echo $trade['Sec']['sec_name']; ?></td>
 		<td><?php echo $trade['TradeType']['trade_type']; ?></td>
@@ -80,4 +85,5 @@
 		<td><?php echo $trade['Trade']['executed']; ?></td>
 	</tr>
 	<?php endforeach; ?>
+	
 </table>
