@@ -18,7 +18,8 @@ class TradesController extends AppController {
 		);
 		
 		//If this page accessed with a url request variable of 'begin'
-		//then delete all session variables relating to the filer
+		//then delete all session variables relating to the filter
+		/*
 		if ($pass == 'begin') {
 			if ($this->Session->check('trades_sort_daterange')) {
 				$this->Session->delete('trades_sort_daterange');
@@ -36,7 +37,7 @@ class TradesController extends AppController {
 				$this->Session->delete('trades_sort_oid');
 			}
 		}
-		
+		*/
 		
 		//date dropdown
 		if (isset($this->params['url']['daterange'])) {
