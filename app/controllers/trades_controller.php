@@ -136,6 +136,7 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
+			if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 		
 			if ($this->Trade->save($this->data)) {
