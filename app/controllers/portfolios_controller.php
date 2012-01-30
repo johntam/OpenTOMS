@@ -17,5 +17,3 @@ class PortfoliosController extends AppController {
 		}
 	}
 }
-
-?>

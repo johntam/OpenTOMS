@@ -325,5 +325,3 @@ class Portfolio extends AppModel {
 		return($flat);
 	}
 }
-
-?>

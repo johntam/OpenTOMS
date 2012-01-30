@@ -107,5 +107,3 @@ class Report extends AppModel {
 							 array( 'Report.run_date =' => $this->run_date));
 	}	
 }
-
-?>
