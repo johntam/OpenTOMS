@@ -42,7 +42,7 @@ show up on all of your views, include it here -->
 		<ul id="navbar">
 			<li><a href="#">Trades</a><ul>
 				<li><a href="/trades/add">New</a></li>
-				<li><a href="/trades/index/begin">Blotter</a></li></ul>
+				<li><a href="/trades/index">Blotter</a></li></ul>
 			</li>
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
@@ -58,6 +58,7 @@ show up on all of your views, include it here -->
 				<li><a href="/currencies">Currencies</a></li>
 				<li><a href="/holidays">Holiday Dates</a></li>
 				<li><a href="/settlements">Settlement Rules</a></li>
+				<li><a href="/accounts">Accounting Books</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>

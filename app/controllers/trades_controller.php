@@ -17,27 +17,6 @@ class TradesController extends AppController {
 			'Trade.act =' => 1
 		);
 		
-		//If this page accessed with a url request variable of 'begin'
-		//then delete all session variables relating to the filter
-		/*
-		if ($pass == 'begin') {
-			if ($this->Session->check('trades_sort_daterange')) {
-				$this->Session->delete('trades_sort_daterange');
-			}
-			
-			if ($this->Session->check('trades_sort_fundchosen')) {
-				$this->Session->delete('trades_sort_fundchosen');
-			}
-			
-			if ($this->Session->check('trades_sort_brokerchosen')) {
-				$this->Session->delete('trades_sort_brokerchosen');
-			}
-			
-			if ($this->Session->check('trades_sort_oid')) {
-				$this->Session->delete('trades_sort_oid');
-			}
-		}
-		*/
 		
 		//date dropdown
 		if (isset($this->params['url']['daterange'])) {
@@ -154,9 +133,10 @@ class TradesController extends AppController {
 		$this->setchoices();
 	
 		if (!empty($this->data)) {	
-			//remove any commas from quantity and consideration
+			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
+			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
@@ -282,7 +262,12 @@ class TradesController extends AppController {
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
 		
-		$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
+		if ($this->Trade->Sec->is_deriv($secid)) {
+			$this->set('commission', 0);
+		}
+		else {
+			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
+		}
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
 
@@ -298,8 +283,9 @@ class TradesController extends AppController {
 		$tt = $this->Trade->TradeType->find('first', array('conditions'=> array('TradeType.id =' => $ttid)));
 		
 		if ((strtolower(substr($tt['TradeType']['trade_type'],0,3)) == 'buy') &&
-			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp')) {
-			$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
+			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp') &&
+			(!$this->Trade->Sec->is_deriv($secid))) {
+				$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
 		}
 		else {
 			$this->set('tax', 0);
@@ -319,8 +305,9 @@ class TradesController extends AppController {
 		$ccy = $this->Trade->Currency->find('first', array('conditions'=> array('Currency.id =' => $ccyid)));
 		
 		if ((abs($qty * $price * $valpoint['Sec']['valpoint']) > 10000) &&
-			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp')) {
-			$this->set('othercosts', 1);
+			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp') &&
+			(!$this->Trade->Sec->is_deriv($secid))) {
+				$this->set('othercosts', 1);
 		}
 		else {
 			$this->set('othercosts', 0);
@@ -342,12 +329,13 @@ class TradesController extends AppController {
 			$quantity = abs($qty);
 		}
 	
-		$this->set('quantity', number_format($quantity));
+		$this->set('quantity', number_format($quantity, 2, '.', ','));
 		$this->render('/elements/ajax_quantity', 'ajax');
 	}
 	
 	
 	//Calculate the total consideration figure
+	//If the security is a derivative type instrument then calculate the notional value too
 	function ajax_consid() {
 		$commission = $this->params['data']['Trade']['commission'];
 		$tax = $this->params['data']['Trade']['tax'];
@@ -380,16 +368,31 @@ class TradesController extends AppController {
 			}
 			$credit = $creditCACHE[$ttid];
 
-			//handle cashflow differently for buys and sells
-			if ($credit == 'credit') {
-				$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+			$notional = 0;	//This will be calculated for derivative type instruments
+			$consid = 0;
+			
+			if (!$this->Trade->Sec->is_deriv($secid)) {
+				//handle cashflow differently for buys and sells
+				if ($credit == 'credit') {
+					$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+				}
+				else {
+					$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+				}
 			}
 			else {
-				$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+				$consid = - $commission - $tax - $othercosts;
+				if ($credit == 'credit') {
+					$notional = abs($qty * $price * $valpoint);
+				}
+				else {
+					$notional = -abs($qty * $price * $valpoint);
+				}
 			}
-		
-			$consid = round($consid, 4);	
-			$this->set('consid', number_format($consid,4));
+			
+			$consid = round($consid, 4);
+			$notional = round($notional, 4);
+			$this->set('consid', number_format($consid,4).'|'.number_format($notional,4));
 			$this->render('/elements/ajax_consid', 'ajax');
 		}
 		else {
@@ -498,7 +501,6 @@ class TradesController extends AppController {
 		
 		$this->render('/elements/ajax_checkprice', 'ajax');
 	}
-	
 }
 
 ?>

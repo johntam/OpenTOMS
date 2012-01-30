@@ -82,14 +82,14 @@
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td></td>
-		<td></td>
+		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td></td>
-			<td></td>
+			<td><?php echo number_format($trade['Trade']['notional_value'],2); ?></td>
 		</tr>
 	
 </table>

@@ -46,6 +46,32 @@ class Sec extends AppModel {
 		
 		return $output;
 	}
+	
+	//determine if the security is a derivative
+	function is_deriv($id) {
+		
+		$params=array(
+			'fields' => array('SecType2.sec_type'),
+			'joins' => array(
+							array('table'=>'sec_types',
+								  'alias'=>'SecType2',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Sec.sec_type_id=SecType2.id')
+								  )
+							),
+			'conditions' => array('Sec.id =' => $id)
+		);
+		$sectypeid = $this->find('first', $params);
+
+		if ($sectypeid['SecType2']['sec_type'] == 50) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 }
 
 ?>

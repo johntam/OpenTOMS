@@ -104,7 +104,7 @@ class Portfolio extends AppModel {
 			'order' => array('Trade.trade_date DESC'),
 			'contain' => false,
 			'fields' => array('SUM(Trade.quantity) AS position','Sec.sec_name','Sec.id'),
-			'group' => array('Sec.sec_name','Sec.id')
+			'group' => array('Sec.sec_name','Sec.id HAVING position <> 0')
 		);
 		
 		return($trade->find('all', $params));
@@ -115,7 +115,8 @@ class Portfolio extends AppModel {
 	function get_cash_trades() {
 		App::import('model','Trade');
 		$trade = new Trade();
-			
+		
+		
 		$params=array(
 			'conditions' => array(  'Trade.fund_id =' => $this->fund_id, 
 									'Trade.trade_date >' => $this->calc_start_date, 
@@ -125,9 +126,35 @@ class Portfolio extends AppModel {
 									'Trade.act =' => 1),
 			'order' => array('Trade.trade_date DESC'),
 			'contain' => false,
-			'fields' => array('SUM(Trade.consideration) AS position','Currency.currency_iso_code','Currency.sec_id'),
-			'group' => array('Currency.currency_iso_code','Currency.sec_id')
+			'fields' => array('SUM(Trade.consideration + Trade.notional_value) AS position','Currency.currency_iso_code','Currency.sec_id'),
+			'group' => array('Currency.currency_iso_code','Currency.sec_id HAVING position <> 0')
 		);
+		
+		
+		/*
+		//First get the cash consideration of ordinary non-derivative trades
+		$params=array(
+			'fields' => array('SUM(Trade.consideration) AS position','Currency.currency_iso_code','Currency.sec_id'),
+			'joins' => array(
+							array('table'=>'secs',
+								  'alias'=>'Sec',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Price.sec_id=Sec.id ')
+								  ),
+							array('table'=>'sec_types',
+								  'alias'=>'SecType',
+								  'type'=>'inner',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('SecType.id=Sec.sec_type_id ')
+								  )
+							),
+			'conditions' => $conditions, //array of conditions
+			'order' => array('Price.price_date DESC') //string or array defining order
+		);
+		*/
 		
 		//Must convert the array to correspond to the same format as the stock portfolio, i.e. each array element must take the form
 		// '0'=>array('position'=>) , 'Sec'=>array('sec_name'=>,'id'=>)
@@ -138,7 +165,7 @@ class Portfolio extends AppModel {
 								   'Sec'=>array('sec_name'=>$t['Currency']['currency_iso_code'],
 											    'id'=>$t['Currency']['sec_id']));
 		}
-						
+											
 		return $trades_conv;
 	}
 	

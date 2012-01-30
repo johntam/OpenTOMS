@@ -83,14 +83,14 @@
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td></td>
-		<td></td>
+		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
-			<td></td>
+			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr>

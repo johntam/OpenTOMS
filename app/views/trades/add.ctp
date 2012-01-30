@@ -83,14 +83,14 @@
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td></td>
-		<td></td>
+		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td></td>
-			<td></td>
+			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
 		
 	<tr><td colspan="4" style="text-align: center;"><?php echo $this->Form->end('Save Trade'); ?></td></tr>
@@ -99,7 +99,7 @@
 <script type="text/javascript">
 	
 	$(document).ready(function() {
-		handle_execute_checkbox();
+		handle_execute_checkbox();		
 		$("#commission_busy").hide();
 		$("#tax_busy").hide();
 		$("#othercosts_busy").hide();
@@ -113,6 +113,7 @@
 			clearcosts();
 			calc_settdate();
 		});
+		
 		
 		$("#TradeQuantity").focusout(function() {
 			recalculate_consideration();
@@ -136,8 +137,7 @@
 		
 		$("#TradeTradeTypeId").change(function() {
 			recalculate_consideration();
-		});
-		
+		});		
 		
 		$("#TradeTradeDateMonth").change(function() {
 			if ($("#TradeSecId option:selected").text() != 'Select Security') {
@@ -211,6 +211,7 @@
 		$("#TradeTax").val("");
 		$("#TradeOtherCosts").val("");
 		$("#TradeConsideration").val("");
+		$("#TradeNotionalValue").val("");
 	}
 	
 	
@@ -253,7 +254,11 @@
 				$("#TradeAddForm").serialize(),
 				function(data) {
 					if (data.length > 0) {
-						$("#TradeConsideration").val(data);
+						var parts = data.split("|");
+						$("#TradeConsideration").val(parts[0]);
+						if (parts[1] != 0) {
+							$("#TradeNotionalValue").val(parts[1]);
+						}
 						$("#consideration_busy").hide();
 					}
 					

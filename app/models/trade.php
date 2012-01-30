@@ -7,7 +7,10 @@ class Trade extends AppModel {
 		'quantity' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank'),
 		'price' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank'),
 		'sec_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a security'),
-		'currency_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a currency')
+		'currency_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a currency'),
+		'commission' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
+		'tax' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
+		'other_costs' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number')
 	);
 }
 ?>
