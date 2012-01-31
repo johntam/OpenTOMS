@@ -279,7 +279,13 @@ class Portfolio extends AppModel {
 			$price = $sec_price[$id]['price'];
 			$valp = $sec_price[$id]['valpoint'];
 			$ccyid = $sec_price[$id]['currency_id'];
-			$fx_to_base = $fxrates[$ccyid]['fx_rate'] / $fxrates[$fund_ccyid]['fx_rate'];
+			if (empty($fxrates[$fund_ccyid]['fx_rate']) || empty($fxrates[$ccyid]['fx_rate'])) {
+				$fx_to_base = null;
+			}
+			else {
+				$fx_to_base = $fxrates[$ccyid]['fx_rate'] / $fxrates[$fund_ccyid]['fx_rate'];
+			}
+			
 			$msg = null;
 			
 			if (empty($price)) {
@@ -325,3 +331,4 @@ class Portfolio extends AppModel {
 		return($flat);
 	}
 }
+?>

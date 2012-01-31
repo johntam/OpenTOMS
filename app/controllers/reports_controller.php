@@ -47,3 +47,4 @@ class ReportsController extends AppController {
 		
 	
 }
+?>
