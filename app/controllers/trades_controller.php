@@ -162,6 +162,12 @@ class TradesController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Trade->read();
 		} else {
+			//remove any commas from quantity, consideration and notional value
+			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
+			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
+			if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
+			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
+		
 			$id = $this->Trade->id;
 			unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
 			$this->data['Trade']['act'] = 1;
@@ -255,16 +261,16 @@ class TradesController extends AppController {
 	}
 	
 	//work out the broker's commission
-	function ajax_commission() {
-		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
-		$price = $this->params['url']['data']['Trade']['execution_price'];
-		$secid = $this->params['url']['data']['Trade']['sec_id'];
-		$brokerid = $this->params['url']['data']['Trade']['broker_id'];
+	function ajax_commission() {	
+		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
+		$price = $this->params['data']['Trade']['execution_price'];
+		$secid = $this->params['data']['Trade']['sec_id'];
+		$brokerid = $this->params['data']['Trade']['broker_id'];
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
 		
 		if ($this->Trade->Sec->is_deriv($secid)) {
-			$this->set('commission', 0);
+			$this->set('commission', '0.00');
 		}
 		else {
 			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
@@ -274,11 +280,11 @@ class TradesController extends AppController {
 
 	//tax costs, specifically stamp duty on purchases in the UK
 	function ajax_tax() {
-		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
-		$price = $this->params['url']['data']['Trade']['execution_price'];
-		$secid = $this->params['url']['data']['Trade']['sec_id'];
-		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
-		$ttid = $this->params['url']['data']['Trade']['trade_type_id'];
+		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
+		$price = $this->params['data']['Trade']['execution_price'];
+		$secid = $this->params['data']['Trade']['sec_id'];
+		$ccyid = $this->params['data']['Trade']['currency_id'];
+		$ttid = $this->params['data']['Trade']['trade_type_id'];
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$ccy = $this->Trade->Currency->find('first', array('conditions'=> array('Currency.id =' => $ccyid)));
 		$tt = $this->Trade->TradeType->find('first', array('conditions'=> array('TradeType.id =' => $ttid)));
@@ -289,7 +295,7 @@ class TradesController extends AppController {
 				$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
 		}
 		else {
-			$this->set('tax', 0);
+			$this->set('tax', '0.00');
 		}
 		
 		$this->render('/elements/ajax_tax', 'ajax');
@@ -298,10 +304,10 @@ class TradesController extends AppController {
 	
 	//other costs, most notably the PTM Levy in the UK
 	function ajax_othercosts() {
-		$qty = str_replace(',','',$this->params['url']['data']['Trade']['quantity']);
-		$price = $this->params['url']['data']['Trade']['execution_price'];
-		$secid = $this->params['url']['data']['Trade']['sec_id'];
-		$ccyid = $this->params['url']['data']['Trade']['currency_id'];
+		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
+		$price = $this->params['data']['Trade']['execution_price'];
+		$secid = $this->params['data']['Trade']['sec_id'];
+		$ccyid = $this->params['data']['Trade']['currency_id'];
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$ccy = $this->Trade->Currency->find('first', array('conditions'=> array('Currency.id =' => $ccyid)));
 		
@@ -311,7 +317,7 @@ class TradesController extends AppController {
 				$this->set('othercosts', 1);
 		}
 		else {
-			$this->set('othercosts', 0);
+			$this->set('othercosts', '0.00');
 		}
 		
 		$this->render('/elements/ajax_othercosts', 'ajax');

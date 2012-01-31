@@ -39,7 +39,7 @@
 	<tr class="highlight">
 		<td>Decision Time</td>
 		<td>Trade Date</td>
-		<td>Settlement Date</td>
+		<td>Settlement Date<img src="/img/ajax-busy.gif" id="settdate_busy"/></td>
 		<td>Trader</td>
 	</tr>
 	
@@ -66,17 +66,17 @@
 	
 	
 	<tr class="highlight">
-		<td>Commission</td>
-		<td>Tax</td>
-		<td>Other Costs</td>
-		<td>Total Consideration</td>
+		<td>Commission<img src="/img/ajax-busy.gif" id="commission_busy"/></td>
+		<td>Tax<img src="/img/ajax-busy.gif" id="tax_busy"/></td>
+		<td>Other Costs<img src="/img/ajax-busy.gif" id="othercosts_busy"/></td>
+		<td>Total Consideration<img src="/img/ajax-busy.gif" id="consideration_busy"/></td>
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('commission',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('tax',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('other_costs',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('consideration',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
+			<td><?php echo $this->Form->input('tax',array('label'=>false, 'div'=>array('id'=>'TradeTaxId'))); ?></td>
+			<td><?php echo $this->Form->input('other_costs',array('label'=>false, 'div'=>array('id'=>'TradeOtherCostsId'))); ?></td>
+			<td><?php echo $this->Form->input('consideration',array('label'=>false, 'div'=>array('id'=>'TradeConsiderationId'))); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -103,4 +103,324 @@
 		</td>
 	</tr>
 </table>
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		handle_execute_checkbox();		
+		$("#commission_busy").hide();
+		$("#tax_busy").hide();
+		$("#othercosts_busy").hide();
+		$("#consideration_busy").hide();
+		$("#settdate_busy").hide();
+	
+		$("#TradeSecId").change(function() {
+			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
+			$("#TradeQuantity").val("");
+			$("#TradeExecutionPrice").val("");
+			clearcosts();
+			calc_settdate();
+		});
+		
+		
+		$("#TradeQuantity").focusout(function() {
+			recalculate_consideration();
+		});
+		
+		$("#TradeExecutionPrice").focusout(function() {
+			recalculate_consideration();
+		});
+		
+		$("#TradeExecuted").click(function() {
+			handle_execute_checkbox();
+		});
+		
+		$("#TradeBrokerId").change(function() {
+			recalculate_consideration();
+		});
+		
+		$("#TradeCurrencyId").change(function() {
+			recalculate_consideration();
+		});
+		
+		$("#TradeTradeTypeId").change(function() {
+			recalculate_consideration();
+		});		
+		
+		$("#TradeCommission").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		$("#TradeTax").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		$("#TradeOtherCosts").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		$("#TradeTradeDateMonth").change(function() {
+			if ($("#TradeSecId option:selected").text() != 'Select Security') {
+				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+				$("#settdate_busy").show();
+				check_price();
+				calc_settdate();
+				
+				$.when( calc_settdate() )
+					.then(function(){
+						$('input[type="submit"]').removeAttr('disabled');
+				});
+			}
+		});
+		
+		
+		$("#TradeTradeDateDay").change(function() {
+			if ($("#TradeSecId option:selected").text() != 'Select Security') {
+				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+				$("#settdate_busy").show();
+				check_price();
+				calc_settdate();
+				
+				$.when( calc_settdate() )
+					.then(function(){
+						$('input[type="submit"]').removeAttr('disabled');
+				});
+			}	
+		});
+		
+		
+		$("#TradeTradeDateYear").change(function() {
+			if ($("#TradeSecId option:selected").text() != 'Select Security') {
+				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+				$("#settdate_busy").show();
+				check_price();
+				calc_settdate();
+				
+				$.when( calc_settdate() )
+					.then(function(){
+						$('input[type="submit"]').removeAttr('disabled');
+				});
+			}
+		});
+		
+		
+		$("#TradeExecutionPrice").focusout(function() {
+			check_price();
+		});
+		
+	});
+	
+	
+	function handle_execute_checkbox() {
+		var checked = $("#TradeExecuted:checked").val() != undefined;
+		if (!checked) {
+			$("#TradeExecutionPrice").val("");
+			$("#TradeExecutionPrice").attr("readonly", "readonly");
+			$("#TradeExecutionPrice").css("background-color","silver");
+			clearcosts();
+		}
+		else {
+			$("#TradeExecutionPrice").removeAttr("readonly");
+			$("#TradeExecutionPrice").css("background-color","white");
+		}
+	}
+	
+	
+	function clearcosts() {
+		$("#TradeCommission").val("");
+		$("#TradeTax").val("");
+		$("#TradeOtherCosts").val("");
+		$("#TradeConsideration").val("");
+		$("#TradeNotionalValue").val("");
+	}
+	
+	
+	function calc_settdate() {
+		return $.Deferred(function( deferred_obj ){
+			$.post("/trades/ajax_settdate?" + (new Date()).getTime(),
+				$("#TradeEditForm").serialize(),
+				function(data) {
+					if (data.indexOf("-") > 0) {
+						var myDate = data.split("-");
+						$("#TradeSettlementDateMonth").val(myDate[1]);
+						$("#TradeSettlementDateDay").val(myDate[2]);
+						$("#TradeSettlementDateYear").val(myDate[0]);
+						$("#settdate_busy").hide();
+					}
+					
+					deferred_obj.resolve();
+				},
+				"text"
+			);
+		}).promise();
+	}
+	
+	
+	function check_price() {
+		$.post("/trades/ajax_checkprice?" + (new Date()).getTime(),
+			$("#TradeEditForm").serialize(),
+			function(data) {
+				if (data.length > 0) {
+					alert(data);
+				}
+			},
+			"text"
+		);
+	}
+	
+	function calc_consideration() {
+		return $.Deferred(function( deferred_obj ){
+			$.post("/trades/ajax_consid?" + (new Date()).getTime(),
+				$("#TradeEditForm").serialize(),
+				function(data) {
+					if (data.length > 0) {
+						var parts = data.split("|");
+						$("#TradeConsideration").val(parts[0]);
+						if (parts[1] != 0) {
+							$("#TradeNotionalValue").val(parts[1]);
+						}
+						$("#consideration_busy").hide();
+					}
+					
+					deferred_obj.resolve();
+				},
+				"text"
+			);
+		}).promise();
+	}
+	
+	
+	function recalculate_consideration() {
+		var checked = $("#TradeExecuted:checked").val() != undefined;
+		
+		checked = checked && ($("#TradeSecId option:selected").text() != 'Select Security');
+		checked = checked && ($("#TradeQuantity").val() != '');
+		checked = checked && ($("#TradeExecutionPrice").val() != '');
+	
+		if (checked) {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			calc_quantity();
+			calc_commission();
+			calc_tax();
+			calc_othercosts();
+			
+			$.when( calc_quantity(), calc_commission(), calc_tax(), calc_othercosts() )
+			   .then(function(){
+			   
+				  calc_consideration();
+				  $.when( calc_consideration() )
+					.then(function() {
+						//activate submit button
+						$('input[type="submit"]').removeAttr('disabled');
+					})
+					.fail(function() {
+					  // AJAX request failed
+					  alert("Connection to database failed.");
+					});
+			   })
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		}
+	}
+	
+	function calc_quantity() {
+		return $.Deferred(function( deferred_obj ){
+			$.post("/trades/ajax_quantity?" + (new Date()).getTime(),
+				{ quantity : $("#TradeQuantity").val() , tradetype : $("#TradeTradeTypeId").val() },
+				function(data) {
+					$("#TradeQuantity").val(data);
+					deferred_obj.resolve();
+				},
+				"text"
+			);
+		}).promise();
+	}
+	
+	function calc_commission() {
+		return $.Deferred(function( deferred_obj ){
+			$("#commission_busy").show();
+			$.post("/trades/ajax_commission?" + (new Date()).getTime() , 
+							$("#TradeEditForm").serialize(), 
+							function(data) { 
+								$("#commission_busy").hide(); 
+								$("#consideration_busy").show(); 
+								$("#TradeCommission").val(data);
+								deferred_obj.resolve();
+							},
+							"text"
+					);
+		}).promise();
+	}
+	
+	function calc_tax() {
+		return $.Deferred(function( deferred_obj ){
+			$("#tax_busy").show();
+			$.post("/trades/ajax_tax?" + (new Date()).getTime() , 
+						$("#TradeEditForm").serialize(), 
+						function(data) { 
+							$("#tax_busy").hide(); 
+							$("#consideration_busy").show(); 
+							$("#TradeTax").val(data);
+							deferred_obj.resolve(); 
+						},
+						"text"
+					);
+		}).promise();
+	}
+	
+	
+	function calc_othercosts() {
+		return $.Deferred(function( deferred_obj ){
+			$("#othercosts_busy").show();
+			$.post("/trades/ajax_othercosts?" + (new Date()).getTime() , 
+						$("#TradeEditForm").serialize(), 
+						function(data) { 
+							$("#othercosts_busy").hide(); 
+							$("#consideration_busy").show();
+							$("#TradeOtherCosts").val(data);
+							deferred_obj.resolve();
+						},
+						"text"
+					);
+		}).promise();
+	}
+</script>
 

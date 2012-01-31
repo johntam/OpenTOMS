@@ -137,7 +137,55 @@
 		
 		$("#TradeTradeTypeId").change(function() {
 			recalculate_consideration();
-		});		
+		});
+		
+		$("#TradeCommission").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		$("#TradeTax").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		$("#TradeOtherCosts").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
 		
 		$("#TradeTradeDateMonth").change(function() {
 			if ($("#TradeSecId option:selected").text() != 'Select Security') {
@@ -321,14 +369,32 @@
 	function calc_commission() {
 		return $.Deferred(function( deferred_obj ){
 			$("#commission_busy").show();
-			$("#TradeCommId").load("/trades/ajax_commission?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#commission_busy").hide(); $("#consideration_busy").show(); deferred_obj.resolve();});
+			$.post("/trades/ajax_commission?" + (new Date()).getTime() , 
+							$("#TradeAddForm").serialize(), 
+							function(data) { 
+								$("#commission_busy").hide(); 
+								$("#consideration_busy").show(); 
+								$("#TradeCommission").val(data);
+								deferred_obj.resolve();
+							},
+							"text"
+					);
 		}).promise();
 	}
 	
 	function calc_tax() {
 		return $.Deferred(function( deferred_obj ){
 			$("#tax_busy").show();
-			$("#TradeTaxId").load("/trades/ajax_tax?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#tax_busy").hide(); $("#consideration_busy").show(); deferred_obj.resolve(); });
+			$.post("/trades/ajax_tax?" + (new Date()).getTime() , 
+						$("#TradeAddForm").serialize(), 
+						function(data) { 
+							$("#tax_busy").hide(); 
+							$("#consideration_busy").show(); 
+							$("#TradeTax").val(data);
+							deferred_obj.resolve(); 
+						},
+						"text"
+					);
 		}).promise();
 	}
 	
@@ -336,7 +402,16 @@
 	function calc_othercosts() {
 		return $.Deferred(function( deferred_obj ){
 			$("#othercosts_busy").show();
-			$("#TradeOtherCostsId").load("/trades/ajax_othercosts?" + (new Date()).getTime() , $("#TradeAddForm").serialize(), function() { $("#othercosts_busy").hide(); $("#consideration_busy").show(); deferred_obj.resolve();});
+			$.post("/trades/ajax_othercosts?" + (new Date()).getTime() , 
+						$("#TradeAddForm").serialize(), 
+						function(data) { 
+							$("#othercosts_busy").hide(); 
+							$("#consideration_busy").show();
+							$("#TradeOtherCosts").val(data);
+							deferred_obj.resolve();
+						},
+						"text"
+					);
 		}).promise();
 	}
 </script>
