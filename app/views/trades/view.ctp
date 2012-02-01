@@ -1,6 +1,6 @@
 <!-- File: /app/views/trades/view.ctp -->
 
-<table>	
+<table <?php if (($data['0']['Trade']['cancelled'] == 1) || ($data['0']['Trade']['act'] == 0)) {echo 'class="cancelled"';} ?>>	
 	<tr>
 		<td>
 			<h2>View Trade (Orig ID: <?php echo $data['0']['Trade']['oid']; ?>)</h2>

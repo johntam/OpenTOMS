@@ -177,7 +177,7 @@ class TradesController extends AppController {
 			if ($this->Trade->save($this->data)) {
 				$this->Trade->id = $id;
 				//Clear the active flag on the trade that was edited
-				if ($this->Trade->saveField('act',0)) {
+				if ($this->Trade->saveField('act',0) && $this->Trade->saveField('cancelled',1)) {
 					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been updated.');
 					$this->redirect(array('action' => 'index'));

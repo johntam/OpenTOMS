@@ -220,10 +220,16 @@ table tr td {
 	vertical-align: middle;
 }
 
-
-
-
-
+table.cancelled {
+	background: #F2619B;
+	border-right:0;
+	clear: both;
+	color: #F2619B;
+	margin-bottom: 10px;
+	width: 80%;
+	margin-left:10%; 
+    margin-right:10%;
+}
 
 table .altrow td {
 	background: #f5f5f5;
