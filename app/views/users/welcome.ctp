@@ -1,15 +1,50 @@
-<table style="width: 50%;margin-left:25%;margin-right:25%;">
-</br>
-<tr><td style="text-align: center;"><h1>Welcome to ASAP</h1></td></tr>
+<?php
+define("DEFAULT_FILE", "worklist.txt"); // Default file name to use.
 
-<tr><td></br></td></tr>
-<tr><td>
+if (!isset($_GET['file'])) {
+    $file = DEFAULT_FILE;
+}
+else {
+    $file = $_GET['file'];
+}
 
-This is the first version of the web version of ASAP. This version contains simple trade entry and trade blotter display as well 
-as maintenance of standing data items. Please could you give me feedback.
-</br>
-</br>
-Thanks, JT, 28 Oct 2011
-</td></tr>
 
-</table>
+if (isset($_POST['bsubmit']))
+{	
+	$fh = fopen($file, 'w') or die("Can't open file.");
+    fwrite($fh, stripslashes($_POST['body']));
+    fclose($fh);
+	$message='Notes updated';
+}
+
+?>
+
+<center>
+
+	<table width=400>
+		<tr>
+			<td>
+				<h1>Welcome to ASAP</h1>
+			</td>
+		</tr>
+	
+		<tr>
+			<td style='border: 2px dashed #003b53; padding:10px; font-family:verdana; font-size:10px; color: #003b53;' align='center'>
+				Please feel free to ammend the notes below:<br><br>
+
+
+				<FORM action='<?php echo $this->Html->url(array('controller'=>'users', 'action'=>'welcome')); ?>' method='post'>
+					<textarea name='body'  rows="25" cols="100"  style="font-family: Verdana; padding: 5px; background-color: LightYellow"><?php
+						if (file_exists($file)) {
+							readfile($file);
+						}
+					?></textarea><br><br>
+					
+					<?php if (isset($message)) {echo $message;} ?> 
+
+					<INPUT type="submit" name="bsubmit" value="Update">
+				</FORM>
+			</td>
+		</tr>
+	</table>
+</center>

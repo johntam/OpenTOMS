@@ -1,0 +1,18 @@
+THINGS TO DO
+==========
+
+ADAM
+			
+1) RGL also have some bonds so we need to address the accrued interest/coupon payments issues now. The accrued interest will need to be calculated on the trade input screen once the settlement date is entered and the accrued interest will have to be calculated as part of the NAV. Also with regards to coupon we will have to add these as a trade type. I think on the security screen you will need to add coupon frequency and calculation type.
+
+IF
+
+1)Would be good to be able to copy a trade – ie if I buy and sell a stock in the same day I don’t have to enter everything twice.  Buy euro vs CHF and then copy the trade and then just amend to a sell but saves re-inputting all the other trade info…
+2)Would be good to be able to set-up screens to default views – ie.  All Arktos trades have NewEdge as the broker and trade reason is model driven…. 
+3)When I press the execute button I have to enter the price in the execution price field – can it pick up the price from the order price box –  instead of inputting twice?
+4)We also need to add a custodian field to the trade entry screen. If we have a fund with multiple custodians (which we do) then we need to allocate the trade to that custodian.  Can also be set as defaults… ie Arktos always NewEdge unless stated otherwise
+
+
+
+THINGS ALREADY DONE
+================
