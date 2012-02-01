@@ -34,7 +34,7 @@
 	
 	<tr class="highlight">
 		<td>Underlying Sec Id</td>
-		<td>Tradar Id</td>
+		<td></td>
 		<td>SEDOL</td>
 		<td>Beta</td>
 		<td>Delta</td>
@@ -42,7 +42,7 @@
 	
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['underlying_secid']; ?></td>
-			<td><?php echo $sec['Sec']['tradarid']; ?></td>
+			<td></td>
 			<td><?php echo $sec['Sec']['sedol']; ?></td>
 			<td><?php echo $sec['Sec']['beta']; ?></td>
 			<td><?php echo $sec['Sec']['delta']; ?></td>
@@ -104,7 +104,7 @@
 		<td>Price</td>
 		<td>Maturity</td>
 		<td>Currency</td>
-		<td>Expiry Date</td>
+		<td></td>
 		<td>Price Source</td>
 	</tr>
 
@@ -112,7 +112,7 @@
 			<td><?php echo $sec['Sec']['price']; ?></td>
 			<td><?php echo $sec['Sec']['maturity']; ?></td>
 			<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
-			<td><?php echo $sec['Sec']['expiry_date']; ?></td>
+			<td></td>
 			<td><?php echo $sec['Sec']['price_source']; ?></td>
 		</tr>
 	<tr class="highlight">

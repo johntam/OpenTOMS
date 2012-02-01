@@ -26,7 +26,7 @@
 	
 	<tr class="highlight">
 		<td>Underlying Sec Id</td>
-		<td>Tradar Id</td>
+		<td></td>
 		<td>SEDOL</td>
 		<td>Beta</td>
 		<td>Delta</td>
@@ -34,7 +34,7 @@
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('underlying_secid', array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('tradarid', array('label'=>false)); ?></td>
+			<td></td>
 			<td><?php echo $this->Form->input('sedol', array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('beta', array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('delta', array('label'=>false)); ?></td>
@@ -96,7 +96,7 @@
 		<td>Price</td>
 		<td>Maturity</td>
 		<td>Currency</td>
-		<td>Expiry Date</td>
+		<td></td>
 		<td>Price Source</td>
 	</tr>
 
@@ -104,7 +104,7 @@
 			<td><?php echo $this->Form->input('price', array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('maturity', array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('currency_id', array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('expiry_date', array('label'=>false,'empty'=>' ')); ?></td>
+			<td></td>
 			<td><?php echo $this->Form->input('price_source', array('label'=>false)); ?></td>
 		</tr>
 	<tr class="highlight">

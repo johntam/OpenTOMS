@@ -54,9 +54,9 @@
 		<th><?php echo $this->Paginator->sort('Currency', 'Currency.currency_iso_code'); ?></th>
 		<th><?php echo $this->Paginator->sort('Quantity', 'Trade.quantity'); ?></th>
 		<th><?php echo $this->Paginator->sort('Consideration', 'Trade.consideration'); ?></th>
-		<th><?php echo $this->Paginator->sort('Broker Contact', 'Trade.broker_contact'); ?></th>
 		<th><?php echo $this->Paginator->sort('Trade Date', 'Trade.trade_date'); ?></th>
 		<th><?php echo $this->Paginator->sort('Order Price', 'Trade.price'); ?></th>
+		<th><?php echo $this->Paginator->sort('Execution Price', 'Trade.execution_price'); ?></th>
 		<th><?php echo $this->Paginator->sort('Cancelled', 'Trade.cancelled'); ?></th>
 		<th><?php echo $this->Paginator->sort('Executed', 'Trade.executed'); ?></th>
 	</tr>
@@ -78,9 +78,9 @@
 		<td><?php echo $trade['Currency']['currency_iso_code']; ?></td>
 		<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
 		<td style="text-align: right;"><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
-		<td><?php echo $trade['Trade']['broker_contact']; ?></td>
 		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>
 		<td><?php echo $trade['Trade']['price']; ?></td>
+		<td><?php echo $trade['Trade']['execution_price']; ?></td>
 		<td><?php echo $trade['Trade']['cancelled']; ?></td>
 		<td><?php echo $trade['Trade']['executed']; ?></td>
 	</tr>

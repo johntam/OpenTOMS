@@ -6,8 +6,8 @@ class TradesController extends AppController {
 	function index($pass = null) {
 		$this->paginate = array(
 								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.broker_contact','Trade.trade_date','Trade.price',
-														'Trade.cancelled','Trade.executed'),
+														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.trade_date','Trade.price',
+														'Trade.execution_price','Trade.cancelled','Trade.executed'),
 								'limit' => 1000,
 								'order' => 	array('Trade.id' => 'desc')
 		);
@@ -111,15 +111,15 @@ class TradesController extends AppController {
 								$d['Currency']['currency_iso_code'],
 								$d['Trade']['quantity'],
 								$d['Trade']['consideration'],
-								$d['Trade']['broker_contact'],
 								$d['Trade']['trade_date'],
 								$d['Trade']['price'],
+								$d['Trade']['execution_price'],
 								$d['Trade']['cancelled'],
 								$d['Trade']['executed']
 							);
 				array_push($out, $row);
 			}
-			array_unshift($out, array('Id','oid','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Broker Contact','Trade Date','Price','Cancelled','Executed')); //headers
+			array_unshift($out, array('Id','oid','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Trade Date','Price','Execution Price','Cancelled','Executed')); //headers
 		
 			Configure::write('debug',0);
 			$this->layout = 'csv';
