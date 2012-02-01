@@ -82,7 +82,7 @@
 	<tr class="highlight">
 		<td>Executed</td>
 		<td>Cancelled</td>
-		<td></td>
+		<td>Accrued Interest</td>
 		<td>Notional Value</td>
 	</tr>
 
