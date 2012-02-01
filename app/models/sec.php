@@ -51,7 +51,7 @@ class Sec extends AppModel {
 	function is_deriv($id) {
 		
 		$params=array(
-			'fields' => array('SecType2.sec_type'),
+			'fields' => array('SecType2.sec_type','SecType2.cfd'),
 			'joins' => array(
 							array('table'=>'sec_types',
 								  'alias'=>'SecType2',
@@ -65,7 +65,7 @@ class Sec extends AppModel {
 		);
 		$sectypeid = $this->find('first', $params);
 
-		if ($sectypeid['SecType2']['sec_type'] == 50) {
+		if ($sectypeid['SecType2']['cfd'] == 0) {
 			return false;
 		}
 		else {
