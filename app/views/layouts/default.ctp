@@ -32,7 +32,7 @@
 <?php echo $this->Html->css('asap.generic'); ?>
 </head>
 <body>
-<img src="/img/asaplogo.png" alt="ASAP Logo" width="340" height="85" /> 
+<a href="/users/welcome"><img src="/img/asaplogo.png" alt="ASAP Logo" width="340" height="85" /></a>
 </br></br>
 
 <!-- If you'd like some sort of menu to 
