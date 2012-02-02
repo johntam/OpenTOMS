@@ -26,7 +26,7 @@
 	
 	<tr class="highlight">
 		<td>Underlying Sec Id</td>
-		<td></td>
+		<td>RIC</td>
 		<td>SEDOL</td>
 		<td>Beta</td>
 		<td>Delta</td>
@@ -34,14 +34,14 @@
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('underlying_secid',array('label'=>false)); ?></td>
-			<td></td>
+			<td><?php echo $this->Form->input('ric_code',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('sedol',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('beta',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('delta',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
-		<td>Prev Coupon Date</td>
+		<td>CUSIP</td>
 		<td>Valpoint</td>
 		<td>ISIN</td>
 		<td>Industry</td>
@@ -49,7 +49,7 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('prev_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('cusip_code',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('valpoint',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('isin_code',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('industry_id',array('label'=>false)); ?></td>
@@ -59,7 +59,7 @@
 	<tr class="highlight">
 		<td>First Accrual Date</td>
 		<td>Exchange</td>
-		<td>First Coupon Date</td>
+		<td>Dividend Date</td>
 		<td>Dividend Amount</td>
 		<td>Ex Date</td>
 	</tr>
@@ -67,42 +67,41 @@
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('first_accrual_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('exchange_id',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('first_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('dividend_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('dividend_amount',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('ex_date',array('label'=>false,'empty'=>' ')); ?></td>
 		</tr>
 	
 
 	<tr class="highlight">
-		<td>Dividend Date</td>
-		<td>CUSIP</td>
-		<td>Coupon Pay</td>
-		<td>Coupon</td>
-		<td>RIC</td>
+		<td>Prev Coupon Date</td>
+		<td>Maturity</td>
+		<td>Coupon Frequency</td>
+		<td>Coupon (%)</td>
+		<td>Calculation Type</td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('dividend_date',array('label'=>false,'empty'=>' ')); ?></td>
-			<td><?php echo $this->Form->input('cusip_code',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('coupon_pay',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('prev_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('maturity',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('coupon_frequency',array('label'=>false, 'options' => array(' '=>null,'semi'=>'semi','quart'=>'quart','ann'=>'ann'))); ?></td>
 			<td><?php echo $this->Form->input('coupon',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('ric_code',array('label'=>false)); ?></td>
-			<td></td>
+			<td><?php echo $this->Form->input('calc_type',array('label'=>false, 'options' => array(' '=>null,'30/360'=>'30/360','30/365'=>'30/365'))); ?></td>
 		</tr>
 	
 	<tr>
 	
 	<tr class="highlight">
-		<td>Price</td>
-		<td>Maturity</td>
+		<td></td>
+		<td></td>
 		<td>Currency</td>
 		<td></td>
 		<td>Price Source</td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $this->Form->input('price',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('maturity',array('label'=>false,'empty'=>' ')); ?></td>
+			<td></td>
+			<td></td>
 			<td><?php echo $this->Form->input('currency_id',array('label'=>false)); ?></td>
 			<td></td>
 			<td><?php echo $this->Form->input('price_source',array('label'=>false)); ?></td>

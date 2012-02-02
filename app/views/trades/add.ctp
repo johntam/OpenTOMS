@@ -82,14 +82,14 @@
 	<tr class="highlight">
 		<td>Executed</td>
 		<td>Cancelled</td>
-		<td>Accrued Interest</td>
+		<td>Accrued Interest<img src="/img/ajax-busy.gif" id="accrued_busy"/></td>
 		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
-			<td></td>
+			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
 		
@@ -104,6 +104,7 @@
 		$("#tax_busy").hide();
 		$("#othercosts_busy").hide();
 		$("#consideration_busy").hide();
+		$("#accrued_busy").hide();
 		$("#settdate_busy").hide();
 	
 		$("#TradeSecId").change(function() {
@@ -260,6 +261,7 @@
 		$("#TradeOtherCosts").val("");
 		$("#TradeConsideration").val("");
 		$("#TradeNotionalValue").val("");
+		$("#TradeAccrued").val("");
 	}
 	
 	
@@ -331,8 +333,9 @@
 			calc_commission();
 			calc_tax();
 			calc_othercosts();
+			calc_accrued();
 			
-			$.when( calc_quantity(), calc_commission(), calc_tax(), calc_othercosts() )
+			$.when( calc_quantity(), calc_commission(), calc_tax(), calc_othercosts(), calc_accrued() )
 			   .then(function(){
 			   
 				  calc_consideration();
@@ -411,6 +414,22 @@
 							deferred_obj.resolve();
 						},
 						"text"
+					);
+		}).promise();
+	}
+	
+	function calc_accrued() {
+		return $.Deferred(function( deferred_obj ){
+			$("#accrued_busy").show();
+			$.post("/trades/ajax_accrued?" + (new Date()).getTime() , 
+							$("#TradeAddForm").serialize(), 
+							function(data) { 
+								$("#accrued_busy").hide(); 
+								$("#consideration_busy").show(); 
+								$("#TradeAccrued").val(data);
+								deferred_obj.resolve();
+							},
+							"text"
 					);
 		}).promise();
 	}

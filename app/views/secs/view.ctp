@@ -34,7 +34,7 @@
 	
 	<tr class="highlight">
 		<td>Underlying Sec Id</td>
-		<td></td>
+		<td>RIC</td>
 		<td>SEDOL</td>
 		<td>Beta</td>
 		<td>Delta</td>
@@ -42,14 +42,14 @@
 	
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['underlying_secid']; ?></td>
-			<td></td>
+			<td><?php echo $sec['Sec']['ric_code']; ?></td>
 			<td><?php echo $sec['Sec']['sedol']; ?></td>
 			<td><?php echo $sec['Sec']['beta']; ?></td>
 			<td><?php echo $sec['Sec']['delta']; ?></td>
 		</tr>
 	
 	<tr class="highlight">
-		<td>Prev Coupon Date</td>
+		<td>CUSIP</td>
 		<td>Valpoint</td>
 		<td>ISIN</td>
 		<td>Industry</td>
@@ -57,7 +57,7 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $sec['Sec']['prev_coupon_date']; ?></td>
+			<td><?php echo $sec['Sec']['cusip_code']; ?></td>
 			<td><?php echo $sec['Sec']['valpoint']; ?></td>
 			<td><?php echo $sec['Sec']['isin_code']; ?></td>
 			<td><?php echo $sec['Industry']['industry_name']; ?></td>
@@ -67,7 +67,7 @@
 	<tr class="highlight">
 		<td>First Accrual Date</td>
 		<td>Exchange</td>
-		<td>First Coupon Date</td>
+		<td>Dividend Date</td>
 		<td>Dividend Amount</td>
 		<td>Ex Date</td>
 	</tr>
@@ -75,42 +75,41 @@
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['first_accrual_date']; ?></td>
 			<td><?php echo $sec['Exchange']['exchange_name']; ?></td>
-			<td><?php echo $sec['Sec']['first_coupon_date']; ?></td>
+			<td><?php echo $sec['Sec']['dividend_date']; ?></td>
 			<td><?php echo $sec['Sec']['dividend_amount']; ?></td>
 			<td><?php echo $sec['Sec']['ex_date']; ?></td>
 		</tr>
 	
 
 	<tr class="highlight">
-		<td>Dividend Date</td>
-		<td>CUSIP</td>
-		<td>Coupon Pay</td>
-		<td>Coupon</td>
-		<td>RIC</td>
+		<td>Prev Coupon Date</td>
+		<td>Maturity</td>
+		<td>Coupon Frequency</td>
+		<td>Coupon(%)</td>
+		<td>Calculation Type</td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $sec['Sec']['dividend_date']; ?></td>
-			<td><?php echo $sec['Sec']['cusip_code']; ?></td>
-			<td><?php echo $sec['Sec']['coupon_pay']; ?></td>
-			<td><?php echo $sec['Sec']['coupon']; ?></td>
-			<td><?php echo $sec['Sec']['ric_code']; ?></td>
+			<td><?php echo $sec['Sec']['prev_coupon_date']; ?></td>
 			<td></td>
+			<td><?php echo $sec['Sec']['coupon_frequency']; ?></td>
+			<td><?php echo $sec['Sec']['coupon']; ?></td>
+			<td><?php echo $sec['Sec']['calc_type']; ?></td>
 		</tr>
 	
 	<tr>
 	
 	<tr class="highlight">
-		<td>Price</td>
-		<td>Maturity</td>
+		<td></td>
+		<td><?php echo $sec['Sec']['maturity']; ?></td>
 		<td>Currency</td>
 		<td></td>
 		<td>Price Source</td>
 	</tr>
 
 		<tr class="altrow">
-			<td><?php echo $sec['Sec']['price']; ?></td>
-			<td><?php echo $sec['Sec']['maturity']; ?></td>
+			<td></td>
+			<td></td>
 			<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 			<td></td>
 			<td><?php echo $sec['Sec']['price_source']; ?></td>

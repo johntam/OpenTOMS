@@ -49,28 +49,67 @@ class Sec extends AppModel {
 	
 	//determine if the security is a derivative
 	function is_deriv($id) {
-		
 		$params=array(
-			'fields' => array('SecType2.sec_type','SecType2.cfd'),
-			'joins' => array(
-							array('table'=>'sec_types',
-								  'alias'=>'SecType2',
-								  'type'=>'inner',
-								  'foreignKey'=>false,
-								  'conditions'=>
-										array('Sec.sec_type_id=SecType2.id')
-								  )
-							),
+			'fields' => array('SecType.cfd'),
 			'conditions' => array('Sec.id =' => $id)
 		);
 		$sectypeid = $this->find('first', $params);
 
-		if ($sectypeid['SecType2']['cfd'] == 0) {
+		if ($sectypeid['SecType']['cfd'] == 0) {
 			return false;
 		}
 		else {
 			return true;
 		}
+	}
+	
+	//determine if the security is a bond
+	function is_bond($id) {
+		$params=array(
+			'fields' => array('SecType.bond'),
+			'conditions' => array('Sec.id =' => $id)
+		);
+		$sectypeid = $this->find('first', $params);
+
+		if ($sectypeid['SecType']['bond'] == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	//calculate the accrued interest
+	function accrued($id, $settdate) {
+		//First check if its a bond or not
+		if (!$this->is_bond($id)) {
+			return(array('code'=>1, 'message'=>'security is not a bond', 'accrued'=>0));
+		}
+		
+		//Need to fetch coupon rate, frequency and calculation method
+		$coupon = $this->read('coupon', $id);
+		$freq = $this->read('coupon_frequency', $id);
+		$method = $this->read('calc_type', $id);
+		$coupon_date = $this->read('prev_coupon_date', $id);
+		
+		$message = null;
+		if (empty($coupon)) { $message = $message.'coupon,'; }
+		if (empty($freq)) { $message = $message.'coupon frequency,'; }
+		if (empty($method)) { $message = $message.'calculation type,'; }
+		if (empty($coupon_date)) { $message = $message.'coupon date,'; }
+		if (!$message) {
+			//a data item is missing
+			return(array('code'=>1, 'message'=>substr($message,0,-1).' missing from this security', 'accrued'=>0));
+		}
+		
+		//first find out when the last coupon date was
+		$date = new DateTime($coupon_date);
+		
+		
+		
+		$date->add(new DateInterval('P10D'));
+		echo $date->format('Y-m-d') . "\n";
+		
 	}
 }
 

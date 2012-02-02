@@ -168,16 +168,21 @@ class TradesController extends AppController {
 			if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 		
-			$id = $this->Trade->id;
+			$id = $this->Trade->id;	//save id for later use
 			unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
 			$this->data['Trade']['act'] = 1;
 			$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
 			$this->Trade->create();
 			
 			if ($this->Trade->save($this->data)) {
-				$this->Trade->id = $id;
+				$this->Trade->create();
+				$this->Trade->read(null,$id);
+				$this->Trade->set(array(
+					'act' => 0,
+					'cancelled' => 1
+				));
 				//Clear the active flag on the trade that was edited
-				if ($this->Trade->saveField('act',0) && $this->Trade->saveField('cancelled',1)) {
+				if ($this->Trade->save()) {
 					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been updated.');
 					$this->redirect(array('action' => 'index'));
@@ -507,6 +512,37 @@ class TradesController extends AppController {
 		}
 		
 		$this->render('/elements/ajax_checkprice', 'ajax');
+	}
+	
+	//work out the accrued interest
+	function ajax_accrued() {
+		$settdate = $this->params['data']['Trade']['settlement_date'];
+		$secid = $this->params['data']['Trade']['sec_id'];
+		
+		/*
+		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
+		$price = $this->params['data']['Trade']['execution_price'];
+		
+		$brokerid = $this->params['data']['Trade']['broker_id'];
+		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
+		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
+		
+		if ($this->Trade->Sec->is_deriv($secid)) {
+			$this->set('commission', '0.00');
+		}
+		else {
+			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
+		}
+		*/
+		if ($this->Trade->Sec->is_bond($secid)) {
+			$data='is bond';
+		}
+		else {
+			$data='not bond';
+		}
+			
+		$this->set('data', $data);
+		$this->render('/elements/ajax_common', 'ajax');
 	}
 }
 
