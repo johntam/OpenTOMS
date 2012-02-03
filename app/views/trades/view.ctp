@@ -32,7 +32,7 @@
 		<tr class="altrow">
 			<td><?php echo $trade['TradeType']['trade_type']; ?></td>
 			<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
-			<td><?php echo number_format($trade['Trade']['price'],4); ?></td>
+			<td><?php echo $trade['Trade']['price']; ?></td>
 			<td><?php echo number_format($trade['Trade']['execution_price'],4); ?></td>
 		</tr>
 	
@@ -75,21 +75,21 @@
 			<td><?php echo number_format($trade['Trade']['commission'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['tax'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['other_costs'],2); ?></td>
-			<td><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
+			<td><?php echo $trade['Trade']['consideration']; ?></td>
 		</tr>
 
 	<tr class="highlight">
 		<td>Executed</td>
 		<td>Cancelled</td>
-		<td></td>
+		<td>Accrued Interest</td>
 		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
-			<td></td>
-			<td><?php echo number_format($trade['Trade']['notional_value'],2); ?></td>
+			<td><?php echo number_format($trade['Trade']['accrued'],2); ?></td>
+			<td><?php echo $trade['Trade']['notional_value']; ?></td>
 		</tr>
 	
 </table>

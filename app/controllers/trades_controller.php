@@ -6,7 +6,7 @@ class TradesController extends AppController {
 	function index($pass = null) {
 		$this->paginate = array(
 								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
-														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.trade_date','Trade.price',
+														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.trade_date','Trade.settlement_date',
 														'Trade.execution_price','Trade.cancelled','Trade.executed'),
 								'limit' => 1000,
 								'order' => 	array('Trade.id' => 'desc')
@@ -112,14 +112,14 @@ class TradesController extends AppController {
 								$d['Trade']['quantity'],
 								$d['Trade']['consideration'],
 								$d['Trade']['trade_date'],
-								$d['Trade']['price'],
+								$d['Trade']['settlement_date'],
 								$d['Trade']['execution_price'],
 								$d['Trade']['cancelled'],
 								$d['Trade']['executed']
 							);
 				array_push($out, $row);
 			}
-			array_unshift($out, array('Id','oid','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Trade Date','Price','Execution Price','Cancelled','Executed')); //headers
+			array_unshift($out, array('Id','oid','Fund','Security Name','Trade Type','Reason','Broker','Trader','Currency','Quantity','Consideration','Trade Date','Settlement Date','Execution Price','Cancelled','Executed')); //headers
 		
 			Configure::write('debug',0);
 			$this->layout = 'csv';
@@ -136,7 +136,7 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
-			if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
+			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 		
 			if ($this->Trade->save($this->data)) {
@@ -356,6 +356,7 @@ class TradesController extends AppController {
 		$price = $this->params['data']['Trade']['execution_price'];
 		$ttid = $this->params['data']['Trade']['trade_type_id'];
 		$secid = $this->params['data']['Trade']['sec_id'];
+		$accrued = str_replace(',','',$this->params['data']['Trade']['accrued']);
 		
 		if (!empty($secid) && !empty($ttid)) {
 			//cache valpoints for speed
@@ -382,29 +383,35 @@ class TradesController extends AppController {
 
 			$notional = 0;	//This will be calculated for derivative type instruments
 			$consid = 0;
+			if ($this->Trade->Sec->is_bond($secid)) {
+				$cvr = 0.01;
+			}
+			else {
+				$cvr = 1;
+			}
 			
 			if (!$this->Trade->Sec->is_deriv($secid)) {
 				//handle cashflow differently for buys and sells
 				if ($credit == 'credit') {
-					$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+					$consid = abs($qty * $price * $valpoint * $cvr) - $commission - $tax - $othercosts + $accrued;
 				}
 				else {
-					$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts;
+					$consid = -abs($qty * $price * $valpoint * $cvr) - $commission - $tax - $othercosts - $accrued;
 				}
 			}
 			else {
 				$consid = - $commission - $tax - $othercosts;
 				if ($credit == 'credit') {
-					$notional = abs($qty * $price * $valpoint);
+					$notional = abs($qty * $price * $valpoint * $cvr);
 				}
 				else {
-					$notional = -abs($qty * $price * $valpoint);
+					$notional = -abs($qty * $price * $valpoint * $cvr);
 				}
 			}
 			
 			$consid = round($consid, 4);
 			$notional = round($notional, 4);
-			$this->set('consid', number_format($consid,4).'|'.number_format($notional,4));
+			$this->set('consid', number_format($consid,2).'|'.number_format($notional,2));
 			$this->render('/elements/ajax_consid', 'ajax');
 		}
 		else {
@@ -518,31 +525,25 @@ class TradesController extends AppController {
 	function ajax_accrued() {
 		$settdate = $this->params['data']['Trade']['settlement_date'];
 		$secid = $this->params['data']['Trade']['sec_id'];
-		
-		/*
 		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
-		$price = $this->params['data']['Trade']['execution_price'];
-		
-		$brokerid = $this->params['data']['Trade']['broker_id'];
-		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
-		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
-		
-		if ($this->Trade->Sec->is_deriv($secid)) {
-			$this->set('commission', '0.00');
-		}
-		else {
-			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
-		}
-		*/
-		if ($this->Trade->Sec->is_bond($secid)) {
-			$data='is bond';
-		}
-		else {
-			$data='not bond';
-		}
 			
-		$this->set('data', $data);
+		$return = $this->Trade->Sec->accrued($secid, $settdate);
+		if ($return['code'] == 0) {
+			$accrued = $return['accrued'];
+			$this->set('data', number_format($qty * $accrued / 100,2));
+		}
+		elseif ($return['code'] == 1) {
+			$this->set('data', 'error:'.$return['message']);
+		}
+		
 		$this->render('/elements/ajax_common', 'ajax');
+	}
+	
+	//link to view security
+	function ajax_seclink() {
+		$secid = $this->params['data']['Trade']['sec_id'];
+		$this->set('data', $secid);
+		$this->render('/elements/ajax_seclink', 'ajax');
 	}
 }
 

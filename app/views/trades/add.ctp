@@ -16,7 +16,7 @@
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('fund_id',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('sec_id',array('label'=>false, 'empty'=>'Select Security')); ?></td>
+			<td><div id="sec_link" style="float:right; vertical-align:middle;"></div><?php echo $this->Form->input('sec_id',array('label'=>false, 'empty'=>'Select Security')); ?></td>
 			<td><?php echo $this->Form->input('notes',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('currency_id',array('label'=>false, 'empty'=>' ')); ?></td>
 		</tr>
@@ -83,13 +83,13 @@
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td>Accrued Interest<img src="/img/ajax-busy.gif" id="accrued_busy"/></td>
-		<td>Notional Value</td>
+		<td><div>Notional Value<img src="/img/ajax-busy.gif" id="notional_busy"/></div></td>
 	</tr>
 
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?><div class="error-message" id="accrued_error"></div></td>
 			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
 		
@@ -106,13 +106,17 @@
 		$("#consideration_busy").hide();
 		$("#accrued_busy").hide();
 		$("#settdate_busy").hide();
+		$("#notional_busy").hide();
+		put_seclink();
 	
 		$("#TradeSecId").change(function() {
+			$("#sec_link").html("");
 			$("#TradeCurrencyId").load("/trades/ajax_ccydropdown?" + (new Date()).getTime() , $("#TradeSecId").serialize());
 			$("#TradeQuantity").val("");
 			$("#TradeExecutionPrice").val("");
 			clearcosts();
 			calc_settdate();
+			put_seclink();
 		});
 		
 		
@@ -188,7 +192,25 @@
 			   });
 		});
 		
-		$("#TradeTradeDateMonth").change(function() {
+		
+		$("#TradeAccrued").change(function() {
+			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+			$("#consideration_busy").show();
+			calc_consideration();
+			
+			$.when( calc_consideration() )
+			   .then(function(){
+					$("#consideration_busy").hide();
+					$('input[type="submit"]').removeAttr('disabled');
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+		});
+		
+		
+		$("select[id^=TradeTradeDate]").change(function() {
 			if ($("#TradeSecId option:selected").text() != 'Select Security') {
 				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
 				$("#settdate_busy").show();
@@ -203,33 +225,8 @@
 		});
 		
 		
-		$("#TradeTradeDateDay").change(function() {
-			if ($("#TradeSecId option:selected").text() != 'Select Security') {
-				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
-				$("#settdate_busy").show();
-				check_price();
-				calc_settdate();
-				
-				$.when( calc_settdate() )
-					.then(function(){
-						$('input[type="submit"]').removeAttr('disabled');
-				});
-			}	
-		});
-		
-		
-		$("#TradeTradeDateYear").change(function() {
-			if ($("#TradeSecId option:selected").text() != 'Select Security') {
-				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
-				$("#settdate_busy").show();
-				check_price();
-				calc_settdate();
-				
-				$.when( calc_settdate() )
-					.then(function(){
-						$('input[type="submit"]').removeAttr('disabled');
-				});
-			}
+		$("select[id^=TradeSettlementDate]").change(function() {
+			recalculate_consideration();
 		});
 		
 		
@@ -262,6 +259,7 @@
 		$("#TradeConsideration").val("");
 		$("#TradeNotionalValue").val("");
 		$("#TradeAccrued").val("");
+		$("#accrued_error").hide();
 	}
 	
 	
@@ -310,6 +308,7 @@
 							$("#TradeNotionalValue").val(parts[1]);
 						}
 						$("#consideration_busy").hide();
+						$("#notional_busy").hide();
 					}
 					
 					deferred_obj.resolve();
@@ -376,7 +375,8 @@
 							$("#TradeAddForm").serialize(), 
 							function(data) { 
 								$("#commission_busy").hide(); 
-								$("#consideration_busy").show(); 
+								$("#consideration_busy").show();
+								$("#notional_busy").show();
 								$("#TradeCommission").val(data);
 								deferred_obj.resolve();
 							},
@@ -392,7 +392,8 @@
 						$("#TradeAddForm").serialize(), 
 						function(data) { 
 							$("#tax_busy").hide(); 
-							$("#consideration_busy").show(); 
+							$("#consideration_busy").show();
+							$("#notional_busy").show();
 							$("#TradeTax").val(data);
 							deferred_obj.resolve(); 
 						},
@@ -410,6 +411,7 @@
 						function(data) { 
 							$("#othercosts_busy").hide(); 
 							$("#consideration_busy").show();
+							$("#notional_busy").show();
 							$("#TradeOtherCosts").val(data);
 							deferred_obj.resolve();
 						},
@@ -425,12 +427,33 @@
 							$("#TradeAddForm").serialize(), 
 							function(data) { 
 								$("#accrued_busy").hide(); 
-								$("#consideration_busy").show(); 
-								$("#TradeAccrued").val(data);
+								$("#consideration_busy").show();
+								$("#notional_busy").show();
+								
+								if (data.substr(0,5) == "error") {
+									$("#accrued_error").html(data.substr(6));
+									$("#accrued_error").show();
+								}
+								else {
+									$("#TradeAccrued").val(data);
+									$("#accrued_error").hide();
+								}
 								deferred_obj.resolve();
 							},
 							"text"
 					);
 		}).promise();
+	}
+	
+	function put_seclink() {
+		if ($("#TradeSecId option:selected").text() != 'Select Security') {
+				$.post("/trades/ajax_seclink?" + (new Date()).getTime() , 
+						$("#TradeAddForm").serialize(), 
+						function(data) { 
+							$("#sec_link").html(data);
+						},
+						"text"
+					);
+			}
 	}
 </script>

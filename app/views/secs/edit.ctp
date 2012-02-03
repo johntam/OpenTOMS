@@ -84,9 +84,9 @@
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('prev_coupon_date',array('label'=>false,'empty'=>' ')); ?></td>
 			<td><?php echo $this->Form->input('maturity',array('label'=>false,'empty'=>' ')); ?></td>
-			<td><?php echo $this->Form->input('coupon_frequency',array('label'=>false, 'options' => array(' '=>null,'semi'=>'semi','quart'=>'quart','ann'=>'ann'))); ?></td>
+			<td><?php echo $this->Form->input('coupon_frequency',array('label'=>false, 'options' => array(''=>null,'semi'=>'semi','quart'=>'quart','ann'=>'ann'))); ?></td>
 			<td><?php echo $this->Form->input('coupon',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('calc_type',array('label'=>false, 'options' => array(' '=>null,'30/360'=>'30/360','30/365'=>'30/365'))); ?></td>
+			<td><?php echo $this->Form->input('calc_type',array('label'=>false, 'options' => array(''=>null,'30/360'=>'30/360','30/365'=>'30/365'))); ?></td>
 		</tr>
 	
 	<tr>
