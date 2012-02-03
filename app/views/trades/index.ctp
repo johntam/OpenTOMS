@@ -39,7 +39,7 @@
 </table>
 
 <table>
-	<tr><td colspan="18"><h4>Filters in use above are shown in green background</h4></td></tr>
+	<tr><td colspan="19"><h4>Filters in use above are shown in green background</h4></td></tr>
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
