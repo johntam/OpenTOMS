@@ -104,28 +104,29 @@ class Sec extends AppModel {
 		}
 		
 		//first find out when the last coupon date was
-		$date = date_create($coupon_date['Sec']['prev_coupon_date']);
-		$sett = date_create($settdate['year'].'-'.$settdate['month'].'-'.$settdate['day']);
+		$date = strtotime($coupon_date['Sec']['prev_coupon_date']);
+		$sett = mktime(0,0,0,$settdate['month'],$settdate['day'],$settdate['year']);
 		if ($freq['Sec']['coupon_frequency'] == 'ann') {
-			$period = 'P1Y';
+			$period = '+1 Year';
 		}
 		elseif ($freq['Sec']['coupon_frequency'] == 'semi') {
-			$period = 'P6M';
+			$period = '+6 Months';
 		}
 		elseif ($freq['Sec']['coupon_frequency'] == 'quart') {
-			$period = 'P3M';
+			$period = '+3 Months';
 		}
 		else {
-			$period = 'P6M';
+			$period = '+6 Months';
 		}
 		
 		//loop using the coupon period until we go past the settlement date
 		while ($date <= $sett) {
-			$date->add(new DateInterval($period));
+			$lastdate = $date;
+			$date =  strtotime($period, $date);
 		}
 		
 		//roll back one period to come to the last coupon date
-		$date->sub(new DateInterval($period));
+		$date=$lastdate;
 		
 		//number of days accrued
 		switch ($method['Sec']['calc_type']) {
@@ -144,23 +145,25 @@ class Sec extends AppModel {
 	}
 	
 	//Work out the difference between two dates using the 30 day system
+	//both parameters are Unix timestamps.
 	function datediff30($begin, $end) {
 		//First check if the dates are in the same month
-		if ($begin->format('Y M') == $end->format('Y M')) {
-			$diff = min($end->format('d'), 30) - min($begin->format('d'), 30);
+		if (date('Y M', $begin) == date('Y M',$end)) {
+			$diff = min(date('d',$end), 30) - min(date('d',$begin), 30);
 		}
 		else {
-			$diff = 30 - min($begin->format('d'), 30);
-			$begin->modify('first day of next month');
+			$diff = 30 - min(date('d',$begin), 30);
+			$begin = strtotime('first month',strtotime(date('Y-m-01', $begin)));
+			//$begin->modify('first day of next month'); only works in PHP 5.3+
 			
 			//skip each month, adding 30 days to running total
-			while ($begin->format('Y M') != $end->format('Y M')) {
+			while (date('Y M',$begin) != date('Y M',$end)) {
 				$diff += 30;
-				$begin->modify('first day of next month');
+				$begin = strtotime('first month',strtotime(date('Y-m-01', $begin)));
 			}
 			
 			//finally adding in number of days in the last month
-			$diff += min($end->format('d'), 30);
+			$diff += min(date('d',$end), 30);
 		}
 
 		return $diff;

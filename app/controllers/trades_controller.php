@@ -383,29 +383,23 @@ class TradesController extends AppController {
 
 			$notional = 0;	//This will be calculated for derivative type instruments
 			$consid = 0;
-			if ($this->Trade->Sec->is_bond($secid)) {
-				$cvr = 0.01;
-			}
-			else {
-				$cvr = 1;
-			}
 			
 			if (!$this->Trade->Sec->is_deriv($secid)) {
 				//handle cashflow differently for buys and sells
 				if ($credit == 'credit') {
-					$consid = abs($qty * $price * $valpoint * $cvr) - $commission - $tax - $othercosts + $accrued;
+					$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts + $accrued;
 				}
 				else {
-					$consid = -abs($qty * $price * $valpoint * $cvr) - $commission - $tax - $othercosts - $accrued;
+					$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts - $accrued;
 				}
 			}
 			else {
 				$consid = - $commission - $tax - $othercosts;
 				if ($credit == 'credit') {
-					$notional = abs($qty * $price * $valpoint * $cvr);
+					$notional = abs($qty * $price * $valpoint);
 				}
 				else {
-					$notional = -abs($qty * $price * $valpoint * $cvr);
+					$notional = -abs($qty * $price * $valpoint);
 				}
 			}
 			
