@@ -39,10 +39,11 @@
 </table>
 
 <table>
-	<tr><td colspan="17"><h4>Filters in use above are shown in green background</h4></td></tr>
+	<tr><td colspan="18"><h4>Filters in use above are shown in green background</h4></td></tr>
 	<tr>
 		<th>Edit</th>
 		<th>View</th>
+		<th>Copy</th>
 		<th><?php echo $this->Paginator->sort('Id', 'Trade.id'); ?></th>
 		<th><?php echo $this->Paginator->sort('Orig Id', 'Trade.oid'); ?></th>
 		<th><?php echo $this->Paginator->sort('Fund', 'Fund.fund_name'); ?></th>
@@ -67,6 +68,7 @@
 	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $trade['Trade']['id']));?></td>
 		<td><?php echo $this->Html->link('View', array('action' => 'view', $trade['Trade']['oid']));?></td>
+		<td><?php echo $this->Html->link('Copy', array('action' => 'copy', $trade['Trade']['id']));?></td>
 		<td><?php echo $trade['Trade']['id']; ?></td>
 		<td><?php echo $trade['Trade']['oid']; ?></td>
 		<td><?php echo $trade['Fund']['fund_name']; ?></td>

@@ -154,6 +154,41 @@ class TradesController extends AppController {
 	}
 	
 	
+	function copy($id) {
+		$this->setchoices();
+		
+		if (isset($this->params['data']['Trade'])) {
+			unset($this->params['data']['Trade']['id']);	//remove id so that Cake will create a new model record
+			$this->params['data']['Trade']['act'] = 1;
+			$this->params['data']['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
+			$this->Trade->create();
+			
+			if ($this->Trade->save($this->params['data'])) {
+				//Do a second update to the same record to set the oid field
+				$id = $this->Trade->id;
+				$this->Trade->create();
+				$this->Trade->read(null,$id);
+				$this->Trade->set(array(
+					'oid' => $id
+				));
+				
+				if ($this->Trade->save()) {
+					$this->update_report_table();
+					$this->Session->setFlash('Your trade has been saved.');
+					//$this->disableCache();	//clear cache for AJAX calls
+					$this->redirect(array('action' => 'index'));
+				}
+			}
+		}
+		else {
+			$this->Trade->id = $id;
+			$this->data = $this->Trade->read();
+			$this->Session->setFlash('Copy trade ID='.$id);
+			$this->render('add');
+		}
+	}
+	
+	
 	
 	function edit($id = null) {
 		$this->setchoices();
