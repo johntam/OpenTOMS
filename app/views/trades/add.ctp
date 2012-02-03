@@ -220,6 +220,7 @@
 				$.when( calc_settdate() )
 					.then(function(){
 						$('input[type="submit"]').removeAttr('disabled');
+						recalculate_consideration();
 				});
 			}
 		});
