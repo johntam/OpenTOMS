@@ -11,9 +11,6 @@
 			<?php echo $this->Form->input('datefilter', array('label'=>'Enter pricing date','type'=>'date','default'=> $datefilter)); ?>
 			<?php echo $this->Form->end('Filter'); ?>
 		</td>
-		
-		
-		</td>
 	</tr>
 </table>
 

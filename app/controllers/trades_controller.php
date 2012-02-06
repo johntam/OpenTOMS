@@ -158,6 +158,12 @@ class TradesController extends AppController {
 		$this->setchoices();
 		
 		if (isset($this->params['data']['Trade'])) {
+			//remove any commas from quantity, consideration and notional value
+			$this->params['data']['Trade']['quantity'] = str_replace(',','',$this->params['data']['Trade']['quantity']);
+			$this->params['data']['Trade']['consideration'] = str_replace(',','',$this->params['data']['Trade']['consideration']);
+			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
+			$this->params['data']['Trade']['notional_value'] = str_replace(',','',$this->params['data']['Trade']['notional_value']);
+		
 			unset($this->params['data']['Trade']['id']);	//remove id so that Cake will create a new model record
 			$this->params['data']['Trade']['act'] = 1;
 			$this->params['data']['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
@@ -200,7 +206,7 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
-			if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
+			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 		
 			$id = $this->Trade->id;	//save id for later use

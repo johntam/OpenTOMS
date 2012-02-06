@@ -218,7 +218,15 @@ CREATE TABLE accounts(
 
 CREATE TABLE ledgers(
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	locked bit NOT NULL DEFAULT 0,
 	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	account_id INT NOT NULL,
-	
+	ledger_month TINYINT NOT NULL,
+	ledger_year SMALLINT NOT NULL,
+	ledger_date DATE NOT NULL,
+	trade_id INT NOT NULL,
+	ledger_debit DECIMAL(18,4) NOT NULL,
+	ledger_credit DECIMAL(18,4) NOT NULL,
+	ledger_balance DECIMAL(18,4) NOT NULL
 );

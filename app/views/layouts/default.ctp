@@ -48,7 +48,6 @@ show up on all of your views, include it here -->
 				<li><a href="/funds">Funds</a></li>
 				<li><a href="/secs/index/A">Securities</a></li>
 				<li><a href="/SecTypes">Sec Types</a></li>
-				<li><a href="/TradeTypes">Trade Types</a></li>
 				<li><a href="/reasons">Reasons</a></li>
 				<li><a href="/brokers">Brokers</a></li>
 				<li><a href="/traders">Traders</a></li>
@@ -58,7 +57,6 @@ show up on all of your views, include it here -->
 				<li><a href="/currencies">Currencies</a></li>
 				<li><a href="/holidays">Holiday Dates</a></li>
 				<li><a href="/settlements">Settlement Rules</a></li>
-				<li><a href="/accounts">Accounting Books</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Pricing</a><ul>
@@ -68,6 +66,14 @@ show up on all of your views, include it here -->
 			</li>
 			<li><a href="#">Reports</a><ul>
 				<li><a href="/reports">Run</a></li></ul>
+			</li>
+			<li>
+				<a href="#">Accounting</a>
+				<ul>
+					<li><a href="/accounts">Accounting Books</a></li>
+					<li><a href="/TradeTypes">Trade Types</a></li>
+					<li><a href="/ledgers">Ledgers</a></li>
+				</ul>
 			</li>
 			<li><a href="#">Permissions</a><ul>
 				<li><a href="/users">Users</a></li>
