@@ -25,6 +25,9 @@
 		<th>Trade ID</th>
 		<th>Trade Type</th>
 		<th>Debit Account Id</th>
+		<th>Credit Account Id</th>
+		<th>Consideration</th>
+		<th>Currency</th>
 	</tr>
 	
 	<?php if (isset($posts)) { ?>
@@ -42,6 +45,15 @@
 			</td>
 			<td>
 				<?php echo $post['TradeType']['debit_account_id']; ?>
+			</td>
+			<td>
+				<?php echo $post['TradeType']['credit_account_id']; ?>
+			</td>
+			<td>
+				<?php echo $post['Trade']['consideration']; ?>
+			</td>
+			<td>
+				<?php echo $post['Currency']['currency_iso_code']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

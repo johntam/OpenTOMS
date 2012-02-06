@@ -21,11 +21,12 @@ class LedgersController extends AppController {
 		//get trades with trade date in the month
 		$params=array(
 			'conditions' => array('MONTH(Trade.trade_date) =' => $month, 'YEAR(Trade.trade_date) =' => $year, 'Trade.fund_id =' => $fund), 
-			'fields' => array('Trade.trade_date','Trade.id','Trade.trade_type_id','TradeType.debit_account_id'),
+			'fields' => array('Trade.trade_date','Trade.id','Trade.trade_type_id','TradeType.debit_account_id','TradeType.credit_account_id', 'Trade.consideration', 'Currency.currency_iso_code'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
-		$this->set('posts', $this->Ledger->Trade->find('all', $params));
+		$posts = $this->Ledger->Trade->find('all', $params);
+		$this->set('posts', $posts);
 		
 		//Get list of fund names
 		$this->set('funds', $this->Ledger->Trade->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
@@ -34,47 +35,28 @@ class LedgersController extends AppController {
 		if ($this->params['form']['Submit'] == 'View') {
 			$this->render('index');
 		}
-		else {	//post these trades
+		else {	//post these trades into the model database
 			
+			foreach ($posts as $post) {
+				$td = $post['Trade']['trade_date'];
+				$tid = $post['Trade']['id'];
+				$ttid = $post['Trade']['trade_type_id'];
+				$cons = $post['Trade']['consideration'];
+				$debitid = $post['TradeType']['debit_account_id'];
+				$creditid = $post['TradeType']['credit_account_id'];
+				$ccy = $post['Currency']['currency_iso_code'];
+			
+				
+			
+			
+			
+			}
 		
 			$this->Session->setFlash('Trades posted to journal.');
 			$this->render('index');
 		}
 	}
 	
-	/*
-	function index() {
-		$this->set('funds', $this->Fund->find('all'));
-	}
-	
-	function add() {
-		$this->set('currencies', $this->Fund->Currency->find('list', 
-										array('fields'=>array(
-																'Currency.currency_iso_code'),
-																'order'=>array('Currency.currency_iso_code'))));
-		if (!empty($this->data)) {
-			if ($this->Fund->save($this->data)) {
-				$this->Session->setFlash('Fund has been saved.');
-				$this->redirect(array('action' => 'index'));
-			}
-		}
-	}
-	
-	function edit($id = null) {
-		$this->set('currencies', $this->Fund->Currency->find('list', 
-										array('fields'=>array(
-																'Currency.currency_iso_code'),
-																'order'=>array('Currency.currency_iso_code'))));
-		if (empty($this->data)) {
-			$this->data = $this->Fund->read();
-		} else {
-			if ($this->Fund->save($this->data)) {
-				$this->Session->setFlash('Fund has been updated.');
-				$this->redirect(array('action' => 'index'));
-			}
-		}
-	}
-	
-	*/
+
 }
 ?>
