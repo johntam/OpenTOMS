@@ -315,7 +315,7 @@ class TradesController extends AppController {
 		$valpoint = $this->Trade->Sec->find('first', array('conditions'=> array('Sec.id =' => $secid)));
 		$brokercomm = $this->Trade->Broker->find('first', array('conditions'=> array('Broker.id =' => $brokerid)));
 		
-		if ($this->Trade->Sec->is_deriv($secid)) {
+		if ($this->Trade->Sec->is_deriv($secid) || $this->Trade->Sec->is_bond($secid)) {
 			$this->set('commission', '0.00');
 		}
 		else {
