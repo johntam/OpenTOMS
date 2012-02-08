@@ -10,12 +10,14 @@
 	<tr class="highlight">
 		<td>Currency Code</td>
 		<td>Currency Name</td>
+		<td>Security</td>
 	</tr>
 	
 		<tr>
 			<?php echo $this->Form->create(null, array('action' => 'edit')); ?>
 			<td><?php echo $this->Form->input('currency_iso_code', array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('currency_name', array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('sec_id', array('label'=>false)); ?></td>
 			<td><?php
 				echo $this->Form->input('id', array('type' => 'hidden')); 
 				echo $this->Form->end('Update Currency');

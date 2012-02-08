@@ -4,7 +4,8 @@ class Sec extends AppModel {
     var $name = 'Sec';
 	var $belongsTo = 'SecType,Country,Exchange,Industry,Currency';
 	var $validate = array(
-		'sec_name' => array('rule' => 'notEmpty', 'message' => 'Security name cannot be blank')
+		'sec_name' => array('rule' => 'notEmpty', 'message' => 'Security name cannot be blank'),
+		'valpoint' => array('rule' => 'notEmpty', 'message' => 'Valpoint cannot be blank')
 	);
 	
 	//set the act flag in the model table

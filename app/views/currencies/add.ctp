@@ -6,5 +6,6 @@
 <?php echo $this->Form->create(); ?>
 <tr><td><?php echo $this->Form->input('currency_iso_code'); ?></td></tr>
 <tr><td><?php echo $this->Form->input('currency_name'); ?></td></tr>
+<tr><td><?php echo $this->Form->input('sec_id'); ?></td></tr>
 <tr><td><?php echo $this->Form->end('Add Currency'); ?></td></tr>
 </table>

@@ -8,6 +8,8 @@ class CurrenciesController extends AppController {
 	}
 	
 	function add() {
+		$this->getSecList();
+		
 		if (!empty($this->data)) {
 			if ($this->check_unique()) {
 				if ($this->Currency->save($this->data)) {
@@ -23,6 +25,8 @@ class CurrenciesController extends AppController {
 	}
 	
 	function edit($id = null) {
+		$this->getSecList();
+		
 		if (empty($this->data)) {
 			$this->data = $this->Currency->read();
 		} else {
@@ -63,6 +67,16 @@ class CurrenciesController extends AppController {
 		else {
 			return true;
 		}
+	}
+	
+	function getSecList() {
+		//Could be a lot of securities so get the cache of this list
+		if (($secsCACHE = Cache::read('secs')) === false) {
+			$secsCACHE = $this->Currency->Sec->find('list', array('fields'=>array('Sec.sec_name'),'order'=>array('Sec.sec_name'),'conditions'=>array('Sec.act =' => 1)));
+			Cache::write('secs', $secsCACHE);
+		}
+
+		$this->set('secs', $secsCACHE);
 	}
 }
 ?>
