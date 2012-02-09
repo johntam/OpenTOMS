@@ -80,6 +80,22 @@ class Sec extends AppModel {
 		}
 	}
 	
+	//determine if the security is an equity
+	function is_equity($id) {
+		$params=array(
+			'fields' => array('SecType.equity'),
+			'conditions' => array('Sec.id =' => $id)
+		);
+		$sectypeid = $this->find('first', $params);
+
+		if ($sectypeid['SecType']['equity'] == 50) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	//calculate the accrued interest (per 100 nominal)
 	function accrued($id, $settdate) {
 		//First check if its a bond or not

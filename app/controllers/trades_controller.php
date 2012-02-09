@@ -138,6 +138,7 @@ class TradesController extends AppController {
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
 			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
+			$this->data['Trade']['accrued'] = str_replace(',','',$this->data['Trade']['accrued']);
 		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
@@ -163,6 +164,7 @@ class TradesController extends AppController {
 			$this->params['data']['Trade']['consideration'] = str_replace(',','',$this->params['data']['Trade']['consideration']);
 			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->params['data']['Trade']['notional_value'] = str_replace(',','',$this->params['data']['Trade']['notional_value']);
+			$this->params['data']['Trade']['accrued'] = str_replace(',','',$this->params['data']['Trade']['accrued']);
 		
 			unset($this->params['data']['Trade']['id']);	//remove id so that Cake will create a new model record
 			$this->params['data']['Trade']['act'] = 1;
@@ -208,6 +210,7 @@ class TradesController extends AppController {
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
 			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
+			$this->data['Trade']['accrued'] = str_replace(',','',$this->data['Trade']['accrued']);
 		
 			$id = $this->Trade->id;	//save id for later use
 			unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
@@ -337,7 +340,9 @@ class TradesController extends AppController {
 		
 		if ((strtolower(substr($tt['TradeType']['trade_type'],0,3)) == 'buy') &&
 			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp') &&
-			(!$this->Trade->Sec->is_deriv($secid))) {
+			(!$this->Trade->Sec->is_deriv($secid)) && 
+			($this->Trade->Sec->is_equity($secid))
+			) {
 				$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
 		}
 		else {
