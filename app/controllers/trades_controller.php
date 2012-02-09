@@ -364,7 +364,9 @@ class TradesController extends AppController {
 		
 		if ((abs($qty * $price * $valpoint['Sec']['valpoint']) > 10000) &&
 			(strtolower(substr($ccy['Currency']['currency_iso_code'],0,3)) == 'gbp') &&
-			(!$this->Trade->Sec->is_deriv($secid))) {
+			(!$this->Trade->Sec->is_deriv($secid)) &&
+			($this->Trade->Sec->is_equity($secid))
+			) {
 				$this->set('othercosts', 1);
 		}
 		else {

@@ -4,9 +4,12 @@ class SecType extends AppModel {
     var $name = 'SecType';
 	
 	function default_settlement($id) {
-		$data = $this->read('bond', $id);
+		$data = $this->read(null, $id);
 	
 		if ($data['SecType']['bond'] == 1) {
+			return 2;
+		}
+		else if ($data['SecType']['exchrate'] == 1) {
 			return 2;
 		}
 		else {

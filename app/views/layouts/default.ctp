@@ -80,6 +80,7 @@ show up on all of your views, include it here -->
 				<li><a href="/groups">Groups</a></li></ul>
 			</li>
 			<li><a href="/users/logout">Logout</a></li>
+			<li><a href="/miscpages/worklist">Worklist</a></li>
 			<!-- ... and so on ... -->
 		</ul>
 	</div>
