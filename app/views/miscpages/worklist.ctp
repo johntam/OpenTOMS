@@ -33,7 +33,7 @@ if (isset($_POST['bsubmit']))
 				Please feel free to ammend the notes below:<br><br>
 
 
-				<FORM action='<?php echo $this->Html->url(array('controller'=>'users', 'action'=>'welcome')); ?>' method='post'>
+				<FORM action='<?php echo $this->Html->url(array('controller'=>'miscpages', 'action'=>'worklist')); ?>' method='post'>
 					<textarea name='body'  rows="25" cols="100"  style="font-family: Verdana; padding: 5px; background-color: LightYellow"><?php
 						if (file_exists($file)) {
 							readfile($file);
