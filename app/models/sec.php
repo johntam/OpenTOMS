@@ -88,11 +88,11 @@ class Sec extends AppModel {
 		);
 		$sectypeid = $this->find('first', $params);
 
-		if ($sectypeid['SecType']['equity'] == 50) {
-			return true;
+		if ($sectypeid['SecType']['equity'] == 0) {
+			return false;
 		}
 		else {
-			return false;
+			return true;
 		}
 	}
 	
