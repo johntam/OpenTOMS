@@ -1,4 +1,4 @@
-<!-- File: /app/views/ledgers/index.ctp -->
+<!-- File: /app/views/ledgers/post.ctp -->
 
 <table style="width: 40%;margin-left:30%;margin-right:30%;">
 	<tr>
@@ -24,10 +24,8 @@
 
 <table style="width: 40%;margin-left:30%;margin-right:30%;">	
 	<tr>
+		<th>Trade Date</th>
 		<th>Fund</th>
-		<th>Journal Date</th>
-		
-		
 		<th>Trade ID</th>
 		<th>Trade Type</th>
 		<th>Security</th>
@@ -38,31 +36,31 @@
 	
 	<?php if (isset($posts)) { ?>
 	
-	<?php foreach ($ledgers as $ledger): ?>
+	<?php foreach ($posts as $post): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
-				<?php echo $ledger['Ledger']['trade_date']; ?>
+				<?php echo $post['Trade']['trade_date']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Fund']['fund_name']; ?>
+				<?php echo $post['Fund']['fund_name']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Trade']['id']; ?>
+				<?php echo $post['Trade']['id']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['TradeType']['trade_type']; ?>
+				<?php echo $post['TradeType']['trade_type']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Sec']['sec_name']; ?>
+				<?php echo $post['Sec']['sec_name']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Trade']['quantity']; ?>
+				<?php echo $post['Trade']['quantity']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Trade']['consideration']; ?>
+				<?php echo $post['Trade']['consideration']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Currency']['currency_iso_code']; ?>
+				<?php echo $post['Currency']['currency_iso_code']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
