@@ -1,8 +1,8 @@
 <!-- File: /app/views/ledgers/post.ctp -->
 
-<table style="width: 40%;margin-left:30%;margin-right:30%;">
+<table style="width: 60%;margin-left:30%;margin-right:30%;">
 	<tr>
-		<td><h1>General Ledger</h1></td>
+		<td><h1>Journal Posting</h1></td>
 	</tr>
 	
 	<tr class="altrow">

@@ -72,7 +72,7 @@ show up on all of your views, include it here -->
 				<ul>
 					<li><a href="/accounts">Accounting Books</a></li>
 					<li><a href="/TradeTypes">Trade Types</a></li>
-					<li><a href="/ledgers">Ledgers</a></li>
+					<li><a href="/ledgers">Journal Posting</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Permissions</a><ul>
