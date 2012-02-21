@@ -7,23 +7,30 @@
 	
 	<tr class="altrow">
 		<td>
-			View Ledger
 			<?php echo $this->Form->create('Ledger', array('action' => 'index')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
 			<?php echo $this->Form->input('account_id', array('label'=>false, 'options'=>$accounts)); ?>
 			<?php echo $this->Form->input('accounting_period', array('label'=>false,'type'=>'date', 'dateFormat' => 'MY')); ?>
-			<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View'));?>
-			<?php echo $this->Form->end(); ?>
 		</td>
 		<td>
-			Retrieve trade journal entries
-			<?php echo $this->Form->create('Ledger', array('action' => 'post')); ?>
-			<?php echo $this->Form->submit('Post', array('name'=>'Submit', 'value' => 'Post'));?>
-			<?php echo $this->Form->end(); ?>
+			<div class="high">
+				View trial balance for month
+				<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View'));?>
+			</div>
 		</td>
-		<td colspan="4">
+		<td>
+			<div class="high">
+				Post trades to general ledger
+				<?php echo $this->Form->submit('Post', array('name'=>'Submit', 'value' => 'Post'));?>
+			</div>
 		</td>
+		<td colspan="5">
+		</td>
+		<?php echo $this->Form->end(); ?>
 	</tr>
+</table>	
+
+<table style="width: 60%;margin-left:20%;margin-right:20%;">	
 	<tr>
 		<th>Fund</th>
 		<th>Book</th>
@@ -31,6 +38,8 @@
 		<th>Debit</th>
 		<th>Credit</th>
 		<th>Currency</th>
+		<th>Security</th>
+		<th>Quantity</th>
 	</tr>
 	
 	<?php foreach ($ledgers as $ledger): ?>
@@ -45,13 +54,19 @@
 				<?php echo $ledger['Ledger']['ledger_date']; ?>
 			</td>
 			<td>
-				<?php echo $ledger['Ledger']['ledger_debit']; ?>
+				<?php echo number_format($ledger['Ledger']['ledger_debit'],2); ?>
 			</td>
 			<td>
-				<?php echo $ledger['Ledger']['ledger_credit']; ?>
+				<?php echo number_format($ledger['Ledger']['ledger_credit'],2); ?>
 			</td>
 			<td>
 				<?php echo $ledger['Currency']['currency_iso_code']; ?>
+			</td>
+			<td>
+				<?php echo $ledger['Sec']['sec_name']; ?>
+			</td>
+			<td>
+				<?php echo number_format($ledger['Ledger']['ledger_quantity'],0); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

@@ -230,3 +230,20 @@ CREATE TABLE ledgers(
 	ledger_credit DECIMAL(18,4) NOT NULL,
 	ledger_balance DECIMAL(18,4) NOT NULL
 );
+
+
+CREATE TABLE balances(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	locked bit NOT NULL DEFAULT 0,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	fund_id INT NOT NULL,
+	account_id INT NOT NULL,
+	ledger_month TINYINT NOT NULL,
+	ledger_year SMALLINT NOT NULL,
+	balance_debit DECIMAL(18,4) NOT NULL,
+	balance_credit DECIMAL(18,4) NOT NULL,
+	currency_id INT NOT NULL,
+	balance_quantity DECIMAL(18,6) NOT NULL,
+	sec_id INT NOT NULL
+);

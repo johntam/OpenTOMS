@@ -73,6 +73,7 @@ show up on all of your views, include it here -->
 					<li><a href="/accounts">Accounting Books</a></li>
 					<li><a href="/TradeTypes">Trade Types</a></li>
 					<li><a href="/ledgers">Journal Posting</a></li>
+					<li><a href="/balances">Fix Balances</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Permissions</a><ul>
