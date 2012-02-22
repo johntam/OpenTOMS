@@ -38,6 +38,7 @@ class Ledger extends AppModel {
 				$secid = $post['Sec']['id'];
 				
 				//first line of double-entry
+				if ($debitid > 1) {$secid = $this->Currency->getsecid($ccy);}	//if this is cash type account, put the ccy in place of security
 				$data = array(	'act' => 1,
 								'locked' => 0,
 								'crd' => DboSource::expression('NOW()'),
@@ -57,10 +58,12 @@ class Ledger extends AppModel {
 				$this->save();
 				
 				//second line of double-entry
+				if ($creditid > 1) {$secid = $this->Currency->getsecid($ccy);}	//if this is cash type account, put the ccy in place of security
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
 				$data['ledger_debit'] = 0;
 				$data['ledger_credit'] = $cons;
+				$data['sec_id'] = $secid;
 				$this->create($data);
 				$this->save();
 			}
@@ -70,6 +73,26 @@ class Ledger extends AppModel {
 		else {
 			return false;
 		}
+	}
+	
+	//lock month end (called from Fix Balances screen)
+	function lock($fund, $month, $year) {
+		$result = $this->updateAll( array('Ledger.locked' => 1), 
+										array(	'Ledger.ledger_month =' => $month, 
+												'Ledger.ledger_year =' => $year, 
+												'Ledger.fund_id =' => $fund,
+												'Ledger.act =' => 1));
+		return ($result);
+	}
+	
+	//unlock month end (called from Fix Balances screen)
+	function unlock($fund, $month, $year) {
+		$result = $this->updateAll( array('Ledger.locked' => 0), 
+										array(	'Ledger.ledger_month =' => $month, 
+												'Ledger.ledger_year =' => $year, 
+												'Ledger.fund_id =' => $fund,
+												'Ledger.act =' => 1));
+		return ($result);
 	}
 }
 
