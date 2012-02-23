@@ -36,20 +36,25 @@ class PricesController extends AppController {
 	
 	function add() {		
 		if (!empty($this->data)) {
-			$this->Price->set($this->data);
+			if ($this->Price->islocked($this->data)) {
+				$this->Session->setFlash('Sorry, this security has been locked from further changes on this date.');
+			}
+			else {
+				$this->Price->set($this->data);
 			
-			if ($this->Price->validates()) {
-				if ($this->check_unique()) {
-					if ($this->Price->save($this->data)) {
-						$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
+				if ($this->Price->validates()) {
+					if ($this->check_unique()) {
+						if ($this->Price->save($this->data)) {
+							$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
+						}
+					}
+					else {
+						$this->Session->setFlash('Sorry, cannot enter price for duplicate date, source and security.');
 					}
 				}
 				else {
-					$this->Session->setFlash('Sorry, cannot enter price for duplicate date, source and security.');
+					$this->Session->setFlash('The price field cannot be blank');
 				}
-			}
-			else {
-				$this->Session->setFlash('The price field cannot be blank');
 			}
 		}
 
@@ -90,11 +95,17 @@ class PricesController extends AppController {
 		if (empty($this->data)) {
 			$dataset = $this->Price->get_sec_row($id);
 			$this->data = $dataset['0'];
-		} else {		
-			if ($this->Price->save($this->data)) {
-				$this->Session->setFlash('Price has been updated.');
-				$this->update_report_table($this->data['Price']['price_date']);
-				$this->redirect(array('action' => 'index',0,1,0,0));
+		} else {
+			if ($this->Price->islockedID($id)) {
+				$this->Session->setFlash('Sorry, this security has been locked from further changes on this date.');
+				$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
+			}
+			else {
+				if ($this->Price->save($this->data)) {
+					$this->Session->setFlash('Price has been updated.');
+					$this->update_report_table($this->data['Price']['price_date']);
+					$this->redirect(array('action' => 'index',0,1,0,0));
+				}
 			}
 		}
 	}
@@ -103,7 +114,7 @@ class PricesController extends AppController {
 	/////////////////////
 	//Pricing of FX rates
 	function fxrates($datefilter=null) {	
-		if (!empty($this->data['Price']['date_1'])) {
+		if (!empty($this->data['Price']['date_1'])) {		
 			//When Submit button has been pressed	
 			$this->Price->save_fxrates($this->data['Price']);			
 			$this->Session->setFlash('FX rates have been updated.');

@@ -44,6 +44,8 @@
 		<th>Quantity</th>
 	</tr>
 	
+	<?php if (isset($posts)) { ?>
+	
 	<?php foreach ($posts as $post): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
@@ -78,4 +80,6 @@
 			</td>
 		</tr>
 	<?php endforeach; ?>
+	
+	<?php }; ?>
 </table>

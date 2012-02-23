@@ -24,7 +24,13 @@
 				<?php echo $this->Form->submit('Post', array('name'=>'Submit', 'value' => 'Post'));?>
 			</div>
 		</td>
-		<td colspan="5">
+		<td>
+			<div class="high">
+				Create new ledger
+				<?php echo $this->Form->submit('Create', array('name'=>'Submit', 'value' => 'Create'));?>
+			</div>
+		</td>
+		<td colspan="4">
 		</td>
 		<?php echo $this->Form->end(); ?>
 	</tr>

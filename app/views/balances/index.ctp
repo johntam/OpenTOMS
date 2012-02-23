@@ -14,21 +14,39 @@
 		</td>
 		<td>
 			<div class="high">
+				View month end balances
+				<?php echo $this->Form->submit('View', array('name'=>'View'));?>
+			</div>
+		</td>
+		<td>
+			<div class="high">
 				Calculate month end balances
 				<?php echo $this->Form->submit('Calc', array('name'=>'Calc'));?>
 			</div>
 		</td>
 		<td>
 			<div class="high">
-				Lock month end balances
-				<?php echo $this->Form->submit('Lock', array('name'=>'Lock', 'div'=>array('id'=>'LockButtonID')));?>
+				(Un)Lock month end balances
+				<?php 
+					if (isset($locked)) {
+						echo $this->Form->submit('Unlock', array('name'=>'Unlock'));
+					}
+					else {
+						echo $this->Form->submit('Lock', array('name'=>'Lock'));
+					}
+				?>
 				<div id="missingmessage" style="color: red;"></div>
 			</div>
 		</td>
-		<td colspan="4">
+		<td colspan="3">
 		</td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
+	
+	<?php if (isset($locked)) { echo '
+	<tr><td><div style="color: red;">This month end is locked. Warning, unlocking month ends is a potentially destructive action. All future month ends will also be unlocked and unfinalised too.</div></td></tr>
+	';} ?>
+	
 </table>	
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">	

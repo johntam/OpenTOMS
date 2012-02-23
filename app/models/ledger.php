@@ -5,13 +5,11 @@ class Ledger extends AppModel {
 	var $belongsTo ='Account, Trade, Fund, Currency, Sec';
 	
 	//Post trade journal entries to the general ledger
-	function post($month, $year, $fund, $accountid) {
+	function post($month, $year, $fund, $accountid, $wipeout = false) {
 		//get trades with trade date in the month
 		if ($accountid == 0) { $accountid = '%'; }
 		$sqlparam=array(
-			'conditions' => array(	'MONTH(Trade.trade_date) =' => $month, 
-									'YEAR(Trade.trade_date) =' => $year, 
-									'Trade.fund_id =' => $fund, 
+			'conditions' => array(	'Trade.fund_id =' => $fund, 
 									'Trade.act' => 1, 
 									'Trade.cancelled' => 0, 
 									'Trade.executed' => 1,
@@ -20,6 +18,13 @@ class Ledger extends AppModel {
 							'TradeType.credit_account_id', 'Trade.consideration', 'Currency.id','Currency.currency_iso_code','Trade.quantity','Fund.fund_name', 'Sec.sec_name', 'Sec.id'),
 			'order' => array('Trade.trade_date ASC') 
 		);
+		if ($wipeout) {
+			$sqlparam['conditions']['Trade.trade_date <='] = "'".date('Y-m-d', mktime(0,0,0, $month+1, 0, $year))."'";
+		}
+		else {
+			$sqlparam['conditions']['MONTH(Trade.trade_date) ='] = $month;
+			$sqlparam['conditions']['YEAR(Trade.trade_date) ='] = $year;
+		}
 		
 		$posts = $this->Trade->find('all', $sqlparam);
 			
@@ -40,7 +45,6 @@ class Ledger extends AppModel {
 				//first line of double-entry
 				if ($debitid > 1) {$secid = $this->Currency->getsecid($ccy);}	//if this is cash type account, put the ccy in place of security
 				$data = array(	'act' => 1,
-								'locked' => 0,
 								'crd' => DboSource::expression('NOW()'),
 								'fund_id' => $fund,
 								'account_id' => $debitid,
@@ -71,28 +75,15 @@ class Ledger extends AppModel {
 			return($posts);
 		}
 		else {
-			return false;
+			return null;
 		}
 	}
 	
-	//lock month end (called from Fix Balances screen)
-	function lock($fund, $month, $year) {
-		$result = $this->updateAll( array('Ledger.locked' => 1), 
-										array(	'Ledger.ledger_month =' => $month, 
-												'Ledger.ledger_year =' => $year, 
-												'Ledger.fund_id =' => $fund,
-												'Ledger.act =' => 1));
-		return ($result);
-	}
-	
-	//unlock month end (called from Fix Balances screen)
-	function unlock($fund, $month, $year) {
-		$result = $this->updateAll( array('Ledger.locked' => 0), 
-										array(	'Ledger.ledger_month =' => $month, 
-												'Ledger.ledger_year =' => $year, 
-												'Ledger.fund_id =' => $fund,
-												'Ledger.act =' => 1));
-		return ($result);
+	//is this month end locked? Check using the Balance model.
+	function islocked($fund, $month, $year) {
+		App::import('model','Balance');
+		$bal = new Balance();
+		return ($bal->islocked($fund, $month, $year));
 	}
 }
 

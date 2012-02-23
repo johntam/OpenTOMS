@@ -123,6 +123,13 @@ class Price extends AppModel {
 		//save the data to the prices table
 		foreach ($out as $key => $o) {
 			if (!empty($o['price']['0'])) {
+				//check to see if this date is locked for editing
+				if (!empty($o['priceid']['0'])) {
+					if ($this->islockedID($o['priceid']['0'])) {
+						continue;
+					}
+				}
+			
 				$this->create(array('Price' => array( 	'id'=>$o['priceid']['0'],
 														'crd'=>DboSource::expression('NOW()'),
 														'price' => 1,
@@ -171,6 +178,66 @@ class Price extends AppModel {
 		}
 		else {
 			return($result['Price']['price']);
+		}
+	}
+	
+	//is this security/date locked? Check using the Balance model.
+	function islocked($data) {
+		$secid = $data['Price']['sec_id'];
+		$month = $data['Price']['price_date']['month'];
+		$day = $data['Price']['price_date']['day'];
+		$year = $data['Price']['price_date']['year'];
+	
+		//check if this is a month end, if not then it can't possibly be locked
+		$date1 = mktime(0,0,0, $month, $day, $year);
+		$date2 = mktime(0,0,0, $month + 1, 0, $year);
+		if ($date1 == $date2) {
+			App::import('model','Balance');
+			$bal = new Balance();
+			
+			//check if ANY fund has some locked data for this security in the balances table
+			$count = $bal->find('count', array('conditions'=>array('Balance.sec_id ='=>$secid, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.locked ='=>1, 'Balance.act ='=>1)));
+			if ($count == 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		else {
+			//not month end
+			return false;
+		}
+	}
+	
+	//is this security/date locked? Check using the Balance model.
+	function islockedID($id) {
+		$fetch = $this->find('first', array('conditions'=>array('Price.id ='=>$id)));
+		$secid = $fetch['Price']['sec_id'];
+		$pricedate = strtotime($fetch['Price']['price_date']);
+		$month = date('n', $pricedate);
+		$day = date('j', $pricedate);
+		$year = date('Y', $pricedate);
+	
+		//check if this is a month end, if not then it can't possibly be locked
+		$date1 = mktime(0,0,0, $month, $day, $year);
+		$date2 = mktime(0,0,0, $month + 1, 0, $year);
+		if ($date1 == $date2) {
+			App::import('model','Balance');
+			$bal = new Balance();
+			
+			//check if ANY fund has some locked data for this security in the balances table
+			$count = $bal->find('count', array('conditions'=>array('Balance.sec_id ='=>$secid, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.locked ='=>1, 'Balance.act ='=>1)));
+			if ($count == 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		else {
+			//not month end
+			return false;
 		}
 	}
 }
