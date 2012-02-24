@@ -3,7 +3,7 @@
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
 	<tr>
-		<td colspan="7"><h1>Fix Balances</h1></td>
+		<td colspan="7"><h1>Lock Balances</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -15,24 +15,24 @@
 		<td>
 			<div class="high">
 				View month end balances
-				<?php echo $this->Form->submit('View', array('name'=>'View'));?>
+				<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View'));?>
 			</div>
 		</td>
 		<td>
 			<div class="high">
 				Calculate month end balances
-				<?php echo $this->Form->submit('Calc', array('name'=>'Calc'));?>
+				<?php echo $this->Form->submit('Calc', array('name'=>'Submit', 'value' => 'Calc'));?>
 			</div>
 		</td>
 		<td>
-			<div class="high">
+			<div class="careful">
 				(Un)Lock month end balances
 				<?php 
 					if (isset($locked)) {
-						echo $this->Form->submit('Unlock', array('name'=>'Unlock'));
+						echo $this->Form->submit('Unlock', array('name'=>'Submit', 'value' => 'Unlock', 'div'=>array('id'=>'UnLockButtonID')));
 					}
 					else {
-						echo $this->Form->submit('Lock', array('name'=>'Lock'));
+						echo $this->Form->submit('Lock', array('name'=>'Submit', 'value' => 'Lock', 'div'=>array('id'=>'LockButtonID')));
 					}
 				?>
 				<div id="missingmessage" style="color: red;"></div>
@@ -44,7 +44,7 @@
 	</tr>
 	
 	<?php if (isset($locked)) { echo '
-	<tr><td><div style="color: red;">This month end is locked. Warning, unlocking month ends is a potentially destructive action. All future month ends will also be unlocked and unfinalised too.</div></td></tr>
+	<tr><td><div style="color: red;">This month end is locked</div></td></tr>
 	';} ?>
 	
 </table>	

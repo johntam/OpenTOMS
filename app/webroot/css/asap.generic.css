@@ -181,7 +181,9 @@ div.actions h3 {
 div.high {
 	background: #C9F0C9;
 }
-
+div.careful {
+	background: #F2B3B3;
+}
 
 /** Tables **/
 table {

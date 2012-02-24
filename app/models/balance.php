@@ -170,6 +170,12 @@ class Balance extends AppModel {
 										array(	'Balance.fund_id =' => $fund));
 		return $result;
 	}
+	
+	
+	//checks to see if the specified month end balances exist for the fund, PHP value of 0=false, anything else=true
+	function monthexists($fund, $month, $year) {
+		return($this->find('count', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.act ='=>1))));
+	}
 }
 
 ?>

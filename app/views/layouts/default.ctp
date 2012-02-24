@@ -73,10 +73,10 @@ show up on all of your views, include it here -->
 					<li><a href="/accounts">Accounting Books</a></li>
 					<li><a href="/TradeTypes">Trade Types</a></li>
 					<li><a href="/ledgers">Journal Posting</a></li>
-					<li><a href="/balances">Fix Balances</a></li>
+					<li><a href="/balances">Lock Balances</a></li>
 				</ul>
 			</li>
-			<li><a href="#">Permissions</a><ul>
+			<li><a href="#">Admin</a><ul>
 				<li><a href="/users">Users</a></li>
 				<li><a href="/groups">Groups</a></li></ul>
 			</li>
