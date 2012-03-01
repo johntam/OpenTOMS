@@ -1,5 +1,13 @@
 <!-- File: /app/views/ledgers/post.ctp -->
 
+<?php echo $html->script('jquery-ui-1.8.18.custom.min.js'); ?>
+<?php echo $html->css('ui-lightness/jquery-ui-1.8.18.custom.css'); ?>
+<script type="text/javascript">
+				$(document).ready(function() {
+					$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd' });
+				});
+</script>
+
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
 	<tr>
 		<td colspan="6"><h1>Journal Posting</h1></td>
@@ -10,7 +18,7 @@
 			<?php echo $this->Form->create('Ledger', array('action' => 'index')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
 			<?php echo $this->Form->input('account_id', array('label'=>false, 'options'=>$accounts)); ?>
-			<?php echo $this->Form->input('accounting_period', array('label'=>false,'type'=>'date', 'dateFormat' => 'MY')); ?>
+			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput')); ?>
 		</td>
 		<td>
 			<div class="high">

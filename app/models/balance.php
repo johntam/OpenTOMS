@@ -5,22 +5,21 @@ class Balance extends AppModel {
 	var $belongsTo ='Account, Fund, Currency, Sec';
 	
 	//calculate the month end balances, using the last month end balances and this month's general ledger
-	function monthend($fund, $month, $year) {
-		//first get the end of last month's balances
-		$lm = $month - 1;
-		$ly = $year;
-		if ($lm == 0) {
-			$lm = 12;
-			$ly = $ly - 1;
+	function calc($fund, $date) {
+		//first get the date when the last balance was calculated.
+		$prevdate = $this->getPrevBalanceDate($fund, $date);
+		//get the last balance data, else use a null array
+		if (empty($prevdate)) {
+			$baldata = array();
 		}
-		
-		//get last month end balances
-		$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.ledger_month =' => $lm, 'Balance.ledger_year =' => $ly, 'Balance.fund_id =' => $fund)));
+		else {
+			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.balance_date =' => $date, 'Balance.fund_id =' => $fund)));
+		}
 				
 		//get this month's ledger entries
 		App::import('model','Ledger');
 		$ledger = new Ledger();
-		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_month =' => $month, 'Ledger.ledger_year =' => $year, 'Ledger.fund_id =' => $fund)));
+		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund)));
 		
 		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
 		$newbal = array();
@@ -40,13 +39,13 @@ class Balance extends AppModel {
 		
 		//deactivate all previous balances for this month end
 		$result = $this->updateAll( array('Balance.act' => 0), 
-										array(	'Balance.ledger_month =' => $month, 
-												'Balance.ledger_year =' => $year, 
+										array(	'Balance.balance_date =' => $date,
 												'Balance.fund_id =' => $fund,
 												'Balance.locked =' => 0,
 												'Balance.act =' => 1));
 		
 		if (!$result) { return false; }
+		
 		//we have a two-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $acc=>$n1) {
 			foreach ($n1 as $sec=>$n2) {
@@ -65,8 +64,7 @@ class Balance extends AppModel {
 										 'crd'=>DboSource::expression('NOW()'),
 										 'fund_id' => $fund,
 										 'account_id'=>$acc,
-										 'ledger_month'=>$month,
-										 'ledger_year'=>$year,
+										 'balance_date'=>$date,
 										 'balance_debit'=>$totdeb,
 										 'balance_credit'=>$totcred,
 										 'currency_id'=>$ccy,
@@ -82,8 +80,7 @@ class Balance extends AppModel {
 	
 	
 	//put prices and fx rates next to balance items by left joining onto the prices table
-	//$fund is id of fund, $pdate is UNIX time
-	function attachprices($fund, $pdate) {
+	function attachprices($fund, $date) {
 		$params=array(	'fields' => array(	'Fund.fund_name',
 											'Account.id',
 											'Account.account_name',
@@ -95,8 +92,7 @@ class Balance extends AppModel {
 											'Price.price',
 											'Price.fx_rate',
 											'Price.sec_id',
-											'Balance.sec_id'
-														),
+											'Balance.sec_id'),
 						'joins' => array(
 										array('table'=>'prices',
 											  'alias'=>'Price',
@@ -104,10 +100,10 @@ class Balance extends AppModel {
 											  'foreignKey'=>false,
 											  'conditions'=>
 													array(	'Price.sec_id=Balance.sec_id',
-															"Price.price_date='".date('Y-m-d', $pdate)."'")
+															'Price.price_date='.$date)
 											  )
 										),
-						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.ledger_month ='=>date('n', $pdate), 'Balance.ledger_year ='=>date('Y', $pdate)),
+						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date),
 						'order' => array('Balance.account_id')
 					);
 						
@@ -116,39 +112,32 @@ class Balance extends AppModel {
 	
 	
 	//lock month end
-	function lock($fund, $month, $year) {
+	function lock($fund, $date) {
 		$result = $this->updateAll( array('Balance.locked' => 1), 
-										array(	'Balance.ledger_month =' => $month, 
-												'Balance.ledger_year =' => $year, 
+										array(	'Balance.ledger_date =' => $date,
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
 		return ($result);
 	}
 	
 	//unlock month end
-	function unlock($fund, $month, $year) {
+	function unlock($fund, $date) {
 		$result = $this->updateAll( array('Balance.locked' => 0), 
-										array(	'Balance.ledger_month =' => $month, 
-												'Balance.ledger_year =' => $year, 
+										array(	'Balance.ledger_date =' => $date, 
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
 		//unlock all future month ends
 		$result2 = $this->updateAll( array('Balance.locked' => 0), 
-										array(	'Balance.ledger_year >' => $year, 
+										array(	'Balance.ledger_date >' => $date, 
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
-		$result3 = $this->updateAll( array('Balance.locked' => 0), 
-										array(	'AND' => array( 'Balance.ledger_year =' => $year,
-																'Balance.ledger_month >'=> $month),
-												'Balance.fund_id =' => $fund,
-												'Balance.act =' => 1));
-		return ($result && $result2 && $result3);
+		return ($result && $result2);
 	}
 	
 	//is this month locked?
 	//the better way would be to have a record dates table with a locked status field, maybe do this for a future version.
-	function islocked($fund, $month, $year) {
-		$result = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.act ='=>1), 'fields'=>array('Balance.locked')));
+	function islocked($fund, $date) {
+		$result = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date, 'Balance.act ='=>1), 'fields'=>array('Balance.locked')));
 		
 		if (empty($result['Balance']['locked'])) {
 			return false;
@@ -173,8 +162,14 @@ class Balance extends AppModel {
 	
 	
 	//checks to see if the specified month end balances exist for the fund, PHP value of 0=false, anything else=true
-	function monthexists($fund, $month, $year) {
-		return($this->find('count', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.act ='=>1))));
+	function getPrevBalanceDate($fund, $date) {
+		$fetch = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date <' => $date, 'Balance.act ='=>1), 'order'=>'Balance.balance_date DESC'));
+		if (empty($fetch)) {
+			return null;
+		}
+		else {
+			return $fetch['Balamce']['balance_date'];
+		}
 	}
 }
 

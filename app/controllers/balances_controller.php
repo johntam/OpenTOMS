@@ -4,116 +4,124 @@ class BalancesController extends AppController {
 	var $name = 'Balances';
 
 	function index() {
+		$this->autoRender = false;
+		$d = new Dispatcher();
+			
 		if (isset($this->params['form']['Submit'])) {
-			$this->Session->write('balances_data', $this->data);
-			
-			$fund = $this->data['Balance']['fund_id'];
-			$month = $this->data['Balance']['accounting_period']['month'];
-			$year = $this->data['Balance']['accounting_period']['year'];
-			$monthenddate = mktime(0, 0, 0, $month + 1, 0, $year);	//last day of month		
-			
 			switch ($this->params['form']['Submit']) {
 				case 'View':
-					$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+					$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+								 array('data' => $this->data));
 					break;
 				
 				case 'Calc':
-					$this->redirect(array('controller' => 'balances', 'action' => 'calc/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+					$d->dispatch(array('controller' => 'balances', 'action' => 'calc'),
+								 array('data' => $this->data));
 					break;
 					
 				case 'Unlock':
-					$this->redirect(array('controller' => 'balances', 'action' => 'unlockMonthEnd'));
+					$d->dispatch(array('controller' => 'balances', 'action' => 'unlockMonthEnd'),
+								 array('data' => $this->data));
 					break;
 					
 				case 'Lock':
-					$this->redirect(array('controller' => 'balances', 'action' => 'lock/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+					$d->dispatch(array('controller' => 'balances', 'action' => 'lock'),
+								 array('data' => $this->data));
 					break;
 					
 				default:
-					$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+					$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+								 array('data' => $this->data));
 			}
 		}
 		else {
 			//page just loaded
 			$fund = $this->Balance->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
 			$fund = $fund['Fund']['id'];
-			$month = date('n');
-			$year = date('Y');
-			$monthenddate = mktime(0, 0, 0, $month + 1, 0, $year);	//last day of month
-			
-			$this->Session->write('balances_data', $this->data);
-			$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+			$date = date('Y-m-d');
+			$this->data['Balance'] = array('fund_id'=>$fund, 'account_date'=>$date);
+			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+								 array('data' => $this->data));
 		}
 	}
 	
 	
-	function view($fund, $month, $year, $monthenddate) {
-		$this->data = $this->Session->read('balances_data');
-		$this->dropdownchoices();
-		$this->set('balances', $this->Balance->attachprices($fund, $monthenddate));
+	function view() {	
+		$fund = $this->data['Balance']['fund_id'];
+		$date = $this->data['Balance']['account_date'];
 		
-		if ($this->Balance->islocked($fund, $month, $year)) {
+		$this->set('balances', $this->Balance->attachprices($fund, $date));
+		
+		if ($this->Balance->islocked($fund, $date)) {
 			$this->set('locked', true);
 		}
 		
+		$this->dropdownchoices();
 		$this->render('index');
 	}
 	
 	
-	function calc($fund, $month, $year, $monthenddate) {
-		$this->dropdownchoices();
+	function calc() {
+		$fund = $this->data['Balance']['fund_id'];
+		$date = $this->data['Balance']['account_date'];
 	
-		//First check that this month end is not locked
-		if ($this->Balance->islocked($fund, $month, $year)) {
-			$this->Session->setFlash('Cannot recalculate balances as this month end is locked.');
+		//First check that this date is not locked
+		if ($this->Balance->islocked($fund, $date)) {
+			$this->Session->setFlash('Cannot recalculate balances as this date is locked.');
 		}
 		else {
 			//work out the month end balances, the function also saves the results to the model table
-			if (!$this->Balance->monthend($fund, $month, $year)) {
+			if (!$this->Balance->calc($fund, $date)) {
 				$this->Session->setFlash('Problem with calculating balances.');
 			}
 		}
-		$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+		$this->autoRender = false;
+		$d = new Dispatcher();
+		$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+					 array('data' => $this->data));
 	}
 	
 	
-	function lock($fund, $month, $year, $monthenddate) {
-		$this->data = $this->Session->read('balances_data');
-		$this->dropdownchoices();
-	
-		//try to lock month end balances
-		if ($this->Balance->lock($fund, $month, $year)) {
+	function lock() {
+		$fund = $this->data['Balance']['fund_id'];
+		$date = $this->data['Balance']['account_date'];
+		
+		//try to lock date balances
+		if ($this->Balance->lock($fund, $date)) {
 			$this->Session->setFlash('Month successfully locked.');
 		}
 		else {
 			$this->Session->setFlash('Problem with locking this month end.');
 		}
-		$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+		$this->autoRender = false;
+		$d = new Dispatcher();
+		$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+							 array('data' => $this->data));
 	}
 	
 	
 	//Unlock this month end balance and all future month end balances from this date on. This is why this action has its own page with a big warning on it.
 	function unlockMonthEnd() {
-		$this->data = $this->Session->read('balances_data');
-		$this->dropdownchoices();
+		$fund = $this->data['Balance']['fund_id'];
+		$date = $this->data['Balance']['account_date'];
 		
-		if (isset($this->params['form']['Submit'])) {
-			$fund = $this->data['Balance']['fund_id'];
-			$month = $this->data['Balance']['accounting_period']['month'];
-			$year = $this->data['Balance']['accounting_period']['year'];
-			$monthenddate = mktime(0, 0, 0, $month + 1, 0, $year);	//last day of month
-				
+		if (isset($this->params['form']['Submit'])) {			
 			if ($this->params['form']['Submit'] == 'Yes') {
 				//do it and stand back, they were warned!
-				if ($this->Balance->unlock($fund, $month, $year)) {
+				if ($this->Balance->unlock($fund, $date)) {
 					$this->Session->setFlash('Month successfully unlocked.');
 				}
 				else {
 					$this->Session->setFlash('Problem with unlocking this month end.');
 				}
 			}
-		
-			$this->redirect(array('controller' => 'balances', 'action' => 'view/'.$fund.'/'.$month.'/'.$year.'/'.$monthenddate));
+			$this->autoRender = false;
+			$d = new Dispatcher();
+			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+						 array('data' => $this->data));
+		}
+		else {
+			$this->dropdownchoices();
 		}
 	}
 	
@@ -121,6 +129,9 @@ class BalancesController extends AppController {
 	function dropdownchoices() {
 		//funds dropdown list
 		$this->set('funds', $this->Balance->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
+		
+		//list of ledger posting dates for use by the calc action. Only let the user calculate up to these dates.
+		
 	}
 }	
 ?>

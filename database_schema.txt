@@ -247,3 +247,20 @@ CREATE TABLE balances(
 	balance_quantity DECIMAL(18,6) NOT NULL,
 	sec_id INT NOT NULL
 );
+
+
+CREATE TABLE position_reports(
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL DEFAULT 1,
+	crd timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	final tinyint(1) NOT NULL,
+	pos_date date NOT NULL,
+	fund_id INT NOT NULL,
+	sec_id INT NOT NULL,
+	quantity DECIMAL(18,6) NOT NULL,
+	price DECIMAL(18,6) NULL,
+	currency_id INT NOT NULL,
+	fx_rate decimal(18,6) NULL,
+	mkt_val_local decimal(18,4) NULL,
+	mkt_val_fund decimal(18,4) NULL
+);

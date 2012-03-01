@@ -1,4 +1,12 @@
 <!-- File: /app/views/balances/index.ctp -->
+
+<?php echo $html->script('jquery-ui-1.8.18.custom.min.js'); ?>
+<?php echo $html->css('ui-lightness/jquery-ui-1.8.18.custom.css'); ?>
+<script type="text/javascript">
+				$(document).ready(function() {
+					$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd' });
+				});
+</script>
 <?php $missingprices = false; ?>
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
@@ -10,7 +18,7 @@
 		<td>
 			<?php echo $this->Form->create('Balance', array('action' => 'index')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->input('accounting_period', array('label'=>false,'type'=>'date', 'dateFormat' => 'MY')); ?>
+			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'))); ?>
 		</td>
 		<td>
 			<div class="high">

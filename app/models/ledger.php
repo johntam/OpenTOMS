@@ -5,34 +5,36 @@ class Ledger extends AppModel {
 	var $belongsTo ='Account, Trade, Fund, Currency, Sec';
 	
 	//Post trade journal entries to the general ledger
-	function post($month, $year, $fund, $accountid, $wipeout = false) {	
+	function post($fund, $date) {	
 		//get trades with trade date in the month
-		if ($accountid == 0) { $accountid = '%'; }
 		$sqlparam=array(
 			'conditions' => array(	'Trade.fund_id =' => $fund, 
 									'Trade.act =' => 1, 
 									'Trade.cancelled =' => 0, 
-									'Trade.executed =' => 1,
-									'OR' => array('TradeType.debit_account_id LIKE ' => $accountid, 'TradeType.credit_account_id LIKE ' => $accountid)
+									'Trade.executed =' => 1
 								 ), 
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Currency.id','Currency.currency_iso_code','Trade.quantity','Fund.fund_name', 'Sec.sec_name', 'Sec.id'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
-		//if we are creating a new ledger from scratch, then get every trade from the beginning, otherwise just this month's trades
-		if ($wipeout) {
-			$sqlparam['conditions']['Trade.trade_date <='] = date('Y-m-d', mktime(0,0,0, $month+1, 0, $year));
+		//get the date of the previous balance calculation date
+		App::import('model','Balance');
+		$bal = new Balance();
+		$prevdate = $bal->getPrevBalanceDate($fund, $date);
+		
+		if (empty($prevdate)) {
+			$sqlparam['conditions']['Trade.trade_date <='] = $date;	//get all trades before $date since no prior balance date exists
 		}
 		else {
-			$sqlparam['conditions']['MONTH(Trade.trade_date) ='] = $month;
-			$sqlparam['conditions']['YEAR(Trade.trade_date) ='] = $year;
+			$sqlparam['conditions']['AND'] = array('Trade.trade_date >' => $prevdate,
+												   'Trade.trade_date <=' => $date);
 		}
 			
 		$posts = $this->Trade->find('all', $sqlparam);
 			
-		//make inactive all previous ledger entries for this month (that are unlocked)
-		if ($this->updateAll( array('Ledger.act' => 0), array('Ledger.ledger_month =' => $month, 'Ledger.ledger_year =' => $year, 'Ledger.fund_id =' => $fund, 'Ledger.account_id LIKE ' => "'".$accountid."'", 'Ledger.act =' => 1))) {
+		//make inactive all previous ledger entries for this month that are unlocked (the check for the lock occurs in the controller).
+		if ($this->updateAll( array('Ledger.act' => 0), array('Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund, 'Ledger.act =' => 1))) {
 			foreach ($posts as $post) {
 				$fund = $post['Trade']['fund_id'];
 				$td = $post['Trade']['trade_date'];
@@ -54,9 +56,8 @@ class Ledger extends AppModel {
 								'crd' => DboSource::expression('NOW()'),
 								'fund_id' => $fund,
 								'account_id' => $debitid,
-								'ledger_month' => $month,
-								'ledger_year' => $year,
-								'ledger_date' => $td,
+								'ledger_date' => $date,
+								'trade_date' => $td,
 								'trade_id' => $tid,
 								'ledger_debit' => $cons,
 								'ledger_credit' => 0,
@@ -89,10 +90,10 @@ class Ledger extends AppModel {
 	}
 	
 	//is this month end locked? Check using the Balance model.
-	function islocked($fund, $month, $year) {
+	function islocked($fund, $date) {
 		App::import('model','Balance');
 		$bal = new Balance();
-		return ($bal->islocked($fund, $month, $year));
+		return ($bal->islocked($fund, $date));
 	}
 	
 	//wipe all ledgers for a particular fund
@@ -100,13 +101,6 @@ class Ledger extends AppModel {
 		$result = $this->updateAll( array('Ledger.act'=> 0), 
 										array(	'Ledger.fund_id =' => $fund));
 		return ($result);
-	}
-	
-	//checks to see if last month's end balances exist or not
-	function BalanceExists($fund, $month, $year) {
-		App::import('model','Balance');
-		$bal = new Balance();
-		return ($bal->monthexists($fund, $month, $year));
 	}
 }
 

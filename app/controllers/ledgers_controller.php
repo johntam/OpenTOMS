@@ -4,88 +4,90 @@ class LedgersController extends AppController {
 	var $name = 'Ledgers';
 
 	function index() {
+		$this->autoRender = false;
+		$d = new Dispatcher();
+		
 		if (isset($this->params['form']['Submit'])) {
-			$this->Session->write('ledger_post_data', $this->data);
-			
 			switch ($this->params['form']['Submit']) {
 				case 'Post':
-					$this->redirect(array('controller' => 'ledgers', 'action' => 'post'));
+					$d->dispatch(
+									array('controller' => 'ledgers', 'action' => 'post'),
+									array('data' => $this->data)
+								);
 					break;
 				
 				case 'Create':
-					$this->redirect(array('controller' => 'ledgers', 'action' => 'create'));
+					$d->dispatch(
+									array('controller' => 'ledgers', 'action' => 'create'),
+									array('data' => $this->data)
+								);
 					break;
 					
 				case 'View':
-					$this->redirect(array('controller' => 'ledgers', 'action' => 'view'));
+					$d->dispatch(
+									array('controller' => 'ledgers', 'action' => 'view'),
+									array('data' => $this->data)
+								);
+					break;
 			}
 		}
-		
-		$this->redirect(array('controller' => 'ledgers', 'action' => 'view'));
+		else {
+			$this->redirect(array('controller' => 'ledgers', 'action' => 'view'));
+		}
 	}
 	
 	
 	//view ledger for this month
 	function view() {
-		$this->data = $this->Session->read('ledger_post_data');
 		$this->dropdownchoices();
 		
 		if (empty($this->data)) {
-			$month = date('n');
-			$year = date('Y');
+			$date = date('Y-m-d');
 			$fund = $this->Ledger->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
-			
 		
 			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund['Fund']['id'], 
-																						'Ledger.ledger_month =' => $month, 
-																						'Ledger.ledger_year =' => $year, 
+																						'Ledger.ledger_date =' => $date,
 																						'Ledger.act =' => 1), 
-																	'order'=>'Ledger.account_id ASC, Ledger.ledger_date ASC')));
+																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
 		}
-		else {			
-			$month = $this->data['Ledger']['accounting_period']['month'];
-			$year = $this->data['Ledger']['accounting_period']['year'];
+		else {
+			$date = $this->data['Ledger']['account_date'];
 			$fund = $this->data['Ledger']['fund_id'];
-			$account = $this->data['Ledger']['account_id'];
-			if ($account == 0) { $account = '%'; }
+			if (!isset($this->data['Ledger']['account_id'])) {
+				$account = '%';
+			}
+			else {
+				$account = $this->data['Ledger']['account_id'];
+				if ($account == 0) { $account = '%'; }
+			}
 			
-			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund, 
-																						'Ledger.ledger_month =' => $month, 
-																						'Ledger.ledger_year =' => $year, 
+			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund,
+																						'Ledger.ledger_date =' => $date, 
 																						'Ledger.account_id LIKE ' => $account,
 																						'Ledger.act =' => 1), 
-																	'order'=>'Ledger.account_id ASC, Ledger.ledger_date ASC')));
+																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
 		}
 	}
 	
 	
 	//Post trade journal entries to the general ledger
 	function post() {
-		$this->data = $this->Session->read('ledger_post_data');
 		$this->dropdownchoices();
 		
-		$month = $this->data['Ledger']['accounting_period']['month'];
-		$year = $this->data['Ledger']['accounting_period']['year'];
+		$date = $this->data['Ledger']['account_date'];
 		$fund = $this->data['Ledger']['fund_id'];
-		$accountid = $this->data['Ledger']['account_id'];
-		$lm = date('n', mktime(0,0,0, $month, 0, $year));
-		$ly = date('Y', mktime(0,0,0, $month, 0, $year));
 		
 		//check to see if this month is locked
-		if ($this->Ledger->islocked($fund, $month, $year)) {
+		if ($this->Ledger->islocked($fund, $date)) {
 			$this->Session->setFlash('Sorry, this month end is locked from further changes.');
 		}
-		else if (!$this->Ledger->BalanceExists($fund, $lm, $ly)) {
-			$this->Session->setFlash('Sorry, no estimate or final balances were found for the previous month end of '.$lm.'/'.$ly);
-		}
 		else {
-			$this->set('posts', $this->Ledger->post($month, $year, $fund, $accountid));
+			$this->set('posts', $this->Ledger->post($fund, $date));
 		}
 	}
 	
 	//create new general ledger. This is a very destructive action which scrubs all month end balances. This is why this action has its own page with a big warning on it.
 	function create() {
-		$this->data = $this->Session->read('ledger_post_data');
 		$this->dropdownchoices();
 		
 		if (isset($this->params['form']['Submit'])) {
@@ -98,19 +100,21 @@ class LedgersController extends AppController {
 					
 					$this->Ledger->wipe($this->data['Ledger']['fund_id']);
 					
-					$this->Ledger->post( $this->data['Ledger']['accounting_period']['month'],
-										 $this->data['Ledger']['accounting_period']['year'],
-										 $this->data['Ledger']['fund_id'],
-										 $this->data['Ledger']['account_id'],
-										 true);
+					$this->Ledger->post($this->data['Ledger']['fund_id'],
+										$this->data['Ledger']['account_date']);
 										 
 					$this->Session->setFlash('First ledger has now been created for this fund.');
-					$this->redirect(array('controller' => 'ledgers', 'action' => 'index'));
+					
 				}
 			}
-			else {
-				$this->redirect(array('controller' => 'ledgers', 'action' => 'index'));
-			}
+			
+			//redirect to view action, whilst passing $this->data
+			$this->autoRender = false;
+			$d = new Dispatcher();
+			$d->dispatch(
+				array('controller' => 'ledgers', 'action' => 'view'),
+				array('data' => $this->data)
+			);
 		}
 	}
 	

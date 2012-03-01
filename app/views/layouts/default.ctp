@@ -65,7 +65,7 @@ show up on all of your views, include it here -->
 				</ul>
 			</li>
 			<li><a href="#">Reports</a><ul>
-				<li><a href="/reports">Run</a></li></ul>
+				<li><a href="/PositionReports">Positions</a></li></ul>
 			</li>
 			<li>
 				<a href="#">Accounting</a>
