@@ -11,7 +11,7 @@
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
 	<tr>
-		<td colspan="7"><h1>Lock Balances</h1></td>
+		<td colspan="9"><h1>Lock Balances</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -29,7 +29,14 @@
 		<td>
 			<div class="high">
 				Calculate month end balances
-				<?php echo $this->Form->submit('Calc', array('name'=>'Submit', 'value' => 'Calc'));?>
+				<?php if (!empty($calcdates)) {
+					echo $this->Form->input('calc_date', array('label'=>false, 'options'=>$calcdates));
+					echo $this->Form->submit('Calc', array('name'=>'Submit', 'value' => 'Calc'));
+				}
+				else {
+					echo '<div style="color: red;">No ledgers posted since last locked balance date.</div>';
+				}
+				?>
 			</div>
 		</td>
 		<td>
@@ -40,14 +47,15 @@
 						echo $this->Form->submit('Unlock', array('name'=>'Submit', 'value' => 'Unlock', 'div'=>array('id'=>'UnLockButtonID')));
 					}
 					else {
-						echo $this->Form->submit('Lock', array('name'=>'Submit', 'value' => 'Lock', 'div'=>array('id'=>'LockButtonID')));
+						if (!empty($balances)) {
+							echo $this->Form->submit('Lock', array('name'=>'Submit', 'value' => 'Lock', 'div'=>array('id'=>'LockButtonID')));
+						}
 					}
 				?>
 				<div id="missingmessage" style="color: red;"></div>
 			</div>
 		</td>
-		<td colspan="3">
-		</td>
+		
 		<?php echo $this->Form->end(); ?>
 	</tr>
 	

@@ -168,7 +168,18 @@ class Balance extends AppModel {
 			return null;
 		}
 		else {
-			return $fetch['Balamce']['balance_date'];
+			return $fetch['Balance']['balance_date'];
+		}
+	}
+	
+	//get date of last locked balance date, PHP value of 0=false, anything else=true
+	function getPrevLockedDate($fund) {
+		$fetch = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.locked =' => 1, 'Balance.act ='=>1), 'order'=>'Balance.balance_date DESC'));
+		if (empty($fetch)) {
+			return null;
+		}
+		else {
+			return $fetch['Balance']['balance_date'];
 		}
 	}
 }
