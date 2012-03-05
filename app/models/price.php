@@ -96,7 +96,7 @@ class Price extends AppModel {
 		return($sec->find('all', $params));
 	}
 	
-	function save_fxrates($data) {
+	function save_fxrates($data) {	
 		$out = array();
 		foreach ($data as $key => $d) {
 			$part = split("_",$key);
@@ -121,11 +121,13 @@ class Price extends AppModel {
 		}
 		
 		//save the data to the prices table
+		$msg='';
 		foreach ($out as $key => $o) {
 			if (!empty($o['price']['0'])) {
 				//check to see if this date is locked for editing
 				if (!empty($o['priceid']['0'])) {
-					if ($this->islockedID($o['priceid']['0'])) {
+					if ($this->islocked($o['priceid']['0'])) {
+						$msg = 'Some FX rates have been locked from further editing on this date';
 						continue;
 					}
 				}
@@ -140,6 +142,12 @@ class Price extends AppModel {
 				$this->save();
 			}
 		}
+		
+		if (empty($msg)) {
+			$msg='FX rates have been updated';
+		}
+		
+		return $msg;
 	}
 	
 	//Return row of data for editing
@@ -181,63 +189,91 @@ class Price extends AppModel {
 		}
 	}
 	
-	//is this security/date locked? Check using the Balance model.
-	function islocked($data) {
-		$secid = $data['Price']['sec_id'];
-		$month = $data['Price']['price_date']['month'];
-		$day = $data['Price']['price_date']['day'];
-		$year = $data['Price']['price_date']['year'];
 	
-		//check if this is a month end, if not then it can't possibly be locked
-		$date1 = mktime(0,0,0, $month, $day, $year);
-		$date2 = mktime(0,0,0, $month + 1, 0, $year);
-		if ($date1 == $date2) {
-			App::import('model','Balance');
-			$bal = new Balance();
-			
-			//check if ANY fund has some locked data for this security in the balances table
-			$count = $bal->find('count', array('conditions'=>array('Balance.sec_id ='=>$secid, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.locked ='=>1, 'Balance.act ='=>1)));
-			if ($count == 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	//write a price to the database. used by the ajax routines on the balance view page.
+	function put_price($sec_id, $date, $price, $fx_rate) {		
+		if ($this->islocked($sec_id, $date)) {
+			return 'Locked';	//locked error code
 		}
 		else {
-			//not month end
+			if ($this->check_unique($sec_id, $date)) {
+				if (!$fx_rate) {
+					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>$price));
+				}
+				else {
+					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>1, 'fx_rate'=>$fx_rate));
+				}
+				
+				if ($this->save($data)) {
+					//success
+					if (!$fx_rate) {
+						return(number_format($price,2));
+					}
+					else {
+						return(number_format($fx_rate,4));
+					}
+				}
+				else {
+					return 'Error';	//database write write error code
+				}
+			}
+			else {
+				return 'Exists';	//non-unique error code
+			}
+		}
+	}
+	
+	
+	//Check to see if a price to be added doesn't break the unique constraint on table prices.
+	function check_unique($sec_id, $price_date, $price_source='DFLT') {	
+		$conditions=array(
+			'Price.price_date =' => $price_date,
+			'Price.price_source =' => $price_source,
+			'Price.sec_id =' => $sec_id
+		);
+	
+		$params=array(
+			'conditions' => $conditions, 
+		);
+		
+		$num = $this->find('count', $params);
+		if ($num > 0) { 
 			return false;
+		} 
+		else {
+			return true;
 		}
 	}
 	
 	//is this security/date locked? Check using the Balance model.
-	function islockedID($id) {
-		$fetch = $this->find('first', array('conditions'=>array('Price.id ='=>$id)));
-		$secid = $fetch['Price']['sec_id'];
-		$pricedate = strtotime($fetch['Price']['price_date']);
-		$month = date('n', $pricedate);
-		$day = date('j', $pricedate);
-		$year = date('Y', $pricedate);
-	
-		//check if this is a month end, if not then it can't possibly be locked
-		$date1 = mktime(0,0,0, $month, $day, $year);
-		$date2 = mktime(0,0,0, $month + 1, 0, $year);
-		if ($date1 == $date2) {
-			App::import('model','Balance');
-			$bal = new Balance();
-			
-			//check if ANY fund has some locked data for this security in the balances table
-			$count = $bal->find('count', array('conditions'=>array('Balance.sec_id ='=>$secid, 'Balance.ledger_month ='=>$month, 'Balance.ledger_year ='=>$year, 'Balance.locked ='=>1, 'Balance.act ='=>1)));
-			if ($count == 0) {
-				return false;
-			}
-			else {
-				return true;
-			}
+	function islocked($data, $lockdate=null) {
+		if (is_array($data)) {
+			$secid = $data['Price']['sec_id'];
+			$month = $data['Price']['price_date']['month'];
+			$day = $data['Price']['price_date']['day'];
+			$year = $data['Price']['price_date']['year'];
+			$date = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+		}
+		else if (!empty($lockdate)) {
+			$secid = $data;
+			$date = $lockdate;
 		}
 		else {
-			//not month end
+			$fetch = $this->find('first', array('conditions'=>array('Price.id ='=>$data)));
+			$secid = $fetch['Price']['sec_id'];
+			$date = $fetch['Price']['price_date'];
+		}
+
+		App::import('model','Balance');
+		$bal = new Balance();
+		
+		//check if ANY fund has some locked data for this security in the balances table
+		$count = $bal->find('count', array('conditions'=>array('Balance.sec_id ='=>$secid, 'Balance.balance_date ='=>$date, 'Balance.locked ='=>1, 'Balance.act ='=>1)));
+		if ($count == 0) {
 			return false;
+		}
+		else {
+			return true;
 		}
 	}
 }

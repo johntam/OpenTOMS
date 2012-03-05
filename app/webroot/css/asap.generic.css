@@ -623,3 +623,9 @@ div.code-coverage-results span.result-good {
 #url-rewriting-warning {
 	display: none;
 }
+
+/** Misc **/
+.missingprices {
+	color: red;
+	width: 100px;
+}

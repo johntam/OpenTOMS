@@ -53,6 +53,7 @@
 					}
 				?>
 				<div id="missingmessage" style="color: red;"></div>
+				<?php echo $this->Form->submit('Refresh', array('name'=>'Submit', 'value' => 'Refresh', 'div'=>array('id'=>'RefreshButtonID'))); ?>
 			</div>
 		</td>
 		
@@ -72,10 +73,10 @@
 		<th>Debit</th>
 		<th>Credit</th>
 		<th>Currency</th>
+		<th>FX Rate</th>
 		<th>Security</th>
 		<th>Quantity</th>
 		<th>Price</th>
-		<th>FX Rate</th>
 	</tr>
 	
 	<?php if (isset($balances)) { ?>
@@ -98,6 +99,16 @@
 				<?php echo $balance['Currency']['currency_iso_code']; ?>
 			</td>
 			<td>
+				<?php 	if (empty($balance['PriceFX']['fx_rate'])) {
+							echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id']."' value='missing' class='missingprices'/>";
+							$missingprices = true;
+						}
+						else {
+							echo number_format($balance['PriceFX']['fx_rate'],4);
+						} 
+				?>
+			</td>
+			<td>
 				<?php echo $balance['Sec']['sec_name']; ?>
 			</td>
 			<td>
@@ -105,27 +116,17 @@
 			</td>
 			<td>
 				<?php 	if ($balance['Account']['id'] > 1) {
-							//No price for cash
+							//No price allowed for cash books
+						}
+						else if ($balance['Sec']['sec_type_id'] == 2) {
+							//No price allowed for cash securities in non-cash books either
 						}
 						else if (empty($balance['Price']['price'])) {
-							echo '<font color="red">missing</font>';
+							echo "<input type='text' maxLength='10' id='pr_".$balance['Sec']['id']."' value='missing' class='missingprices'/>";
 							$missingprices = true;
 						}
 						else {
 							echo number_format($balance['Price']['price'],2);
-						} 
-				?>
-			</td>
-			<td>
-				<?php 	if ($balance['Account']['id'] == 1) {
-							//No fx rate for securities
-						}
-						else if (empty($balance['Price']['fx_rate'])) {
-							echo '<font color="red">missing</font>';
-							$missingprices = true;
-						}
-						else {
-							echo number_format($balance['Price']['fx_rate'],4);
 						} 
 				?>
 			</td>

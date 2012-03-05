@@ -43,7 +43,12 @@ class PricesController extends AppController {
 				$this->Price->set($this->data);
 			
 				if ($this->Price->validates()) {
-					if ($this->check_unique()) {
+					$price_date = date('Y-m-d', mktime(0,0,0,$this->data['Price']['price_date']['month'],
+												$this->data['Price']['price_date']['day'],
+												$this->data['Price']['price_date']['year']));
+					$sec_id = $this->data['Price']['sec_id'];
+					
+					if ($this->Price->check_unique($sec_id, $price_date)) {
 						if ($this->Price->save($this->data)) {
 							$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
 						}
@@ -96,7 +101,7 @@ class PricesController extends AppController {
 			$dataset = $this->Price->get_sec_row($id);
 			$this->data = $dataset['0'];
 		} else {
-			if ($this->Price->islockedID($id)) {
+			if ($this->Price->islocked($id)) {
 				$this->Session->setFlash('Sorry, this security has been locked from further changes on this date.');
 				$this->redirect(array('controller' => 'prices', 'action' => 'index',0,1,0,0));
 			}
@@ -115,9 +120,8 @@ class PricesController extends AppController {
 	//Pricing of FX rates
 	function fxrates($datefilter=null) {	
 		if (!empty($this->data['Price']['date_1'])) {		
-			//When Submit button has been pressed	
-			$this->Price->save_fxrates($this->data['Price']);			
-			$this->Session->setFlash('FX rates have been updated.');
+			//When Submit button has been pressed		
+			$this->Session->setFlash($this->Price->save_fxrates($this->data['Price']));
 			$this->update_report_table($this->data['Price']['fx_date']);
 			$this->redirect(array('action' => '/fxrates/'.$datefilter));
 		}

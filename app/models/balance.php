@@ -2,18 +2,19 @@
 
 class Balance extends AppModel {
     var $name = 'Balance';
-	var $belongsTo ='Account, Fund, Currency, Sec';
+	var $belongsTo ='Account, Currency, Fund, Sec';
 	
 	//calculate the month end balances, using the last month end balances and this month's general ledger
 	function calc($fund, $date) {
 		//first get the date when the last balance was calculated.
 		$prevdate = $this->getPrevBalanceDate($fund, $date);
+				
 		//get the last balance data, else use a null array
 		if (empty($prevdate)) {
 			$baldata = array();
 		}
 		else {
-			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.balance_date =' => $date, 'Balance.fund_id =' => $fund)));
+			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.balance_date =' => $prevdate, 'Balance.fund_id =' => $fund)));
 		}
 				
 		//get this month's ledger entries
@@ -81,6 +82,8 @@ class Balance extends AppModel {
 	
 	//put prices and fx rates next to balance items by left joining onto the prices table
 	function attachprices($fund, $date) {
+		$this->unBindModel(array('belongsTo' => array('Currency')));
+		
 		$params=array(	'fields' => array(	'Fund.fund_name',
 											'Account.id',
 											'Account.account_name',
@@ -90,23 +93,40 @@ class Balance extends AppModel {
 											'Sec.sec_name',
 											'Balance.balance_quantity',
 											'Price.price',
-											'Price.fx_rate',
+											'PriceFX.fx_rate',
 											'Price.sec_id',
-											'Balance.sec_id'),
+											'Balance.sec_id',
+											'Sec.id',
+											'Currency.sec_id',
+											'Sec.sec_type_id'),
 						'joins' => array(
+										array('table'=>'currencies',
+											  'alias'=>'Currency',
+											  'type'=>'inner',
+											  'foreignKey'=>false,
+											  'conditions'=>
+													array(	'Currency.id=Balance.currency_id')
+											  ),
 										array('table'=>'prices',
 											  'alias'=>'Price',
 											  'type'=>'left',
 											  'foreignKey'=>false,
 											  'conditions'=>
 													array(	'Price.sec_id=Balance.sec_id',
-															'Price.price_date='.$date)
+															"Price.price_date='".$date."'")
+											  ),
+										array('table'=>'prices',
+											  'alias'=>'PriceFX',
+											  'type'=>'left',
+											  'foreignKey'=>false,
+											  'conditions'=>
+													array(	'PriceFX.sec_id=Currency.sec_id',
+															"PriceFX.price_date='".$date."'")
 											  )
 										),
 						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date),
 						'order' => array('Balance.account_id')
-					);
-						
+					);		
 		return ($this->find('all', $params));
 	}
 	
@@ -114,7 +134,7 @@ class Balance extends AppModel {
 	//lock month end
 	function lock($fund, $date) {
 		$result = $this->updateAll( array('Balance.locked' => 1), 
-										array(	'Balance.ledger_date =' => $date,
+										array(	'Balance.balance_date =' => $date,
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
 		return ($result);
@@ -123,12 +143,12 @@ class Balance extends AppModel {
 	//unlock month end
 	function unlock($fund, $date) {
 		$result = $this->updateAll( array('Balance.locked' => 0), 
-										array(	'Balance.ledger_date =' => $date, 
+										array(	'Balance.balance_date =' => $date, 
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
 		//unlock all future month ends
 		$result2 = $this->updateAll( array('Balance.locked' => 0), 
-										array(	'Balance.ledger_date >' => $date, 
+										array(	'Balance.balance_date >' => $date, 
 												'Balance.fund_id =' => $fund,
 												'Balance.act =' => 1));
 		return ($result && $result2);

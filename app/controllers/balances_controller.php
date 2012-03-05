@@ -20,7 +20,7 @@ class BalancesController extends AppController {
 					break;
 					
 				case 'Unlock':
-					$d->dispatch(array('controller' => 'balances', 'action' => 'unlockMonthEnd'),
+					$d->dispatch(array('controller' => 'balances', 'action' => 'unlock'),
 								 array('data' => $this->data));
 					break;
 					
@@ -52,7 +52,7 @@ class BalancesController extends AppController {
 	function view() {	
 		$fund = $this->data['Balance']['fund_id'];
 		$date = $this->data['Balance']['account_date'];
-		
+				
 		$balances = $this->Balance->attachprices($fund, $date);
 		$this->set('balances', $balances);
 		
@@ -71,6 +71,7 @@ class BalancesController extends AppController {
 			$calcdates[$d['Ledger']['ledger_date']] = $d['Ledger']['ledger_date'];
 		}
 		$this->set('calcdates', $calcdates);
+		///////////////
 		
 		if ($this->Balance->islocked($fund, $date)) {
 			$this->set('locked', true);
@@ -104,7 +105,7 @@ class BalancesController extends AppController {
 	
 	function lock() {
 		$fund = $this->data['Balance']['fund_id'];
-		$date = $this->data['Balance']['account_date'];
+		$date = $this->data['Balance']['account_date'];	
 		
 		//try to lock date balances
 		if ($this->Balance->lock($fund, $date)) {
@@ -120,8 +121,8 @@ class BalancesController extends AppController {
 	}
 	
 	
-	//Unlock this month end balance and all future month end balances from this date on. This is why this action has its own page with a big warning on it.
-	function unlockMonthEnd() {
+	//Unlock this balance date and all future locked balance dates from this date on. This is why this action has its own page with a big warning on it.
+	function unlock() {
 		$fund = $this->data['Balance']['fund_id'];
 		$date = $this->data['Balance']['account_date'];
 		
@@ -129,16 +130,15 @@ class BalancesController extends AppController {
 			if ($this->params['form']['Submit'] == 'Yes') {
 				//do it and stand back, they were warned!
 				if ($this->Balance->unlock($fund, $date)) {
-					$this->Session->setFlash('Month successfully unlocked.');
+					$this->Session->setFlash('Month successfully unlocked');
 				}
 				else {
-					$this->Session->setFlash('Problem with unlocking this month end.');
+					$this->Session->setFlash('Problem with unlocking this month end');
 				}
 			}
 			$this->autoRender = false;
 			$d = new Dispatcher();
-			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
-						 array('data' => $this->data));
+			$d->dispatch(array('controller' => 'balances', 'action' => 'view'), array('data' => $this->data));
 		}
 		else {
 			$this->dropdownchoices();
@@ -149,6 +149,21 @@ class BalancesController extends AppController {
 	function dropdownchoices() {
 		//funds dropdown list
 		$this->set('funds', $this->Balance->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
+	}
+	
+	//allow user to save a price to the prices table
+	function ajax_enterprice() {
+		//load up Price model and try to write the price to the database
+		$sec_id = $this->params['form']['sec_id'];
+		$price_date = $this->params['form']['price_date'];
+		$price_value = $this->params['form']['price'];
+		$fx_rate = $this->params['form']['fx_rate'];
+		
+		App::import('model','Price');
+		$price = new Price();
+		
+		$this->set('data', $price->put_price($sec_id, $price_date, $price_value, $fx_rate));
+		$this->render('/elements/ajax_common', 'ajax');
 	}
 }	
 ?>

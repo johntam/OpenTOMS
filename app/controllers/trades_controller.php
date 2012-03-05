@@ -208,33 +208,35 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
-			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 			$this->data['Trade']['accrued'] = str_replace(',','',$this->data['Trade']['accrued']);
 		
-			$id = $this->Trade->id;	//save id for later use
-			unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
-			$this->data['Trade']['act'] = 1;
-			$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
-			$this->Trade->create();
+			//first try to deactive this current trades, if it doesn't succeed, then don't create a new trade, this has been a persistent bug
+			$oid = $this->data['Trade']['oid'];
+			$result = $this->Trade->updateAll(array('Trade.act' => 0,
+													'Trade.cancelled' => 1), 
+											  array('Trade.oid =' => $oid));
 			
-			if ($this->Trade->save($this->data)) {
-				$this->Trade->create();
-				$this->Trade->read(null,$id);
-				$this->Trade->set(array(
-					'act' => 0,
-					'cancelled' => 1
-				));
-				//Clear the active flag on the trade that was edited
+			//if successful, then go on to create a new trade with these details, else report an error
+			if ($result) {
+				unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
+				$this->data['Trade']['act'] = 1;
+				$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
+				$this->Trade->create($this->data);
+			
 				if ($this->Trade->save()) {
 					$this->update_report_table();
-					$this->Session->setFlash('Your trade has been updated.');
+					$this->Session->setFlash('Your trade has been updated');
 					$this->redirect(array('action' => 'index'));
 				}
 				else {
-					$this->Session->setFlash('Warning: There was a problem deactivating the prior trade id='.$id.'. Please manually cancel this duplicate (below).');
+					$this->Session->setFlash('Problem with adding the new edited trade to the database. Please try again. (The previous one has already been cancelled)');
 					$this->redirect(array('action' => 'edit', $id));
 				}
+			}
+			else {
+				$this->Session->setFlash('Could not deactivate trade id='.$id.' below. Edit operation aborted.');
+				$this->redirect(array('action' => 'edit', $id));
 			}
 		}
 		

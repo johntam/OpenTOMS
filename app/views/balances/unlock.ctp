@@ -1,15 +1,24 @@
-<!-- File: /app/views/balances/unlockmonthend.ctp -->
+<!-- File: /app/views/balances/unlock.ctp -->
+
+<?php echo $html->script('jquery-ui-1.8.18.custom.min.js'); ?>
+<?php echo $html->css('ui-lightness/jquery-ui-1.8.18.custom.css'); ?>
+<script type="text/javascript">
+				$(document).ready(function() {
+					$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd' });
+				});
+</script>
+
 </br>
 <table style="width: 40%;margin-left:30%;margin-right:30%;">
 	<tr>
-		<td colspan="6"><h1>Unlock month end balances</h1></td>
+		<td colspan="6"><h1>Unlock Balance Date</h1></td>
 	</tr>
 	
 	<tr class="altrow">
 		<td>
-			<?php echo $this->Form->create('Balance', array('action' => 'unlockMonthEnd')); ?>
+			<?php echo $this->Form->create('Balance', array('action' => 'unlock')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->input('accounting_period', array('label'=>false,'type'=>'date', 'dateFormat' => 'MY')); ?>
+			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'))); ?>
 		</td>
 		<td colspan="2">
 		</td>
