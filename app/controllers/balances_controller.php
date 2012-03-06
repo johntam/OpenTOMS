@@ -8,6 +8,8 @@ class BalancesController extends AppController {
 		$d = new Dispatcher();
 			
 		if (isset($this->params['form']['Submit'])) {
+			$this->Session->write('fund_chosen', $this->data['Balance']['fund_id']);
+			
 			switch ($this->params['form']['Submit']) {
 				case 'View':
 					$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
@@ -35,13 +37,20 @@ class BalancesController extends AppController {
 			}
 		}
 		else {
-			//page just loaded
-			$fund = $this->Balance->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
-			$fund = $fund['Fund']['id'];
+			//page just loaded, try if possible to use whatever fund was chosen on the trade blotter as the default fund choice on this page.
+			if ($this->Session->check('fund_chosen')) {
+				$fund = $this->Session->read('fund_chosen');
+			}
+			else {
+				$fund = $this->Balance->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
+				$fund = $fund['Fund']['id'];
+			}
+			
 			$date = $this->Balance->getPrevBalanceDate($fund, date('Y-m-d', strtotime('tomorrow')));
 			if (empty($date)) {
 				$date = date('Y-m-d');
 			}
+			
 			$this->data['Balance'] = array('fund_id'=>$fund, 'account_date'=>$date);
 			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
 								 array('data' => $this->data));
@@ -88,12 +97,16 @@ class BalancesController extends AppController {
 	
 		//First check that this date is not locked
 		if ($this->Balance->islocked($fund, $date)) {
-			$this->Session->setFlash('Cannot recalculate balances as this date is locked.');
+			$this->Session->setFlash('Cannot recalculate balances as this date is locked');
 		}
 		else {
 			//work out the month end balances, the function also saves the results to the model table
 			if (!$this->Balance->calc($fund, $date)) {
-				$this->Session->setFlash('Problem with calculating balances.');
+				$this->Session->setFlash('Problem with calculating balances');
+			}
+			else {
+				$this->Session->setFlash('Balances successfully calculated');
+				$this->data['Balance']['account_date'] = $date;
 			}
 		}
 		$this->autoRender = false;
@@ -163,6 +176,18 @@ class BalancesController extends AppController {
 		$price = new Price();
 		
 		$this->set('data', $price->put_price($sec_id, $price_date, $price_value, $fx_rate));
+		$this->render('/elements/ajax_common', 'ajax');
+	}
+	
+	
+	//count how many missing price fields are left to fill in. Can't seem to do this on the page itself because results are cached.
+	function ajax_checkfinished() {
+		if (isset($this->params['data']['Balance']['Pricebox'])) {
+			$this->set('data', 'no');
+		}
+		else {
+			$this->set('data', 'yes');
+		}
 		$this->render('/elements/ajax_common', 'ajax');
 	}
 }	

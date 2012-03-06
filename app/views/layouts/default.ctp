@@ -64,9 +64,6 @@ show up on all of your views, include it here -->
 				<li><a href="/prices/fxrates">FX Rates</a></li>
 				</ul>
 			</li>
-			<li><a href="#">Reports</a><ul>
-				<li><a href="/PositionReports">Positions</a></li></ul>
-			</li>
 			<li>
 				<a href="#">Accounting</a>
 				<ul>
@@ -75,6 +72,9 @@ show up on all of your views, include it here -->
 					<li><a href="/ledgers">Journal Posting</a></li>
 					<li><a href="/balances">Lock Balances</a></li>
 				</ul>
+			</li>
+			<li><a href="#">Reports</a><ul>
+				<li><a href="/PositionReports">Positions</a></li></ul>
 			</li>
 			<li><a href="#">Admin</a><ul>
 				<li><a href="/users">Users</a></li>

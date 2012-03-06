@@ -89,18 +89,24 @@ class Ledger extends AppModel {
 		}
 	}
 	
-	//is this month end locked? Check using the Balance model.
-	function islocked($fund, $date) {
-		App::import('model','Balance');
-		$bal = new Balance();
-		return ($bal->islocked($fund, $date));
-	}
 	
 	//wipe all ledgers for a particular fund
 	function wipe($fund) {
 		$result = $this->updateAll( array('Ledger.act'=> 0), 
 										array(	'Ledger.fund_id =' => $fund));
 		return ($result);
+	}
+	
+	
+	//get date of last ledger posting date, PHP value of 0=false, anything else=true
+	function getPrevPostDate($fund) {
+		$fetch = $this->find('first', array('conditions'=>array('Ledger.fund_id ='=>$fund, 'Ledger.act ='=>1), 'order'=>'Ledger.ledger_date DESC'));
+		if (empty($fetch)) {
+			return null;
+		}
+		else {
+			return $fetch['Ledger']['ledger_date'];
+		}
 	}
 }
 

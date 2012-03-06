@@ -8,9 +8,9 @@
 				});
 </script>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="6"><h1>Journal Posting</h1></td>
+		<td colspan="10"><h1>Journal Posting</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -38,13 +38,11 @@
 				<?php echo $this->Form->submit('Create', array('name'=>'Submit', 'value' => 'Create'));?>
 			</div>
 		</td>
-		<td colspan="4">
-		</td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
 </table>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
 		<th>Trade Date</th>
 		<th>Fund</th>

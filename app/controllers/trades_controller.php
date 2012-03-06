@@ -18,26 +18,42 @@ class TradesController extends AppController {
 		);
 		
 		
-		//date dropdown
-		if (isset($this->params['url']['daterange'])) {
-			 $daterange = $this->params['url']['daterange'];
-			 $this->Session->write('trades_sort_daterange', $daterange);
+		//to date
+		if (isset($this->params['url']['to_date'])) {
+			 $to_date = $this->params['url']['to_date'];
+			 $this->Session->write('to_date', $to_date);
 		}
-		else if ($this->Session->check('trades_sort_daterange')) {
-			$daterange = $this->Session->read('trades_sort_daterange');
+		else if ($this->Session->check('to_date')) {
+			$to_date = $this->Session->read('to_date');
 		}
 		else {
-			$daterange = '-1 week';
+			$to_date = date('Y-m-d');
 		}
 		
+		//from date
+		if (isset($this->params['url']['from_date'])) {
+			 $from_date = $this->params['url']['from_date'];
+			 $this->Session->write('from_date', $from_date);
+		}
+		else if ($this->Session->check('from_date')) {
+			$from_date = $this->Session->read('from_date');
+		}
+		else {
+			$from_date = date('Y-m-d', strtotime('-1 week'));
+		}
+		
+		//check that the from date isn't later than the to date, if so then make them both equal to the to date
+		if (strtotime($from_date) > strtotime($to_date)) {
+			$from_date = $to_date;
+		}
 		
 		//fund dropdown
 		if (isset($this->params['url']['fundchosen'])) {
 			 $fundchosen = $this->params['url']['fundchosen'];
-			 $this->Session->write('trades_sort_fundchosen', $fundchosen);
+			 $this->Session->write('fund_chosen', $fundchosen);
 		}
-		else if ($this->Session->check('trades_sort_fundchosen')) {
-			$fundchosen = $this->Session->read('trades_sort_fundchosen');
+		else if ($this->Session->check('fund_chosen')) {
+			$fundchosen = $this->Session->read('fund_chosen');
 		}
 		else {
 			$fundchosen = null;
@@ -68,7 +84,6 @@ class TradesController extends AppController {
 		}
 		
 		
-		
 		//add extra conditions to sql query
 		if ($oid) {
 			$conditions['Trade.oid ='] = $oid;
@@ -76,7 +91,8 @@ class TradesController extends AppController {
 			$brokerchosen = null;
 		}
 		else {
-			$conditions['Trade.crd >'] = date('Y-m-d', strtotime($daterange));
+			$conditions['Trade.crd >='] = $from_date;
+			$conditions['Trade.crd <'] = date('Y-m-d', strtotime($to_date)+86400);	//seconds in a day
 			if ($fundchosen) {
 				$conditions['Trade.fund_id ='] = $fundchosen;
 			}
@@ -92,7 +108,7 @@ class TradesController extends AppController {
 		if (!isset($this->params['url']['Submit_x'])) {	//filter button pressed
 			$this->set('trades', $data);
 			$this->set('title_for_layout', 'View Trades');
-			$this->set('filter', array($daterange,$fundchosen,$brokerchosen, $oid));
+			$this->set('filter', array($to_date,$from_date,$fundchosen,$brokerchosen, $oid));
 		}
 		else {
 			//prepare data for output to csv file

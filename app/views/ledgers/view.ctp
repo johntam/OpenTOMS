@@ -8,9 +8,9 @@
 				});
 </script>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="6"><h1>Journal Posting</h1></td>
+		<td colspan="9"><h1>Journal Posting</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -38,13 +38,11 @@
 				<?php echo $this->Form->submit('Create', array('name'=>'Submit', 'value' => 'Create'));?>
 			</div>
 		</td>
-		<td colspan="4">
-		</td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
 </table>	
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">	
+<table style="width: 80%;margin-left:10%;margin-right:10%;">	
 	<tr>
 		<th>Fund</th>
 		<th>Book</th>
@@ -54,6 +52,7 @@
 		<th>Currency</th>
 		<th>Security</th>
 		<th>Quantity</th>
+		<th>Trade OID</th>
 	</tr>
 	
 	<?php foreach ($ledgers as $ledger): ?>
@@ -81,6 +80,9 @@
 			</td>
 			<td>
 				<?php echo number_format($ledger['Ledger']['ledger_quantity'],0); ?>
+			</td>
+			<td style="text-align: right;">
+				<?php echo $this->Html->link($ledger['Trade']['oid'], array('controller' => 'trades', 'action' => 'view',$ledger['Trade']['oid']), array('escape' => false, 'target' => '_blank')); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

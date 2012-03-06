@@ -9,7 +9,7 @@
 </script>
 <?php $missingprices = false; ?>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
 		<td colspan="9"><h1>Lock Balances</h1></td>
 	</tr>
@@ -53,7 +53,6 @@
 					}
 				?>
 				<div id="missingmessage" style="color: red;"></div>
-				<?php echo $this->Form->submit('Refresh', array('name'=>'Submit', 'value' => 'Refresh', 'div'=>array('id'=>'RefreshButtonID'))); ?>
 			</div>
 		</td>
 		
@@ -66,7 +65,7 @@
 	
 </table>	
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">	
+<table style="width: 80%;margin-left:10%;margin-right:10%;" id="baltable">	
 	<tr>
 		<th>Fund</th>
 		<th>Book</th>
@@ -100,7 +99,8 @@
 			</td>
 			<td>
 				<?php 	if (empty($balance['PriceFX']['fx_rate'])) {
-							echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id']."' value='missing' class='missingprices'/>";
+							echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
+								"' value='missing' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
 							$missingprices = true;
 						}
 						else {
@@ -122,7 +122,8 @@
 							//No price allowed for cash securities in non-cash books either
 						}
 						else if (empty($balance['Price']['price'])) {
-							echo "<input type='text' maxLength='10' id='pr_".$balance['Sec']['id']."' value='missing' class='missingprices'/>";
+							echo "<input type='text' maxLength='10' id='pr_".$balance['Sec']['id'].
+								"' value='missing' class='missingprices' name='data[Balance][Pricebox][pr_".$balance['Sec']['id']."]' />";
 							$missingprices = true;
 						}
 						else {

@@ -1,29 +1,40 @@
 <!-- File: /app/views/trades/index.ctp -->
+
+<?php echo $html->script('jquery-ui-1.8.18.custom.min.js'); ?>
+<?php echo $html->css('ui-lightness/jquery-ui-1.8.18.custom.css'); ?>
+<script type="text/javascript">
+				$(document).ready(function() {
+					$('#from_date').datepicker({ dateFormat: 'yy-mm-dd' });
+					$('#to_date').datepicker({ dateFormat: 'yy-mm-dd' });
+				});
+</script>
+
 <?php $paginator->options(array('url' => $this->passedArgs)); ?>
-<table>
+<table style="width: 90%;margin-left:5%;margin-right:5%;">
 <tr>
-<td><h1>Trade Blotter</h1></td>
+<td colspan="6"><h1>Trade Blotter</h1></td>
 </tr>
 <tr class="altrow">
 	<?php echo $this->Form->create('Trade', array('type'=>'get'));?>
 	<td>
-		<div <?php if (!$filter[3]) {echo 'class="high"';} ?>>
-			<?php echo $this->Form->input('daterange',array('default'=> $filter[0],'type'=>'select','options'=>array('-1 week'=>'Last Week','-1 month'=>'Last Month','-1 year'=>'Last Year'),'label'=>'Input Date Range'));?>
-		</div>
-	</td>
-	<td>
-		<div <?php if ($filter[1]) {echo 'class="high"';} ?>>
-			<?php echo $this->Form->input('fundchosen',array('default'=> $filter[1],'type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?>
+		<div <?php if (!$filter[4]) {echo 'class="high"';} ?>>
+			To:<?php echo $this->Form->input('to_date', array('label'=>false,'id'=>'to_date', 'size'=>15, 'default'=>$filter[0])); ?>
+			From:<?php echo $this->Form->input('from_date', array('label'=>false,'id'=>'from_date', 'size'=>15, 'default'=>$filter[1])); ?>
 		</div>
 	</td>
 	<td>
 		<div <?php if ($filter[2]) {echo 'class="high"';} ?>>
-			<?php echo $this->Form->input('brokerchosen',array('default'=> $filter[2], 'type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?>
+			<?php echo $this->Form->input('fundchosen',array('default'=> $filter[2],'type'=>'select','options'=>$funds,'label'=>'Choose Fund','empty'=>'All Funds'));?>
+		</div>
+	</td>
+	<td>
+		<div <?php if ($filter[3]) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('brokerchosen',array('default'=> $filter[3], 'type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?>
 		</div>
 	</td>
 	<td width="150px">
-		<div <?php if ($filter[3]) {echo 'class="high"';} ?>>
-			<?php echo $this->Form->input('oid',array('default'=> $filter[3], 'type'=>'text', 'label'=>'Original Order Id'));?>
+		<div <?php if ($filter[4]) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('oid',array('default'=> $filter[4], 'type'=>'text', 'label'=>'Original Order Id'));?>
 		</div>
 	</td>
 	<td>
@@ -38,7 +49,7 @@
 </tr>
 </table>
 
-<table>
+<table style="width: 90%;margin-left:5%;margin-right:5%;">
 	<tr><td colspan="19"><h4>Filters in use above are shown in green background</h4></td></tr>
 	<tr>
 		<th>Edit</th>

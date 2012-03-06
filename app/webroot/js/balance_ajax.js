@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	$("#RefreshButtonID").hide();
-	
 	if ($("#missing").html() == "Y") {
 		$("#LockButtonID").hide();
 		$("#missingmessage").html("Cannot lock because of missing prices/fx rates");
@@ -38,15 +36,28 @@ $(document).ready(function() {
 				function(data) {
 					if (data.length > 0) {
 						$('input[id="' + $(_input).attr('id') + '"]').val(data);
-						$('input[id="' + $(_input).attr('id') + '"]').css("color","black");
-						$('input[id="' + $(_input).attr('id') + '"]').attr('disabled','disabled');
-						//$(_input).val(data);
-						//$(_input).css("color","black");
-						//$(_input).attr('disabled','disabled');
-						$("#RefreshButtonID").show();
+						if (data != "Error") {
+							$('input[id="' + $(_input).attr('id') + '"]').css("color","black");
+							$('input[id="' + $(_input).attr('id') + '"]').attr('disabled','disabled');
+						}
+						
+						$.post("/balances/ajax_checkfinished?" + (new Date()).getTime(),
+							$("#baltable").find('input').serialize(),
+							function(data) {
+								if (data == "yes") {
+									$("#LockButtonID").show();
+									$("#missingmessage").html("");
+								}
+							},
+							"text"
+						);
 					}
 				},
 				"text"
 			);
 	});
+	
+	function isNumber(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
 });

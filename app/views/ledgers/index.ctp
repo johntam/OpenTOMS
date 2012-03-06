@@ -1,5 +1,5 @@
 <!-- File: /app/views/ledgers/index.ctp -->
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 
 </table>

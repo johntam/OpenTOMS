@@ -8,6 +8,8 @@ class LedgersController extends AppController {
 		$d = new Dispatcher();
 		
 		if (isset($this->params['form']['Submit'])) {
+			$this->Session->write('fund_chosen', $this->data['Ledger']['fund_id']);
+			
 			switch ($this->params['form']['Submit']) {
 				case 'Post':
 					$d->dispatch(
@@ -32,7 +34,23 @@ class LedgersController extends AppController {
 			}
 		}
 		else {
-			$this->redirect(array('controller' => 'ledgers', 'action' => 'view'));
+			//page just loaded, try if possible to use whatever fund was chosen on the trade blotter as the default fund choice on this page.
+			if ($this->Session->check('fund_chosen')) {
+				$fund = $this->Session->read('fund_chosen');
+			}
+			else {
+				$fund = $this->Ledger->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
+				$fund = $fund['Fund']['id'];
+			}
+			
+			$date = $this->Ledger->getPrevPostDate($fund);
+			if (empty($date)) {
+				$date = date('Y-m-d');
+			}
+			
+			$this->data = array('Ledger' => array('fund_id'=>$fund, 'account_date'=>$date));
+			$d->dispatch(array('controller' => 'ledgers', 'action' => 'view'),
+								 array('data' => $this->data));
 		}
 	}
 	
@@ -77,9 +95,17 @@ class LedgersController extends AppController {
 		$date = $this->data['Ledger']['account_date'];
 		$fund = $this->data['Ledger']['fund_id'];
 		
+		App::import('model','Balance');
+		$bal = new Balance();
+		$lastbaldate = $bal->getPrevLockedDate($fund);
+		if (empty($lastbaldate)) { $lastbaldate = '1999-12-31'; }
+		
 		//check to see if this month is locked
-		if ($this->Ledger->islocked($fund, $date)) {
-			$this->Session->setFlash('Sorry, this month end is locked from further changes.');
+		if ($bal->islocked($fund, $date)) {
+			$this->Session->setFlash('Sorry, this month end is locked from further changes');
+		}
+		else if (strtotime($date) < strtotime($lastbaldate)) {
+			$this->Session->setFlash('Sorry, cannot post prior to the last locked date');
 		}
 		else {
 			$this->set('posts', $this->Ledger->post($fund, $date));
@@ -104,7 +130,6 @@ class LedgersController extends AppController {
 										$this->data['Ledger']['account_date']);
 										 
 					$this->Session->setFlash('First ledger has now been created for this fund.');
-					
 				}
 			}
 			
