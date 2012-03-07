@@ -30,8 +30,8 @@
 			<div class="high">
 				Calculate month end balances
 				<?php if (!empty($calcdates)) {
-					echo $this->Form->input('calc_date', array('label'=>false, 'options'=>$calcdates));
-					echo $this->Form->submit('Calc', array('name'=>'Submit', 'value' => 'Calc'));
+					echo $this->Form->input('calc_date', array('label'=>false, 'options'=>$calcdates, 'style'=>'float:left;'));
+					echo $this->Form->submit('Calc', array('name'=>'Submit', 'value' => 'Calc', 'style'=>'float:left;'));
 				}
 				else {
 					echo '<div style="color: red;">No ledgers posted since last locked balance date.</div>';
@@ -55,7 +55,6 @@
 				<div id="missingmessage" style="color: red;"></div>
 			</div>
 		</td>
-		
 		<?php echo $this->Form->end(); ?>
 	</tr>
 	

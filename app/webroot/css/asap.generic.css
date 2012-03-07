@@ -180,9 +180,11 @@ div.actions h3 {
 }
 div.high {
 	background: #C9F0C9;
+	height: 50px;
 }
 div.careful {
-	background: #F2B3B3;
+	background-color: #F2B3B3;
+	height: 50px;
 }
 
 /** Tables **/

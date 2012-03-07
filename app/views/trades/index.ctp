@@ -16,10 +16,10 @@
 </tr>
 <tr class="altrow">
 	<?php echo $this->Form->create('Trade', array('type'=>'get'));?>
-	<td>
-		<div <?php if (!$filter[4]) {echo 'class="high"';} ?>>
-			To:<?php echo $this->Form->input('to_date', array('label'=>false,'id'=>'to_date', 'size'=>15, 'default'=>$filter[0])); ?>
-			From:<?php echo $this->Form->input('from_date', array('label'=>false,'id'=>'from_date', 'size'=>15, 'default'=>$filter[1])); ?>
+	<td width="350px">
+		<div <?php if (!$filter[5]) {echo 'class="high"';} ?>>
+			<div style="float:left; width: 160px">From:<?php echo $this->Form->input('from_date', array('label'=>false,'id'=>'from_date', 'size'=>15, 'default'=>$filter[1])); ?></div>
+			<div style="float:left; width: 160px">To:<?php echo $this->Form->input('to_date', array('label'=>false,'id'=>'to_date', 'size'=>15, 'default'=>$filter[0])); ?></div>
 		</div>
 	</td>
 	<td>
@@ -32,9 +32,14 @@
 			<?php echo $this->Form->input('brokerchosen',array('default'=> $filter[3], 'type'=>'select','options'=>$brokers,'label'=>'Choose Broker','empty'=>'All Brokers'));?>
 		</div>
 	</td>
-	<td width="150px">
+	<td>
 		<div <?php if ($filter[4]) {echo 'class="high"';} ?>>
-			<?php echo $this->Form->input('oid',array('default'=> $filter[4], 'type'=>'text', 'label'=>'Original Order Id'));?>
+			<?php echo $this->Form->input('secchosen',array('default'=> $filter[4], 'type'=>'select','options'=>$secs,'label'=>'Choose Security','empty'=>'All Securities'));?>
+		</div>
+	</td>
+	<td width="150px">
+		<div <?php if ($filter[5]) {echo 'class="high"';} ?>>
+			<?php echo $this->Form->input('oid',array('default'=> $filter[5], 'type'=>'text', 'label'=>'Original Order Id'));?>
 		</div>
 	</td>
 	<td>

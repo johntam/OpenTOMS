@@ -71,6 +71,18 @@ class TradesController extends AppController {
 			$brokerchosen = null;
 		}
 		
+		//security chosen
+		if (isset($this->params['url']['secchosen'])) {
+			 $secchosen = $this->params['url']['secchosen'];
+			 $this->Session->write('trades_sort_secchosen', $secchosen);
+		}
+		else if ($this->Session->check('trades_sort_secchosen')) {
+			$secchosen = $this->Session->read('trades_sort_secchosen');
+		}
+		else {
+			$secchosen = null;
+		}
+		
 		//oid
 		if (isset($this->params['url']['oid'])) {
 			 $oid = $this->params['url']['oid'];
@@ -89,15 +101,19 @@ class TradesController extends AppController {
 			$conditions['Trade.oid ='] = $oid;
 			$fundchosen = null;
 			$brokerchosen = null;
+			$secchosen = null;
 		}
 		else {
-			$conditions['Trade.crd >='] = $from_date;
-			$conditions['Trade.crd <'] = date('Y-m-d', strtotime($to_date)+86400);	//seconds in a day
+			$conditions['Trade.trade_date >='] = $from_date;
+			$conditions['Trade.trade_date <='] = $to_date;
 			if ($fundchosen) {
 				$conditions['Trade.fund_id ='] = $fundchosen;
 			}
 			if ($brokerchosen) {
 				$conditions['Trade.broker_id ='] = $brokerchosen;
+			}
+			if ($secchosen) {
+				$conditions['Trade.sec_id ='] = $secchosen;
 			}
 		}
 		
@@ -108,7 +124,7 @@ class TradesController extends AppController {
 		if (!isset($this->params['url']['Submit_x'])) {	//filter button pressed
 			$this->set('trades', $data);
 			$this->set('title_for_layout', 'View Trades');
-			$this->set('filter', array($to_date,$from_date,$fundchosen,$brokerchosen, $oid));
+			$this->set('filter', array($to_date,$from_date,$fundchosen,$brokerchosen, $secchosen, $oid));
 		}
 		else {
 			//prepare data for output to csv file
