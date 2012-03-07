@@ -13,8 +13,9 @@ class Ledger extends AppModel {
 									'Trade.cancelled =' => 0, 
 									'Trade.executed =' => 1
 								 ), 
-			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
-							'TradeType.credit_account_id', 'Trade.consideration', 'Currency.id','Currency.currency_iso_code','Trade.quantity','Fund.fund_name', 'Sec.sec_name', 'Sec.id'),
+			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
+							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
+							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
@@ -32,6 +33,9 @@ class Ledger extends AppModel {
 		}
 			
 		$posts = $this->Trade->find('all', $sqlparam);
+		
+		
+		echo debug($posts);
 			
 		//make inactive all previous ledger entries for this month that are unlocked (the check for the lock occurs in the controller).
 		if ($this->updateAll( array('Ledger.act' => 0), array('Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund, 'Ledger.act =' => 1))) {
@@ -40,18 +44,28 @@ class Ledger extends AppModel {
 				$td = $post['Trade']['trade_date'];
 				$tid = $post['Trade']['id'];
 				$ttid = $post['Trade']['trade_type_id'];
+				$ttcrd = $post['Trade']['crd'];
 				$cons = abs($post['Trade']['consideration']);
+				$cfd = abs($post['Trade']['notional_value']);
+				if ($cfd) { $cfd = 1; } else { $cfd = 0; }
 				$debitid = $post['TradeType']['debit_account_id'];
 				$creditid = $post['TradeType']['credit_account_id'];
 				$ccy = $post['Currency']['id'];
 				$qty = $post['Trade']['quantity'];
 				$secid = $post['Sec']['id'];
+				$price = $post['Trade']['price'];
+				$valp = $post['Sec']['valpoint'];
+				$trinv = strtotime($ttcrd).':'.$qty.':'.$price.':'.$valp.';';
 				
 				//first line of double-entry
 				if ($debitid > 1) {		//cash
-					$secid = $this->Currency->getsecid($ccy);
-					$qty = abs($cons);
-				}	
+					$secid2 = $this->Currency->getsecid($ccy);
+					$qty2 = abs($cons);
+				}
+				else {
+					$secid2 = $secid;
+					$qty2 = $qty;
+				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
 								'fund_id' => $fund,
@@ -59,12 +73,14 @@ class Ledger extends AppModel {
 								'ledger_date' => $date,
 								'trade_date' => $td,
 								'trade_id' => $tid,
+								'trade_crd' => $ttcrd,
 								'ledger_debit' => $cons,
 								'ledger_credit' => 0,
-								'ledger_balance' => 0,
+								'ledger_cfd' => $cfd,
 								'currency_id' => $ccy,
-								'ledger_quantity' => $qty,
-								'sec_id' => $secid );		
+								'ledger_quantity' => $qty2,
+								'sec_id' => $secid2,
+								'trinv' => $trinv);		
 				$this->create($data);
 				$this->save();
 				
@@ -72,7 +88,11 @@ class Ledger extends AppModel {
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($ccy);
 					$data['ledger_quantity'] = -abs($cons);
-				}	
+				}
+				else {
+					$data['sec_id']  = $secid;
+					$data['ledger_quantity'] = $qty;
+				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
 				$data['ledger_debit'] = 0;

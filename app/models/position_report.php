@@ -5,22 +5,26 @@ class PositionReport extends AppModel {
 	var $belongsTo ='Fund, Currency, Sec, Account';
 	
 	
-	//combine the trades MTD with the last recorded month end position (from the Balance model)
-	//parameters are fund id and date of the position report in UNIX time
-	function getPositions($fund, $pdate) {
-		//first get the end of last month's balances
-		$eolm = mktime(0,0,0, date('n', $pdate), 0, date('Y', $pdate));
-		
-		//get last month end balances
+	//combine latest trades with the last recorded locked balance (from the Balance model)
+	function getPositions($fund, $date) {
 		App::import('model','Balance');
-		$bal = new Balance();
-		$baldata = $bal->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.ledger_month =' => date('n', $eolm), 'Balance.ledger_year =' => date('Y', $eolm), 'Balance.fund_id =' => $fund)));
-		if (empty($baldata)) { return(array('code'=>false, 'err'=>'No month end balances found for previous month')); }
+		$balmodel = new Balance();
+	
+		//first get the date when the last balance was calculated.
+		$prevdate = $balmodel->getPrevLockedDate($fund);
 				
-		//get this month's MTD trades
-		App::import('model','Trade');
-		$trade = new Trade();
-		$tradesdata = $trade->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_month =' => $month, 'Ledger.ledger_year =' => $year, 'Ledger.fund_id =' => $fund)));
+		//get the last balance data, else use a null array
+		if (empty($prevdate)) {
+			$baldata = array();
+		}
+		else {
+			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.balance_date =' => $prevdate, 'Balance.fund_id =' => $fund)));
+		}
+				
+		//get this month's ledger entries
+		App::import('model','Ledger');
+		$ledger = new Ledger();
+		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund)));
 		
 		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
 		$newbal = array();
@@ -40,13 +44,13 @@ class PositionReport extends AppModel {
 		
 		//deactivate all previous balances for this month end
 		$result = $this->updateAll( array('Balance.act' => 0), 
-										array(	'Balance.ledger_month =' => $month, 
-												'Balance.ledger_year =' => $year, 
+										array(	'Balance.balance_date =' => $date,
 												'Balance.fund_id =' => $fund,
 												'Balance.locked =' => 0,
 												'Balance.act =' => 1));
 		
 		if (!$result) { return false; }
+		
 		//we have a two-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $acc=>$n1) {
 			foreach ($n1 as $sec=>$n2) {
@@ -65,8 +69,7 @@ class PositionReport extends AppModel {
 										 'crd'=>DboSource::expression('NOW()'),
 										 'fund_id' => $fund,
 										 'account_id'=>$acc,
-										 'ledger_month'=>$month,
-										 'ledger_year'=>$year,
+										 'balance_date'=>$date,
 										 'balance_debit'=>$totdeb,
 										 'balance_credit'=>$totcred,
 										 'currency_id'=>$ccy,

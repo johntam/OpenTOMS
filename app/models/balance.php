@@ -20,7 +20,7 @@ class Balance extends AppModel {
 		//get this month's ledger entries
 		App::import('model','Ledger');
 		$ledger = new Ledger();
-		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund)));
+		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund), 'order'=>array('Ledger.trade_crd ASC')));
 		
 		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
 		$newbal = array();
@@ -28,14 +28,16 @@ class Balance extends AppModel {
 			$newbal[$b['Balance']['account_id']][$b['Balance']['sec_id']][] = array('ledger_debit'=>$b['Balance']['balance_debit'],
 																					'ledger_credit'=>$b['Balance']['balance_credit'],
 																					'quantity'=>$b['Balance']['balance_quantity'],
-																					'currency_id'=>$b['Balance']['currency_id']);
+																					'currency_id'=>$b['Balance']['currency_id'],
+																					'trinv'=>$b['Balance']['trinv']);
 		}
 				
 		foreach ($ledgdata as $l) {
 			$newbal[$l['Ledger']['account_id']][$l['Ledger']['sec_id']][] = array(  'ledger_debit'=>$l['Ledger']['ledger_debit'],
 																					'ledger_credit'=>$l['Ledger']['ledger_credit'],
 																					'quantity'=>$l['Ledger']['ledger_quantity'],
-																					'currency_id'=>$l['Ledger']['currency_id']);
+																					'currency_id'=>$l['Ledger']['currency_id'],
+																					'trinv'=>$l['Ledger']['trinv']);
 		}
 		
 		//deactivate all previous balances for this month end
