@@ -40,6 +40,8 @@ class Balance extends AppModel {
 																					'trinv'=>$l['Ledger']['trinv']);
 		}
 		
+		ksort($newbal);	//make sure that the stock book (id=1) is the first to be processed, throw pnl off to the cash book below
+		
 		//deactivate all previous balances for this month end
 		$result = $this->updateAll( array('Balance.act' => 0), 
 										array(	'Balance.balance_date =' => $date,
@@ -50,18 +52,35 @@ class Balance extends AppModel {
 		if (!$result) { return false; }
 		
 		//we have a two-dimensional array of aggregated data, save it to the table now
-		foreach ($newbal as $acc=>$n1) {
+		foreach ($newbal as $acc=>&$n1) {
 			foreach ($n1 as $sec=>$n2) {
 				$totdeb = 0;
 				$totcred = 0;
 				$totqty = 0;
 				$ccy = 0;
+				$pnl = 0;
+				$trinv = '';
 				foreach ($n2 as $d) {
 					$totdeb += $d['ledger_debit'];
 					$totcred += $d['ledger_credit'];
 					$totqty += $d['quantity'];
 					$ccy = $d['currency_id'];
+					$tri = $d['trinv'];
+					
+					if ($acc == 1) {
+						$result = $this->fifo($trinv, $tri);
+						$pnl = $pnl + $result[0];
+						$trinv = $result[1];
+					}
 				}
+				//add pnl to the cash book further down
+				$newbal[2][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+																			 'ledger_credit'=>0,
+																			 'quantity'=>$pnl,
+																			 'currency_id'=>$ccy,
+																			 'trinv'=>'');
+				
+				//write this result line to the database
 				$data['Balance'] = array('act' => 1,
 										 'locked' => 0,
 										 'crd'=>DboSource::expression('NOW()'),
@@ -72,7 +91,8 @@ class Balance extends AppModel {
 										 'balance_credit'=>$totcred,
 										 'currency_id'=>$ccy,
 										 'balance_quantity'=>$totqty,
-										 'sec_id'=>$sec);
+										 'sec_id'=>$sec,
+										 'trinv'=>$trinv);
 				$this->create($data);
 				$this->save();
 			}
@@ -203,6 +223,90 @@ class Balance extends AppModel {
 		else {
 			return $fetch['Balance']['balance_date'];
 		}
+	}
+	
+	
+	//this function processes a new trade against a base sequence of historic trades using the fifo convention
+	function fifo($base, $new) {
+		$b = $this->decode($base);
+		$n = $this->decode($new);
+		
+		$pnl = 0;
+		foreach ($n as $dt=>$m) {
+			$qty = $m['quantity'];
+			$pr = $m['price'];
+			$vp = $m['valpoint'];
+		
+			//go through each segment of the trade history and see if the new trade could be offset against it or not
+			//N.B. if the new trade is a buy (+ve quantity), then look for previous sells (-ve quantity) to offset against and vice versa
+			foreach ($b as $date=>$c) {
+				$qtyp = $c['quantity'];
+				$prp = $c['price'];
+				
+				if ($qty * $qtyp < 0) {
+					if (abs($qty) > abs($qtyp)) {
+						if (($qty < 0) && ($pr >= $prp)) {
+							$pnl = $pnl + abs($qtyp)*($pr-$prp)*$vp;
+						}
+						else {
+							$pnl = $pnl - abs($qtyp)*($pr-$prp)*$vp;
+						}
+						$qty = $qty + $qtyp;
+						unset($b[$date]);
+					}
+					else if (abs($qty) == abs($qtyp)) {
+						if (($qty < 0) && ($pr >= $prp)) {
+							$pnl = $pnl + abs($qty)*($pr-$prp)*$vp;
+						}
+						else {
+							$pnl = $pnl - abs($qty)*($pr-$prp)*$vp;
+						}
+						$qty = 0;
+						unset($b[$date]);
+						break;
+					}
+					else {
+						if (($qty < 0) && ($pr >= $prp)) {
+							$pnl = $pnl + abs($qty)*($pr-$prp)*$vp;
+						}
+						else {
+							$pnl = $pnl - abs($qty)*($pr-$prp)*$vp;
+						}
+						$b[$date]['quantity'] = $qtyp + $qty;
+						$qty = 0;
+						break;
+					}
+				}
+			}
+			
+			if ($qty <> 0) {
+				$b = $b + array($dt=>array('quantity'=>$qty, 'price'=>$pr, 'valpoint'=>$vp));
+			}
+		}
+		return array($pnl, $this->encode($b));
+	}
+	
+	//encodes a working array into the "Trinv" standard format
+	function encode($tr) {
+		$trinv = '';
+		foreach ($tr as $date=>$t) {
+			$trinv = $trinv.$date.':'.$t['quantity'].':'.$t['price'].':'.$t['valpoint'].';';
+		}
+		return $trinv;
+	}
+	
+	//converts a string in the "Trinv" format into an array for easier processing
+	function decode($tr) {
+		$arr = array();
+		$sp1 = explode(";", $tr);
+		foreach ($sp1 as $sp2) {
+			if (!empty($sp2)) {
+				$sp3 = explode(':', "$sp2:::");
+				$arr[$sp3[0]] = array('quantity'=>$sp3[1], 'price'=>$sp3[2], 'valpoint'=>$sp3[3]);
+			}
+		}
+		ksort($arr);
+		return $arr;
 	}
 }
 

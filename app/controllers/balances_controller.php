@@ -58,7 +58,12 @@ class BalancesController extends AppController {
 	}
 	
 	
-	function view() {	
+	function view() {
+	
+		//echo debug($this->Balance->fifo('','1005:40:28:1;1006:20:50:1;'));
+		//exit;
+	
+	
 		$fund = $this->data['Balance']['fund_id'];
 		$date = $this->data['Balance']['account_date'];
 				

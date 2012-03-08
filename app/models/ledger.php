@@ -15,7 +15,7 @@ class Ledger extends AppModel {
 								 ), 
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
-							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint'),
+							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
@@ -33,10 +33,9 @@ class Ledger extends AppModel {
 		}
 			
 		$posts = $this->Trade->find('all', $sqlparam);
-		
-		
-		echo debug($posts);
 			
+		$trad_cost_acc_id = $this->Account->getNamed('Trading Costs');
+		
 		//make inactive all previous ledger entries for this month that are unlocked (the check for the lock occurs in the controller).
 		if ($this->updateAll( array('Ledger.act' => 0), array('Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund, 'Ledger.act =' => 1))) {
 			foreach ($posts as $post) {
@@ -45,7 +44,8 @@ class Ledger extends AppModel {
 				$tid = $post['Trade']['id'];
 				$ttid = $post['Trade']['trade_type_id'];
 				$ttcrd = $post['Trade']['crd'];
-				$cons = abs($post['Trade']['consideration']);
+				$trading_costs = $post['Trade']['commission'] + $post['Trade']['tax'] + $post['Trade']['other_costs'];	//always positive
+				$cons = abs($post['Trade']['consideration'] + $trading_costs);
 				$cfd = abs($post['Trade']['notional_value']);
 				if ($cfd) { $cfd = 1; } else { $cfd = 0; }
 				$debitid = $post['TradeType']['debit_account_id'];
@@ -61,10 +61,12 @@ class Ledger extends AppModel {
 				if ($debitid > 1) {		//cash
 					$secid2 = $this->Currency->getsecid($ccy);
 					$qty2 = abs($cons);
+					$tr2 = '';
 				}
 				else {
 					$secid2 = $secid;
 					$qty2 = $qty;
+					$tr2 = $trinv;
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -80,7 +82,7 @@ class Ledger extends AppModel {
 								'currency_id' => $ccy,
 								'ledger_quantity' => $qty2,
 								'sec_id' => $secid2,
-								'trinv' => $trinv);		
+								'trinv' => $tr2);		
 				$this->create($data);
 				$this->save();
 				
@@ -88,18 +90,32 @@ class Ledger extends AppModel {
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($ccy);
 					$data['ledger_quantity'] = -abs($cons);
+					$data['trinv'] = '';
 				}
 				else {
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
+					$data['trinv'] = $trinv;
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
 				$data['ledger_debit'] = 0;
 				$data['ledger_credit'] = $cons;
-				
 				$this->create($data);
 				$this->save();
+				
+				//third line for trading costs
+				if ($trading_costs <> 0) {
+					$data['sec_id']  = $this->Currency->getsecid($ccy);
+					$data['ledger_quantity'] = -abs($trading_costs);
+					$data['trinv'] = '';
+					$data['crd'] = DboSource::expression('NOW()');
+					$data['account_id'] = $trad_cost_acc_id;
+					$data['ledger_debit'] = 0;
+					$data['ledger_credit'] = abs($trading_costs);
+					$this->create($data);
+					$this->save();
+				}
 			}
 			
 			return($posts);
