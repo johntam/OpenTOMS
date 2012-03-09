@@ -46,8 +46,8 @@ class Ledger extends AppModel {
 				$tcrd = $post['Trade']['crd'];
 				$tccy = $post['Currency']['id'];
 				$trading_costs = $post['Trade']['commission'] + $post['Trade']['tax'] + $post['Trade']['other_costs'];	//always positive
-				$consX = abs($post['Trade']['consideration'] + $trading_costs);
-				$cons = abs($post['Trade']['consideration']);
+				$consX = $post['Trade']['consideration'] + $trading_costs;
+				$cons = $post['Trade']['consideration'];
 				$cfd = abs($post['Trade']['notional_value']);
 				if ($cfd) { $cfd = 1; } else { $cfd = 0; }
 				$debitid = $post['TradeType']['debit_account_id'];
@@ -62,7 +62,7 @@ class Ledger extends AppModel {
 				//first line of double-entry
 				if ($debitid > 1) {		//cash
 					$secid2 = $this->Currency->getsecid($tccy);
-					$qty2 = abs($cons);
+					$qty2 = $cons;
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cons2 = $cons;
@@ -72,7 +72,7 @@ class Ledger extends AppModel {
 					$qty2 = $qty;
 					$tr2 = $trinv;
 					$ccy2 = $ccy;
-					$cons2 = $consX;
+					$cons2 = abs($consX);
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -95,17 +95,17 @@ class Ledger extends AppModel {
 				//second line of double-entry
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($tccy);
-					$data['ledger_quantity'] = -abs($cons);
+					$data['ledger_quantity'] = $cons;
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
-					$data['ledger_credit'] = $cons;
+					$data['ledger_credit'] = -$cons;
 				}
 				else {
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
 					$data['currency_id'] = $ccy;
-					$data['ledger_credit'] = $consX;
+					$data['ledger_credit'] = abs($consX);
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
