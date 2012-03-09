@@ -1,4 +1,4 @@
-<!-- File: /app/views/position_reports/index.ctp -->
+<!-- File: /app/views/position_reports/view.ctp -->
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
 	<tr>
@@ -6,60 +6,55 @@
 	</tr>
 	
 	<tr class="altrow">
-		<td>
+		<td width="40%">
 			<?php echo $this->Form->create('PositionReport', array('action' => 'index')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->input('pos_date', array('label'=>false,'type'=>'date','default'=> strtotime('-1 day'))); ?>
+			<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View', 'style'=>'float:left;')); ?>
 		</td>
-		<td>
+		<td width="20%">
 			<div class="high">
 				Run Position Report
-				<?php echo $this->Form->submit('Run', array('name'=>'Submit', 'value' => 'Run'));?>
+				<?php if (!empty($run_dates)) {
+					echo $this->Form->input('run_date', array('label'=>false, 'options'=>$run_dates, 'style'=>'float:left;'));
+					echo $this->Form->submit('Run', array('name'=>'Submit', 'value' => 'Run', 'style'=>'float:left;'));
+				}
+				else {
+					echo '<div style="color: red;">No balance calculations have been found</div>';
+				}
+				?>
 			</div>
 		</td>
+		<td></td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
 </table>	
 
 <table style="width: 60%;margin-left:20%;margin-right:20%;">	
 	<tr>
-		<th>Book</th>
-		<th>Security</th>
-		<th>Quantity</th>
-		<th>Price</th>
-		<th>Currency</th>
-		<th>FX Rate</th>
-		<th>Market Val (local)</th>
-		<th>Market Val (fund)</th>
+		<th>Status</th>
+		<th>Fund</th>
+		<th>Date</th>
 	</tr>
 	
-	<?php if (isset($positions)) { ?>
+	<?php if (isset($reports)) { ?>
 	
-	<?php foreach ($positions as $position): ?>
+	<?php foreach ($reports as $report): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
-				<?php echo $position['Account']['account_name']; ?>
+				<?php 
+					if ($report['PositionReport']['final'] == 1) {
+						echo 'Final';
+					}
+					else {
+						echo 'Estimate';
+					}
+				?>
 			</td>
 			<td>
-				<?php echo $position['Sec']['sec_name']; ?>
+				<?php echo $report['Fund']['fund_name']; ?>
 			</td>
 			<td>
-				<?php echo number_format($position['PositionReport']['quantity'],0); ?>
-			</td>
-			<td>
-				<?php echo number_format($position['PositionReport']['price'],2); ?>
-			</td>
-			<td>
-				<?php echo $position['Currency']['currency_iso_code']; ?>
-			</td>
-			<td>
-				<?php echo number_format($position['PositionReport']['fx_rate'],4); ?>
-			</td>
-			<td>
-				<?php echo number_format($position['PositionReport']['mkt_val_local'],0); ?>
-			</td>
-			<td>
-				<?php echo number_format($position['PositionReport']['mkt_val_fund'],0); ?>
+				<?php echo $report['PositionReport']['pos_date']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

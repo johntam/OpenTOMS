@@ -122,7 +122,9 @@ class Balance extends AppModel {
 											'Balance.sec_id',
 											'Sec.id',
 											'Currency.sec_id',
-											'Sec.sec_type_id'),
+											'Sec.sec_type_id',
+											'Balance.currency_id',
+											'Sec.valpoint'),
 						'joins' => array(
 										array('table'=>'currencies',
 											  'alias'=>'Currency',

@@ -39,11 +39,12 @@ class PositionReportsController extends AppController {
 		}
 	}
 	
+	
 	function view() {
 		$this->set('reports', $this->PositionReport->find('all', array('limit'=>10, 
 																	   'order'=>array('PositionReport.crd DESC'),
 																	   'fields' => array('DISTINCT PositionReport.final', 
-																	                     'PositionReport.fund_id', 
+																	                     'Fund.fund_name', 
 																						 'PositionReport.pos_date'))));
 																						 
 		//get a list of balance calculation dates
@@ -53,8 +54,7 @@ class PositionReportsController extends AppController {
 		$datelist = $balmodel->find('all', array('conditions'=>array('Balance.act ='=>1, 
 																	 'Balance.fund_id ='=>$fund), 
 												'fields'=>array('Balance.balance_date'), 
-												'order'=>array('Balance.balance_date DESC'),
-												'limit'=>10));
+												'order'=>array('Balance.balance_date DESC')));
 		$run_dates = array();
 		foreach ($datelist as $d) {
 			$run_dates[$d['Balance']['balance_date']] = $d['Balance']['balance_date'];
@@ -63,7 +63,6 @@ class PositionReportsController extends AppController {
 		
 		//render
 		$this->dropdownchoices();
-		$this->render('index');
 	}
 	
 	//run the position report (based on balance calculation)
@@ -73,12 +72,20 @@ class PositionReportsController extends AppController {
 		$fund = $this->data['PositionReport']['fund_id'];
 		$date = $this->data['PositionReport']['run_date'];
 		
-		$this->PositionReport->getPositions($fund, $date);
-		
-		
-	
-		
+		if ($this->PositionReport->getPositions($fund, $date)) {
+			$this->redirect(array('action' => 'show', $fund, $date));
+		}
 	}
+	
+	
+	//show report
+	function show($fund, $date) {
+		$this->set('positions', $this->PositionReport->find('all', array('conditions'=>array('PositionReport.act'=>1, 
+																							 'PositionReport.pos_date'=>$date, 
+																							 'PositionReport.fund_id'=>$fund), 
+																		 'order'=>array('PositionReport.sec_type_id DESC', 'PositionReport.currency_id'))));
+	}
+	
 	
 	function dropdownchoices() {
 		$this->set('funds', $this->PositionReport->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));

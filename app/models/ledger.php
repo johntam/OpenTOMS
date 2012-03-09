@@ -15,7 +15,7 @@ class Ledger extends AppModel {
 								 ), 
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
-							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
+							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
@@ -55,7 +55,7 @@ class Ledger extends AppModel {
 				$ccy = $post['Sec']['currency_id'];
 				$qty = $post['Trade']['quantity'];
 				$secid = $post['Sec']['id'];
-				$price = $post['Trade']['price'];
+				$price = $post['Trade']['execution_price'];
 				$valp = $post['Sec']['valpoint'];
 				$trinv = strtotime($tcrd).':'.$qty.':'.$price.':'.$valp.';';
 				
