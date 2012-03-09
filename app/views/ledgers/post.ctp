@@ -10,7 +10,7 @@
 
 <table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="10"><h1>Journal Posting</h1></td>
+		<td colspan="9"><h1>Journal Posting</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -52,7 +52,6 @@
 		<th>Quantity</th>
 		<th>Consideration</th>
 		<th>Currency</th>
-		<th>Security</th>
 		<th>Quantity</th>
 	</tr>
 	
@@ -83,9 +82,6 @@
 			</td>
 			<td>
 				<?php echo $post['Currency']['currency_iso_code']; ?>
-			</td>
-			<td>
-				<?php echo $post['Sec']['sec_name']; ?>
 			</td>
 			<td>
 				<?php echo $post['Trade']['quantity']; ?>

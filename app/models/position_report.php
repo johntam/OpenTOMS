@@ -33,7 +33,7 @@ class PositionReport extends AppModel {
 			}
 		}
 		
-		echo debug($display);
+		echo debug($temp);
 		return;
 		
 

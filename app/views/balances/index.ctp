@@ -11,7 +11,7 @@
 
 <table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="9"><h1>Lock Balances</h1></td>
+		<td colspan="8"><h1>Lock Balances</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -70,7 +70,6 @@
 		<th>Book</th>
 		<th>Debit</th>
 		<th>Credit</th>
-		<th>Currency</th>
 		<th>FX Rate</th>
 		<th>Security</th>
 		<th>Quantity</th>
@@ -94,17 +93,17 @@
 				<?php echo number_format($balance['Balance']['balance_credit'],2); ?>
 			</td>
 			<td>
-				<?php echo $balance['Currency']['currency_iso_code']; ?>
-			</td>
-			<td>
-				<?php 	if (empty($balance['PriceFX']['fx_rate'])) {
-							echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
-								"' value='missing' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
-							$missingprices = true;
+				<?php 	if (($balance['Account']['id'] == 1) && ($balance['Sec']['sec_type_id'] <> 2)) {
+							//No fx rate for non-cash securities
+						}
+						else if (empty($balance['PriceFX']['fx_rate'])) {
+									echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
+										"' value='missing' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
+									$missingprices = true;
 						}
 						else {
 							echo number_format($balance['PriceFX']['fx_rate'],4);
-						} 
+						}
 				?>
 			</td>
 			<td>

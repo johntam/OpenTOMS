@@ -15,7 +15,7 @@ class Ledger extends AppModel {
 								 ), 
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
-							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs'),
+							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
 			'order' => array('Trade.trade_date ASC') 
 		);
 		
@@ -43,30 +43,36 @@ class Ledger extends AppModel {
 				$td = $post['Trade']['trade_date'];
 				$tid = $post['Trade']['id'];
 				$ttid = $post['Trade']['trade_type_id'];
-				$ttcrd = $post['Trade']['crd'];
+				$tcrd = $post['Trade']['crd'];
+				$tccy = $post['Currency']['id'];
 				$trading_costs = $post['Trade']['commission'] + $post['Trade']['tax'] + $post['Trade']['other_costs'];	//always positive
-				$cons = abs($post['Trade']['consideration'] + $trading_costs);
+				$consX = abs($post['Trade']['consideration'] + $trading_costs);
+				$cons = abs($post['Trade']['consideration']);
 				$cfd = abs($post['Trade']['notional_value']);
 				if ($cfd) { $cfd = 1; } else { $cfd = 0; }
 				$debitid = $post['TradeType']['debit_account_id'];
 				$creditid = $post['TradeType']['credit_account_id'];
-				$ccy = $post['Currency']['id'];
+				$ccy = $post['Sec']['currency_id'];
 				$qty = $post['Trade']['quantity'];
 				$secid = $post['Sec']['id'];
 				$price = $post['Trade']['price'];
 				$valp = $post['Sec']['valpoint'];
-				$trinv = strtotime($ttcrd).':'.$qty.':'.$price.':'.$valp.';';
+				$trinv = strtotime($tcrd).':'.$qty.':'.$price.':'.$valp.';';
 				
 				//first line of double-entry
 				if ($debitid > 1) {		//cash
-					$secid2 = $this->Currency->getsecid($ccy);
+					$secid2 = $this->Currency->getsecid($tccy);
 					$qty2 = abs($cons);
 					$tr2 = '';
+					$ccy2 = $tccy;
+					$cons2 = $cons;
 				}
 				else {
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
+					$ccy2 = $ccy;
+					$cons2 = $consX;
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -75,44 +81,49 @@ class Ledger extends AppModel {
 								'ledger_date' => $date,
 								'trade_date' => $td,
 								'trade_id' => $tid,
-								'trade_crd' => $ttcrd,
-								'ledger_debit' => $cons,
+								'trade_crd' => $tcrd,
+								'ledger_debit' => $cons2,
 								'ledger_credit' => 0,
 								'ledger_cfd' => $cfd,
-								'currency_id' => $ccy,
+								'currency_id' => $ccy2,
 								'ledger_quantity' => $qty2,
 								'sec_id' => $secid2,
-								'trinv' => $tr2);		
+								'trinv' => $tr2);
 				$this->create($data);
 				$this->save();
 				
 				//second line of double-entry
 				if ($creditid > 1) { 	//cash
-					$data['sec_id']  = $this->Currency->getsecid($ccy);
+					$data['sec_id']  = $this->Currency->getsecid($tccy);
 					$data['ledger_quantity'] = -abs($cons);
 					$data['trinv'] = '';
+					$data['currency_id'] = $tccy;
+					$data['ledger_credit'] = $cons;
 				}
 				else {
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
+					$data['currency_id'] = $ccy;
+					$data['ledger_credit'] = $consX;
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
 				$data['ledger_debit'] = 0;
-				$data['ledger_credit'] = $cons;
 				$this->create($data);
 				$this->save();
 				
 				//third line for trading costs
+				//trading costs are an expense and so usually should be debited
 				if ($trading_costs <> 0) {
-					$data['sec_id']  = $this->Currency->getsecid($ccy);
-					$data['ledger_quantity'] = -abs($trading_costs);
+					$data['sec_id']  = $this->Currency->getsecid($tccy);
+					$data['ledger_quantity'] = 0;
 					$data['trinv'] = '';
 					$data['crd'] = DboSource::expression('NOW()');
 					$data['account_id'] = $trad_cost_acc_id;
-					$data['ledger_debit'] = 0;
-					$data['ledger_credit'] = abs($trading_costs);
+					$data['ledger_debit'] = abs($trading_costs);
+					$data['ledger_credit'] = 0;
+					$data['currency_id'] = $tccy;
 					$this->create($data);
 					$this->save();
 				}

@@ -74,11 +74,13 @@ class Balance extends AppModel {
 					}
 				}
 				//add pnl to the cash book further down
-				$newbal[2][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
-																			 'ledger_credit'=>0,
-																			 'quantity'=>$pnl,
-																			 'currency_id'=>$ccy,
-																			 'trinv'=>'');
+				if ($pnl <> 0) {
+					$newbal[2][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+																				 'ledger_credit'=>0,
+																				 'quantity'=>$pnl,
+																				 'currency_id'=>$ccy,
+																				 'trinv'=>'');
+				}
 				
 				//write this result line to the database
 				$data['Balance'] = array('act' => 1,
