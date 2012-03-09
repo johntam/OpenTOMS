@@ -252,11 +252,11 @@ class TradesController extends AppController {
 			//if successful, then go on to create a new trade with these details, else report an error
 			if ($result) {
 				unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
+				$this->Trade->create();
 				$this->data['Trade']['act'] = 1;
 				$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
-				$this->Trade->create($this->data);
 			
-				if ($this->Trade->save()) {
+				if ($this->Trade->save($this->data)) {
 					$this->update_report_table();
 					$this->Session->setFlash('Your trade has been updated');
 					$this->redirect(array('action' => 'index'));

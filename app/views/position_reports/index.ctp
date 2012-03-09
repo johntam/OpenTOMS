@@ -6,17 +6,25 @@
 	</tr>
 	
 	<tr class="altrow">
-		<td>
+		<td width="40%">
 			<?php echo $this->Form->create('PositionReport', array('action' => 'run')); ?>
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->input('pos_date', array('label'=>false,'type'=>'date','default'=> strtotime('-1 day'))); ?>
+			<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View', 'style'=>'float:left;')); ?>
 		</td>
-		<td>
+		<td width="20%">
 			<div class="high">
 				Run Position Report
-				<?php echo $this->Form->submit('Run', array('name'=>'Submit', 'value' => 'Run'));?>
+				<?php if (!empty($run_dates)) {
+					echo $this->Form->input('run_date', array('label'=>false, 'options'=>$run_dates, 'style'=>'float:left;'));
+					echo $this->Form->submit('Run', array('name'=>'Submit', 'value' => 'Run', 'style'=>'float:left;'));
+				}
+				else {
+					echo '<div style="color: red;">No balance calculations have been found</div>';
+				}
+				?>
 			</div>
 		</td>
+		<td></td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
 </table>	
