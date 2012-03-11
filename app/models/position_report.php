@@ -88,7 +88,7 @@ class PositionReport extends AppModel {
 			$this->save($data);
 		}
 		
-		return array(true, $fundmv_usd);
+		return array(true, null);
 	}
 }
 
