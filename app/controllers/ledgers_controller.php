@@ -3,7 +3,7 @@ class LedgersController extends AppController {
 	var $helpers = array ('Html','Form');
 	var $name = 'Ledgers';
 
-	function index() {
+	function index($fund_in = false, $date_in = false) {
 		$this->autoRender = false;
 		$d = new Dispatcher();
 		
@@ -25,17 +25,32 @@ class LedgersController extends AppController {
 								);
 					break;
 					
-				case 'View':
+				default:
 					$d->dispatch(
 									array('controller' => 'ledgers', 'action' => 'view'),
 									array('data' => $this->data)
 								);
-					break;
 			}
+		}
+		else if (isset($this->params['form']['Backdate_x'])) {
+			$prevdate = $this->Ledger->getPrevPostDate($this->data['Ledger']['fund_id'], $this->data['Ledger']['account_date']);
+			if (!empty($prevdate)) { $this->data['Ledger']['account_date'] = $prevdate; }
+			$d->dispatch(array('controller' => 'ledgers', 'action' => 'view'),
+								 array('data' => $this->data));
+		}
+		else if (isset($this->params['form']['Nextdate_x'])) {
+			$nextdate = $this->Ledger->getNextPostDate($this->data['Ledger']['fund_id'], $this->data['Ledger']['account_date']);
+			if (!empty($nextdate)) { $this->data['Ledger']['account_date'] = $nextdate; }
+			$d->dispatch(array('controller' => 'ledgers', 'action' => 'view'),
+								 array('data' => $this->data));
 		}
 		else {
 			//page just loaded, try if possible to use whatever fund was chosen on the trade blotter as the default fund choice on this page.
-			if ($this->Session->check('fund_chosen')) {
+			if ($fund_in) {
+				$fund = $fund_in;
+				$this->Session->write('fund_chosen', $fund_in);
+			}
+			else if ($this->Session->check('fund_chosen')) {
 				$fund = $this->Session->read('fund_chosen');
 			}
 			else {
@@ -43,9 +58,14 @@ class LedgersController extends AppController {
 				$fund = $fund['Fund']['id'];
 			}
 			
-			$date = $this->Ledger->getPrevPostDate($fund);
-			if (empty($date)) {
-				$date = date('Y-m-d');
+			if ($date_in) {
+				$date = $date_in;
+			}
+			else {
+				$date = $this->Ledger->getPrevPostDate($fund, date('Y-m-d', strtotime('tomorrow')));
+				if (empty($date)) {
+					$date = date('Y-m-d');
+				}
 			}
 			
 			$this->data = array('Ledger' => array('fund_id'=>$fund, 'account_date'=>$date));
@@ -65,24 +85,26 @@ class LedgersController extends AppController {
 		
 			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund['Fund']['id'], 
 																						'Ledger.ledger_date =' => $date,
-																						'Ledger.act =' => 1), 
+																						'Ledger.act =' => 1,
+																						'Ledger.sec_id >'=> 0), 
 																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
 		}
 		else {
 			$date = $this->data['Ledger']['account_date'];
 			$fund = $this->data['Ledger']['fund_id'];
-			if (!isset($this->data['Ledger']['account_id'])) {
-				$account = '%';
-			}
-			else {
-				$account = $this->data['Ledger']['account_id'];
-				if ($account == 0) { $account = '%'; }
-			}
-			
-			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund,
-																						'Ledger.ledger_date =' => $date, 
-																						'Ledger.account_id LIKE ' => $account,
-																						'Ledger.act =' => 1), 
+			$this->set('ledgers', $this->Ledger->find('all', array( 'fields'=>array(	'Fund.fund_name',
+																						'Account.account_name',
+																						'Ledger.trade_date',
+																						'Ledger.ledger_debit',
+																						'Ledger.ledger_credit',
+																						'Currency.currency_iso_code',
+																						'Sec.sec_name',
+																						'Ledger.ledger_quantity',
+																						'Trade.oid'),
+																	'conditions'=>array('Ledger.fund_id =' => $fund,
+																						'Ledger.ledger_date =' => $date,
+																						'Ledger.act =' => 1,
+																						'Ledger.sec_id >'=> 0), 
 																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
 		}
 	}
@@ -90,8 +112,6 @@ class LedgersController extends AppController {
 	
 	//Post trade journal entries to the general ledger
 	function post() {
-		$this->dropdownchoices();
-		
 		$date = $this->data['Ledger']['account_date'];
 		$fund = $this->data['Ledger']['fund_id'];
 		
@@ -108,8 +128,16 @@ class LedgersController extends AppController {
 			$this->Session->setFlash('Sorry, cannot post prior to the last locked date');
 		}
 		else {
-			$this->set('posts', $this->Ledger->post($fund, $date));
+			$this->Ledger->post($fund, $date);
 		}
+		
+		//redirect to view action, whilst passing $this->data
+		$this->autoRender = false;
+		$d = new Dispatcher();
+		$d->dispatch(
+			array('controller' => 'ledgers', 'action' => 'view'),
+			array('data' => $this->data)
+		);
 	}
 	
 	//create new general ledger. This is a very destructive action which scrubs all month end balances. This is why this action has its own page with a big warning on it.
@@ -146,7 +174,6 @@ class LedgersController extends AppController {
 	//Get list of fund names and accounting book names for the dropdown lists
 	function dropdownchoices() {
 		$this->set('funds', $this->Ledger->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
-		$this->set('accounts', array('0'=>'All Books') + $this->Ledger->Account->find('list', array('fields'=>array('Account.id','Account.account_name'),'order'=>array('Account.account_name'))));
 	}
 }
 ?>

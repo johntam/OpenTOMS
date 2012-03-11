@@ -3,7 +3,7 @@ class BalancesController extends AppController {
 	var $helpers = array ('Html','Form');
 	var $name = 'Balances';
 
-	function index() {
+	function index($fund_in = false, $date_in = false) {
 		$this->autoRender = false;
 		$d = new Dispatcher();
 			
@@ -11,11 +11,6 @@ class BalancesController extends AppController {
 			$this->Session->write('fund_chosen', $this->data['Balance']['fund_id']);
 			
 			switch ($this->params['form']['Submit']) {
-				case 'View':
-					$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
-								 array('data' => $this->data));
-					break;
-				
 				case 'Calc':
 					$d->dispatch(array('controller' => 'balances', 'action' => 'calc'),
 								 array('data' => $this->data));
@@ -36,9 +31,25 @@ class BalancesController extends AppController {
 								 array('data' => $this->data));
 			}
 		}
+		else if (isset($this->params['form']['Backdate_x'])) {
+			$prevdate = $this->Balance->getPrevBalanceDate($this->data['Balance']['fund_id'], $this->data['Balance']['account_date']);
+			if (!empty($prevdate)) { $this->data['Balance']['account_date'] = $prevdate; }
+			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+								 array('data' => $this->data));
+		}
+		else if (isset($this->params['form']['Nextdate_x'])) {
+			$nextdate = $this->Balance->getNextBalanceDate($this->data['Balance']['fund_id'], $this->data['Balance']['account_date']);
+			if (!empty($nextdate)) { $this->data['Balance']['account_date'] = $nextdate; }
+			$d->dispatch(array('controller' => 'balances', 'action' => 'view'),
+								 array('data' => $this->data));
+		}
 		else {
 			//page just loaded, try if possible to use whatever fund was chosen on the trade blotter as the default fund choice on this page.
-			if ($this->Session->check('fund_chosen')) {
+			if ($fund_in) {
+				$fund = $fund_in;
+				$this->Session->write('fund_chosen', $fund_in);
+			}
+			else if ($this->Session->check('fund_chosen')) {
 				$fund = $this->Session->read('fund_chosen');
 			}
 			else {
@@ -46,9 +57,14 @@ class BalancesController extends AppController {
 				$fund = $fund['Fund']['id'];
 			}
 			
-			$date = $this->Balance->getPrevBalanceDate($fund, date('Y-m-d', strtotime('tomorrow')));
-			if (empty($date)) {
-				$date = date('Y-m-d');
+			if ($date_in) {
+				$date = $date_in;
+			}
+			else {
+				$date = $this->Balance->getPrevBalanceDate($fund, date('Y-m-d', strtotime('tomorrow')));
+				if (empty($date)) {
+					$date = date('Y-m-d');
+				}
 			}
 			
 			$this->data['Balance'] = array('fund_id'=>$fund, 'account_date'=>$date);
@@ -58,12 +74,7 @@ class BalancesController extends AppController {
 	}
 	
 	
-	function view() {
-	
-		//echo debug($this->Balance->fifo('','1005:40:28:1;1006:20:50:1;'));
-		//exit;
-	
-	
+	function view() {	
 		$fund = $this->data['Balance']['fund_id'];
 		$date = $this->data['Balance']['account_date'];
 				

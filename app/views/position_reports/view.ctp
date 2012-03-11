@@ -1,17 +1,25 @@
 <!-- File: /app/views/position_reports/view.ctp -->
 
+<script type="text/javascript">
+				$(document).ready(function() {
+					$('#fundpicker').change(function() {
+						var selectfund = $('select option:selected').val();
+						window.location = '/PositionReports/index/' + selectfund;
+					});
+				});
+</script>
+
 <table style="width: 60%;margin-left:20%;margin-right:20%;">
 	<tr>
 		<td colspan="2"><h1>Position Reports</h1></td>
 	</tr>
 	
 	<tr class="altrow">
-		<td width="40%">
+		<td width="30%">
 			<?php echo $this->Form->create('PositionReport', array('action' => 'index')); ?>
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View', 'style'=>'float:left;')); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker')); ?>
 		</td>
-		<td width="20%">
+		<td width="30%">
 			<div class="high">
 				Run Position Report
 				<?php if (!empty($run_dates)) {
@@ -34,6 +42,8 @@
 		<th>Status</th>
 		<th>Fund</th>
 		<th>Date</th>
+		<th>Run Rime</th>
+		<th>Show</th>
 	</tr>
 	
 	<?php if (isset($reports)) { ?>
@@ -55,6 +65,12 @@
 			</td>
 			<td>
 				<?php echo $report['PositionReport']['pos_date']; ?>
+			</td>
+			<td>
+				<?php echo $report['PositionReport']['crd']; ?>
+			</td>
+			<td>
+				<?php echo $this->Html->link('Show', array('action' => 'show', $report['Fund']['id'], $report['PositionReport']['pos_date']));?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

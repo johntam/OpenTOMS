@@ -201,7 +201,7 @@ table {
 th {
 	border:0;
 	border-bottom:2px solid #555;
-	text-align: left;
+	text-align: center;
 	padding:4px;
 	background: #61CFED;
 }
@@ -237,6 +237,11 @@ table.cancelled {
 
 table .altrow td {
 	background: #f5f5f5;
+}
+table .total td {
+	background: #AFCACA;
+	font-weight: bold;
+	
 }
 table .highlight td {
 	font-weight: bold;

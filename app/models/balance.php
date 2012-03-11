@@ -20,7 +20,11 @@ class Balance extends AppModel {
 		//get this month's ledger entries
 		App::import('model','Ledger');
 		$ledger = new Ledger();
-		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 'Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund), 'order'=>array('Ledger.trade_crd ASC')));
+		$ledgdata = $ledger->find('all', array('conditions'=>array('Ledger.act =' => 1, 
+																   'Ledger.ledger_date =' => $date, 
+																   'Ledger.fund_id =' => $fund,
+																   'Ledger.sec_id >' => 0), 
+											   'order'=>array('Ledger.trade_crd ASC')));
 		
 		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
 		$newbal = array();
@@ -124,7 +128,9 @@ class Balance extends AppModel {
 											'Currency.sec_id',
 											'Sec.sec_type_id',
 											'Balance.currency_id',
-											'Sec.valpoint'),
+											'Sec.valpoint',
+											'SecType.cfd',
+											'Balance.trinv'),
 						'joins' => array(
 										array('table'=>'currencies',
 											  'alias'=>'Currency',
@@ -148,6 +154,20 @@ class Balance extends AppModel {
 											  'conditions'=>
 													array(	'PriceFX.sec_id=Currency.sec_id',
 															"PriceFX.price_date='".$date."'")
+											  ),
+										array('table'=>'secs',
+											  'alias'=>'Sec2',
+											  'type'=>'inner',
+											  'foreignKey'=>false,
+											  'conditions'=>
+													array(	'Balance.sec_id=Sec2.id')
+											  ),
+										array('table'=>'sec_types',
+											  'alias'=>'SecType',
+											  'type'=>'inner',
+											  'foreignKey'=>false,
+											  'conditions'=>
+													array(	'Sec2.sec_type_id=SecType.id')
 											  )
 										),
 						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date),
@@ -207,9 +227,20 @@ class Balance extends AppModel {
 	}
 	
 	
-	//checks to see if the specified month end balances exist for the fund, PHP value of 0=false, anything else=true
+	//get the previous balance date for the fund, PHP value of 0=false, anything else=true
 	function getPrevBalanceDate($fund, $date) {
 		$fetch = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date <' => $date, 'Balance.act ='=>1), 'order'=>'Balance.balance_date DESC'));
+		if (empty($fetch)) {
+			return null;
+		}
+		else {
+			return $fetch['Balance']['balance_date'];
+		}
+	}
+	
+	//get the next balance date for the fund, PHP value of 0=false, anything else=true
+	function getNextBalanceDate($fund, $date) {
+		$fetch = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date >' => $date, 'Balance.act ='=>1), 'order'=>'Balance.balance_date ASC'));
 		if (empty($fetch)) {
 			return null;
 		}

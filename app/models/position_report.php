@@ -7,14 +7,6 @@ class PositionReport extends AppModel {
 	
 	//combine latest trades with the last recorded locked balance (from the Balance model)
 	function getPositions($fund, $date) {
-		//deactivate all previous position reports for this date
-		if (!$this->updateAll(array('PositionReport.act' => 0), 
-									array('PositionReport.pos_date =' => $date,
-										  'PositionReport.fund_id =' => $fund))) {
-			$this->Session->setFlash('Could not access database, operation aborted');
-			return false;
-		}
-	
 		App::import('model','Balance');
 		$balmodel = new Balance();
 		$baldata = $balmodel->attachprices($fund, $date);
@@ -25,6 +17,23 @@ class PositionReport extends AppModel {
 			$final = 0;
 		}
 		
+		//check to see if there are any missing prices or fx rates
+		foreach ($baldata as $b) {
+			if (empty($b['Price']['price']) || empty($b['PriceFX']['fx_rate'])) {
+				$missing = true;
+			}
+		}
+		if (isset($missing)) {
+			return (array(false, 'Missing prices and fx rates for this date, operation aborted'));
+		}
+		
+		//deactivate all previous position reports for this date
+		if (!$this->updateAll(array('PositionReport.act' => 0), 
+									array('PositionReport.pos_date =' => $date,
+										  'PositionReport.fund_id =' => $fund))) {
+			return (array(false, 'Could not access database, operation aborted'));
+		}
+		
 		//need to segregate all cash items together
 		//ignore account books, that is for the NAV report
 		$temp = array();
@@ -33,6 +42,7 @@ class PositionReport extends AppModel {
 		}
 		
 		$display = array();
+		$timenow = date('Y-m-d H:i:s');
 		foreach ($temp as $secid=>$s) {
 			$totqty = 0;
 			foreach ($s as $c) {
@@ -43,13 +53,26 @@ class PositionReport extends AppModel {
 				$ccy = $c['Balance']['currency_id'];
 				$fxrate = $c['PriceFX']['fx_rate'];
 				$valpoint = $c['Sec']['valpoint'];
+				$cfd = $c['SecType']['cfd'];
+				$trinv = $c['Balance']['trinv'];
 			}
-			$mvlocal = $totqty * $price * $valpoint;
-			$mvusd = $mvlocal * $fxrate * $valpoint;
+			if ($cfd == 0) {
+				$mvlocal = $totqty * $price * $valpoint;
+				$mvusd = $mvlocal * $fxrate;
+			}
+			else {
+				$closeout = strtotime('now').':'.(-$totqty).':'.$price.':'.$valpoint.';';
+				list($pnl, $trinv_out) = $balmodel->fifo($trinv, $closeout);
+				if (!empty($trinv_out)) {
+					return (array(false, 'Problem with FIFO calculation, operation aborted '));
+				}
+				$mvlocal = $pnl;
+				$mvusd = $pnl * $fxrate;
+			}
 			
 			//save this record to the database
 			$data['PositionReport'] = array('act' => 1,
-											'crd'=>DboSource::expression('NOW()'),
+											'crd'=>$timenow,
 											'final'=>$final,
 											'pos_date'=>$date,
 											'fund_id' => $fund,
@@ -65,7 +88,7 @@ class PositionReport extends AppModel {
 			$this->save($data);
 		}
 		
-		return true;
+		return array(true, $fundmv_usd);
 	}
 }
 

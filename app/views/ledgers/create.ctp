@@ -11,7 +11,7 @@
 </br>
 <table style="width: 40%;margin-left:30%;margin-right:30%;">
 	<tr>
-		<td colspan="6"><h1>Create New Ledger</h1></td>
+		<td><h1>Create New Ledger</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -20,27 +20,22 @@
 			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
 			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput')); ?>
 		</td>
-		<td colspan="2">
-		</td>
 	</tr>
 	
 	<tr>
-		<td colspan="3" style="color: red;">
-		Warning! This is a potentially destructive action. Creating a new ledger for this fund will wipe ALL month end data clean. 
-		This action is meant to be used only in special circumstances, usually when a fund is migrated over to the system and a new starting point for NAV calculation needs to be set.
-		This could also take a long time to finish.
+		<td style="color: red;">
+		Warning! This is a destructive action. Creating a new ledger for this fund will wipe ALL data that has been posted for this fund. 
+		This action is meant to be used only in extreme circumstances, e.g. when a fund's NAV has become unreconcilable and it would be
+		easier to start again from scratch. N.B. that all finalised balances will be wiped as well. This operation could also take a long 
+		time to finish. MAKE SURE THAT DATABASE HAS BEEN BACKED UP FIRST!
 		</br></br>
-		Are you sure that you want to create a new starting ledger for this fund?
+		Are you sure that you want to create a new general ledger for this fund?
 		</br></br>
 		</td>
 	</tr>
 	<tr>
-		<td>
-		</td>
-		<td>
-		</td>
 		<td style="width: 20%;">
-			<div style="float:left; vertical-align:middle;"><?php echo $this->Form->submit('Yes', array('name'=>'Submit', 'value' => 'Yes'));?></div>
+			<div style="float:right; vertical-align:middle;"><?php echo $this->Form->submit('Yes', array('name'=>'Submit', 'value' => 'Yes'));?></div>
 			<div style="float:right; vertical-align:middle;"><?php echo $this->Form->submit('No', array('name'=>'Submit', 'value' => 'No'));?></div>
 		</td>
 		<?php echo $this->Form->end(); ?>

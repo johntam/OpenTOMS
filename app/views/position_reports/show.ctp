@@ -5,9 +5,14 @@
 		<td><h1>Position Report</h1></td>
 	</tr>
 	
-	<tr class="altrow">
-		<td>Fund Name</td>
-		<td>Report Date</td>
+	<tr class="high2">
+		<td><b><?php echo $positions[0]['Fund']['fund_name']; ?></b></td>
+		<td><b>Report Date: <?php echo $positions[0]['PositionReport']['pos_date']; ?></b></td>
+		<td>
+			<?php echo $this->Form->create('PositionReport', array('action' => 'index/'.$positions[0]['PositionReport']['fund_id'])); ?>
+			<?php echo $this->Form->submit('Back To List', array('name'=>'Submit', 'value' => 'Back'));?>
+			<?php echo $this->Form->end(); ?>
+		</td>
 	</tr>
 </table>	
 
@@ -22,33 +27,39 @@
 		<th>Market Val (USD)</th>
 	</tr>
 	
-	<?php if (isset($positions)) { ?>
+	<?php if (isset($positions)) { $totmvusd = 0; ?>
 	
 	<?php foreach ($positions as $position): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
 				<?php echo $position['Sec']['sec_name']; ?>
 			</td>
-			<td>
-				<?php echo $position['PositionReport']['quantity']; ?>
+			<td style="text-align: right;">
+				<?php echo number_format($position['PositionReport']['quantity'],2); ?>
 			</td>
-			<td>
-				<?php echo $position['PositionReport']['price']; ?>
+			<td style="text-align: right;">
+				<?php if ($position['Sec']['sec_type_id'] > 2) {
+						echo number_format($position['PositionReport']['price'],2);
+				}?>
 			</td>
-			<td>
-				<?php echo $position['PositionReport']['mkt_val_local']; ?>
+			<td style="text-align: right;">
+				<?php echo number_format($position['PositionReport']['mkt_val_local'],0); ?>
 			</td>
-			<td>
+			<td style="text-align: right;">
 				<?php echo $position['Currency']['currency_iso_code']; ?>
 			</td>
-			<td>
-				<?php echo $position['PositionReport']['fx_rate']; ?>
+			<td style="text-align: right;">
+				<?php echo number_format($position['PositionReport']['fx_rate'],4); ?>
 			</td>
-			<td>
-				<?php echo $position['PositionReport']['mkt_val_usd']; ?>
+			<td style="text-align: right;">
+				<?php echo number_format($position['PositionReport']['mkt_val_usd'],0); 
+					$totmvusd += $position['PositionReport']['mkt_val_usd']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
-	
+		<tr class="total">
+			<td colspan="6"></td>
+			<td style="text-align: right;"><?php echo number_format($totmvusd,0); ?></td>
+		</tr>
 	<?php }; ?>
 </table>

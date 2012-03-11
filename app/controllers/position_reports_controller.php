@@ -4,28 +4,31 @@ class PositionReportsController extends AppController {
 	var $name = 'PositionReports';
 
 	
-	function index() {
+	function index($fund_id = false) {
 		$this->autoRender = false;
 		$d = new Dispatcher();
 			
-		if (isset($this->params['form']['Submit'])) {
+		if (isset($this->params['form']['Submit']) && !$fund_id) {
 			$this->Session->write('fund_chosen', $this->data['PositionReport']['fund_id']);
 			
 			switch ($this->params['form']['Submit']) {
-				case 'View':
-					$d->dispatch(array('controller' => 'PositionReports', 'action' => 'view'),
-								 array('data' => $this->data));
-					break;
-				
 				case 'Run':
 					$d->dispatch(array('controller' => 'PositionReports', 'action' => 'run'),
 								 array('data' => $this->data));
 					break;
+					
+				default:
+					$d->dispatch(array('controller' => 'PositionReports', 'action' => 'view'),
+								 array('data' => $this->data));
 			}
 		}
 		else {
 			//page just loaded, try if possible to use whatever fund was chosen on the trade blotter as the default fund choice on this page.
-			if ($this->Session->check('fund_chosen')) {
+			if ($fund_id) {
+				$fund = $fund_id;
+				$this->Session->write('fund_chosen', $fund);
+			}
+			else if ($this->Session->check('fund_chosen')) {
 				$fund = $this->Session->read('fund_chosen');
 			}
 			else {
@@ -40,13 +43,7 @@ class PositionReportsController extends AppController {
 	}
 	
 	
-	function view() {
-		$this->set('reports', $this->PositionReport->find('all', array('limit'=>10, 
-																	   'order'=>array('PositionReport.crd DESC'),
-																	   'fields' => array('DISTINCT PositionReport.final', 
-																	                     'Fund.fund_name', 
-																						 'PositionReport.pos_date'))));
-																						 
+	function view() {																				 
 		//get a list of balance calculation dates
 		$fund = $this->data['PositionReport']['fund_id'];
 		App::import('model','Balance');
@@ -61,6 +58,15 @@ class PositionReportsController extends AppController {
 		}
 		$this->set('run_dates', $run_dates);
 		
+		//get list of reports for this fund
+		$this->set('reports', $this->PositionReport->find('all', array('limit'=>10,
+																	   'conditions'=>array('PositionReport.fund_id ='=>$fund),
+																	   'order'=>array('PositionReport.crd DESC'),
+																	   'fields' => array('DISTINCT PositionReport.final', 
+																	                     'Fund.fund_name',
+																						 'Fund.id',
+																						 'PositionReport.pos_date',
+																						 'PositionReport.crd'))));
 		//render
 		$this->dropdownchoices();
 	}
@@ -72,8 +78,13 @@ class PositionReportsController extends AppController {
 		$fund = $this->data['PositionReport']['fund_id'];
 		$date = $this->data['PositionReport']['run_date'];
 		
-		if ($this->PositionReport->getPositions($fund, $date)) {
+		list($success, $msg) = $this->PositionReport->getPositions($fund, $date);
+		if ($success) {
 			$this->redirect(array('action' => 'show', $fund, $date));
+		}
+		else {
+			$this->Session->setFlash($msg);
+			$this->redirect(array('action' => 'index', $fund));
 		}
 	}
 	

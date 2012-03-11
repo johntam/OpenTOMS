@@ -5,28 +5,51 @@
 <script type="text/javascript">
 				$(document).ready(function() {
 					$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd' });
+					
+					$('#dateinput').change(function() {
+						var selectfund = $('select option:selected').val();
+						$('#maintable').html('');
+						$('#pleasewait').show();
+						window.location = '/balances/index/' + selectfund + '/' + $('#dateinput').val();
+					});
+					
+					$('#fundpicker').change(function() {
+						var selectfund = $('select option:selected').val();
+						$('#maintable').html('');
+						$('#pleasewait').show();
+						window.location = '/balances/index/' + selectfund + '/0' ;
+					});
+					
+					$('#leftarrow').click(function() {
+						$('#maintable').html('');
+						$('#pleasewait').show();
+					});
+					
+					$('#rightarrow').click(function() {
+						$('#maintable').html('');
+						$('#pleasewait').show();
+					});
 				});
 </script>
 <?php $missingprices = false; ?>
 
 <table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="8"><h1>Lock Balances</h1></td>
+		<td colspan="4">
+			<h1>Lock Balances</h1>
+		</td>
 	</tr>
 	
 	<tr class="altrow">
-		<td>
+		<td style="width: 25%;">
 			<?php echo $this->Form->create('Balance', array('action' => 'index')); ?>
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
-			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'))); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker')); ?>
+			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'),
+																'style'=>'float: left;')); ?>
+			<?php echo $this->Form->submit('left.png', array('id'=>'leftarrow', 'name'=>'Backdate', 'value' => 'Backdate', 'style'=>'float:left;')); ?>
+			<?php echo $this->Form->submit('right.png', array('id'=>'rightarrow', 'name'=>'Nextdate', 'value' => 'Nextdate', 'style'=>'float:left;')); ?>
 		</td>
-		<td>
-			<div class="high">
-				View month end balances
-				<?php echo $this->Form->submit('View', array('name'=>'Submit', 'value' => 'View'));?>
-			</div>
-		</td>
-		<td>
+		<td style="width: 25%;">
 			<div class="high">
 				Calculate month end balances
 				<?php if (!empty($calcdates)) {
@@ -39,7 +62,7 @@
 				?>
 			</div>
 		</td>
-		<td>
+		<td style="width: 25%;">
 			<div class="careful">
 				(Un)Lock month end balances
 				<?php 
@@ -55,6 +78,7 @@
 				<div id="missingmessage" style="color: red;"></div>
 			</div>
 		</td>
+		<td></td>
 		<?php echo $this->Form->end(); ?>
 	</tr>
 	
@@ -64,7 +88,7 @@
 	
 </table>	
 
-<table style="width: 80%;margin-left:10%;margin-right:10%;" id="baltable">	
+<table style="width: 80%;margin-left:10%;margin-right:10%;" id="maintable">
 	<tr>
 		<th>Fund</th>
 		<th>Book</th>
@@ -86,13 +110,13 @@
 			<td>
 				<?php echo $balance['Account']['account_name']; ?>
 			</td>
-			<td>
+			<td style="text-align: right">
 				<?php echo number_format($balance['Balance']['balance_debit'],2); ?>
 			</td>
-			<td>
+			<td style="text-align: right">
 				<?php echo number_format($balance['Balance']['balance_credit'],2); ?>
 			</td>
-			<td>
+			<td style="text-align: right">
 				<?php 	if (($balance['Account']['id'] == 1) && ($balance['Sec']['sec_type_id'] <> 2)) {
 							//No fx rate for non-cash securities
 						}
@@ -109,10 +133,10 @@
 			<td>
 				<?php echo $balance['Sec']['sec_name']; ?>
 			</td>
-			<td>
+			<td style="text-align: right">
 				<?php echo number_format($balance['Balance']['balance_quantity'],0); ?>
 			</td>
-			<td>
+			<td style="text-align: right">
 				<?php 	if ($balance['Account']['id'] > 1) {
 							//No price allowed for cash books
 						}
@@ -134,6 +158,8 @@
 	
 	<?php }; ?>
 </table>
+<div id='pleasewait' style='display: none; color: red; width: 80%;margin-left:10%;margin-right:10%;'>Please wait...</div>
+
 <?php 	if ($missingprices) {
 			echo '<div id="missing" style="visibility:hidden">Y</div>';
 		}
