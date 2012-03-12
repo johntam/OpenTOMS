@@ -264,3 +264,11 @@ CREATE TABLE position_reports(
 	mkt_val_local decimal(18,4) NULL,
 	mkt_val_fund decimal(18,4) NULL
 );
+
+CREATE TABLE custodians (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	act bit NOT NULL,
+	crd datetime NOT NULL,
+	custodian_name VARCHAR(50) NOT NULL,
+	custodian_long_name VARCHAR(255) NULL
+);

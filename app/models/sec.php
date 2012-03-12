@@ -96,10 +96,21 @@ class Sec extends AppModel {
 		}
 	}
 	
+	//determine if the security is cash
+	function is_cash($id) {
+		$result = $this->Currency->find('first', array('conditions'=>array('Currency.sec_id ='=>$id)));
+		if (empty($result)) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 	//calculate the accrued interest (per 100 nominal)
 	function accrued($id, $settdate) {
-		//First check if its a bond or not
-		if (!$this->is_bond($id)) {
+		//First check if its a bond, but not a bond future
+		if (!$this->is_bond($id) || $this->is_deriv($id)) {
 			return(array('code'=>0, 'message'=>'security is not a bond', 'accrued'=>''));
 		}
 		

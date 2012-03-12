@@ -141,7 +141,7 @@ class Balance extends AppModel {
 				}
 				
 				//write this result line to the database, only if the position is non-zero though
-				if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb == $totcred) < 0.01))) {
+				if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
 					$data['Balance'] = array('act' => 1,
 											 'locked' => 0,
 											 'crd'=>DboSource::expression('NOW()'),

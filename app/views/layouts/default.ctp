@@ -50,6 +50,7 @@ show up on all of your views, include it here -->
 				<li><a href="/SecTypes">Sec Types</a></li>
 				<li><a href="/reasons">Reasons</a></li>
 				<li><a href="/brokers">Brokers</a></li>
+				<li><a href="/custodians">Custodians</a></li>
 				<li><a href="/traders">Traders</a></li>
 				<li><a href="/countries">Countries</a></li>
 				<li><a href="/exchanges">Exchanges</a></li>
