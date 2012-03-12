@@ -55,6 +55,8 @@ class Balance extends AppModel {
 		
 		if (!$result) { return false; }
 		
+		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
+		
 		//we have a two-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $acc=>&$n1) {
 			foreach ($n1 as $sec=>$n2) {
@@ -76,31 +78,43 @@ class Balance extends AppModel {
 						$pnl = $pnl + $result[0];
 						$trinv = $result[1];
 					}
+				}	
+				
+				//add pnl back to security line, double-entry to the opposite side in the PnL account
+				if ($pnl > 0) {
+					$totdeb += $pnl;
+					$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																				 'ledger_credit'=>$pnl,
+																				 'quantity'=>0,
+																				 'currency_id'=>$ccy,
+																				 'trinv'=>'');
 				}
-				//add pnl to the cash book further down
-				if ($pnl <> 0) {
-					$newbal[2][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+				else if ($pnl < 0) {
+					$totcred += $pnl;
+					$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
 																				 'ledger_credit'=>0,
-																				 'quantity'=>$pnl,
+																				 'quantity'=>0,
 																				 'currency_id'=>$ccy,
 																				 'trinv'=>'');
 				}
 				
-				//write this result line to the database
-				$data['Balance'] = array('act' => 1,
-										 'locked' => 0,
-										 'crd'=>DboSource::expression('NOW()'),
-										 'fund_id' => $fund,
-										 'account_id'=>$acc,
-										 'balance_date'=>$date,
-										 'balance_debit'=>$totdeb,
-										 'balance_credit'=>$totcred,
-										 'currency_id'=>$ccy,
-										 'balance_quantity'=>$totqty,
-										 'sec_id'=>$sec,
-										 'trinv'=>$trinv);
-				$this->create($data);
-				$this->save();
+				//write this result line to the database, only if the position is non-zero though
+				if (!(($acc == 1) && ($totqty == 0))) {
+					$data['Balance'] = array('act' => 1,
+											 'locked' => 0,
+											 'crd'=>DboSource::expression('NOW()'),
+											 'fund_id' => $fund,
+											 'account_id'=>$acc,
+											 'balance_date'=>$date,
+											 'balance_debit'=>$totdeb,
+											 'balance_credit'=>$totcred,
+											 'currency_id'=>$ccy,
+											 'balance_quantity'=>$totqty,
+											 'sec_id'=>$sec,
+											 'trinv'=>$trinv);
+					$this->create($data);
+					$this->save();
+				}
 			}
 		}
 		
