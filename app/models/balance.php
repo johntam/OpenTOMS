@@ -14,7 +14,9 @@ class Balance extends AppModel {
 			$baldata = array();
 		}
 		else {
-			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 'Balance.balance_date =' => $prevdate, 'Balance.fund_id =' => $fund)));
+			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 
+																	'Balance.balance_date =' => $prevdate, 
+																	'Balance.fund_id =' => $fund)));
 		}
 				
 		//get this month's ledger entries
@@ -33,6 +35,7 @@ class Balance extends AppModel {
 																					'ledger_credit'=>$b['Balance']['balance_credit'],
 																					'quantity'=>$b['Balance']['balance_quantity'],
 																					'currency_id'=>$b['Balance']['currency_id'],
+																					'cfd'=>$b['Balance']['balance_cfd'],
 																					'trinv'=>$b['Balance']['trinv']);
 		}
 				
@@ -41,6 +44,7 @@ class Balance extends AppModel {
 																					'ledger_credit'=>$l['Ledger']['ledger_credit'],
 																					'quantity'=>$l['Ledger']['ledger_quantity'],
 																					'currency_id'=>$l['Ledger']['currency_id'],
+																					'cfd'=>$l['Ledger']['ledger_cfd'],
 																					'trinv'=>$l['Ledger']['trinv']);
 		}
 		
@@ -56,6 +60,7 @@ class Balance extends AppModel {
 		if (!$result) { return false; }
 		
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
+		$cash_acc_id = $this->Account->getNamed('Cash');
 		
 		//we have a two-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $acc=>&$n1) {
@@ -71,6 +76,7 @@ class Balance extends AppModel {
 					$totcred += $d['ledger_credit'];
 					$totqty += $d['quantity'];
 					$ccy = $d['currency_id'];
+					$cfd = $d['cfd'];
 					$tri = $d['trinv'];
 					
 					if ($acc == 1) {
@@ -80,26 +86,62 @@ class Balance extends AppModel {
 					}
 				}	
 				
-				//add pnl back to security line, double-entry to the opposite side in the PnL account
-				if ($pnl > 0) {
-					$totdeb += $pnl;
-					$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																				 'ledger_credit'=>$pnl,
-																				 'quantity'=>0,
-																				 'currency_id'=>$ccy,
-																				 'trinv'=>'');
-				}
-				else if ($pnl < 0) {
-					$totcred += $pnl;
-					$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+				//process any PnL thrown off this security this month
+				if ($cfd) {
+					//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
+					if ($pnl > 0) {
+						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
 																				 'ledger_credit'=>0,
-																				 'quantity'=>0,
+																				 'quantity'=>$pnl,
 																				 'currency_id'=>$ccy,
+																				 'cfd'=>0,
 																				 'trinv'=>'');
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																					 'ledger_credit'=>$pnl,
+																					 'quantity'=>0,
+																					 'currency_id'=>$ccy,
+																					 'cfd'=>0,
+																					 'trinv'=>'');
+					}
+					else if ($pnl < 0) {
+						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																				 'ledger_credit'=>$pnl,
+																				 'quantity'=>$pnl,
+																				 'currency_id'=>$ccy,
+																				 'cfd'=>0,
+																				 'trinv'=>'');
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+																					 'ledger_credit'=>0,
+																					 'quantity'=>0,
+																					 'currency_id'=>$ccy,
+																					 'cfd'=>0,
+																					 'trinv'=>'');
+					}
+				}
+				else {
+					//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
+					if ($pnl > 0) {
+						$totdeb += $pnl;
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																					 'ledger_credit'=>$pnl,
+																					 'quantity'=>0,
+																					 'currency_id'=>$ccy,
+																					 'cfd'=>0,
+																					 'trinv'=>'');
+					}
+					else if ($pnl < 0) {
+						$totcred += $pnl;
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+																					 'ledger_credit'=>0,
+																					 'quantity'=>0,
+																					 'currency_id'=>$ccy,
+																					 'cfd'=>0,
+																					 'trinv'=>'');
+					}
 				}
 				
 				//write this result line to the database, only if the position is non-zero though
-				if (!(($acc == 1) && ($totqty == 0))) {
+				if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb == $totcred) < 0.01))) {
 					$data['Balance'] = array('act' => 1,
 											 'locked' => 0,
 											 'crd'=>DboSource::expression('NOW()'),
@@ -108,6 +150,7 @@ class Balance extends AppModel {
 											 'balance_date'=>$date,
 											 'balance_debit'=>$totdeb,
 											 'balance_credit'=>$totcred,
+											 'balance_cfd'=>$cfd,
 											 'currency_id'=>$ccy,
 											 'balance_quantity'=>$totqty,
 											 'sec_id'=>$sec,

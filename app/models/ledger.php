@@ -12,7 +12,7 @@ class Ledger extends AppModel {
 									'Trade.act =' => 1, 
 									'Trade.cancelled =' => 0, 
 									'Trade.executed =' => 1
-								 ), 
+								 ),
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
@@ -88,6 +88,7 @@ class Ledger extends AppModel {
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cons2 = $cons;
+					$cfd2 = 0;
 				}
 				else {
 					$secid2 = $secid;
@@ -95,6 +96,7 @@ class Ledger extends AppModel {
 					$tr2 = $trinv;
 					$ccy2 = $ccy;
 					$cons2 = abs($consX);
+					$cfd2 = $cfd;
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -106,7 +108,7 @@ class Ledger extends AppModel {
 								'trade_crd' => $tcrd,
 								'ledger_debit' => $cons2,
 								'ledger_credit' => 0,
-								'ledger_cfd' => $cfd,
+								'ledger_cfd' => $cfd2,
 								'currency_id' => $ccy2,
 								'ledger_quantity' => $qty2,
 								'sec_id' => $secid2,
@@ -121,6 +123,7 @@ class Ledger extends AppModel {
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
 					$data['ledger_credit'] = -$cons;
+					$data['ledger_cfd'] = 0;
 				}
 				else {
 					$data['sec_id']  = $secid;
@@ -128,6 +131,7 @@ class Ledger extends AppModel {
 					$data['trinv'] = $trinv;
 					$data['currency_id'] = $ccy;
 					$data['ledger_credit'] = abs($consX);
+					$data['ledger_cfd'] = $cfd;
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
@@ -145,6 +149,7 @@ class Ledger extends AppModel {
 					$data['account_id'] = $trad_cost_acc_id;
 					$data['ledger_debit'] = abs($trading_costs);
 					$data['ledger_credit'] = 0;
+					$data['ledger_cfd'] = 0;
 					$data['currency_id'] = $tccy;
 					$this->create($data);
 					$this->save();
