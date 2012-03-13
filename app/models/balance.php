@@ -339,7 +339,7 @@ class Balance extends AppModel {
 				
 				if ($qty * $qtyp < 0) {
 					if (abs($qty) > abs($qtyp)) {
-						if (($qty < 0) && ($pr >= $prp)) {
+						if ((($qty < 0) && ($pr >= $prp)) || (($qty > 0) && ($pr < $prp))) {
 							$pnl = $pnl + abs($qtyp)*abs($pr-$prp)*$vp;
 						}
 						else {
@@ -349,7 +349,7 @@ class Balance extends AppModel {
 						unset($b[$date]);
 					}
 					else if (abs($qty) == abs($qtyp)) {
-						if (($qty < 0) && ($pr >= $prp)) {
+						if ((($qty < 0) && ($pr >= $prp)) || (($qty > 0) && ($pr < $prp))) {
 							$pnl = $pnl + abs($qty)*abs($pr-$prp)*$vp;
 						}
 						else {
@@ -360,7 +360,7 @@ class Balance extends AppModel {
 						break;
 					}
 					else {
-						if (($qty < 0) && ($pr >= $prp)) {
+						if ((($qty < 0) && ($pr >= $prp)) || (($qty > 0) && ($pr < $prp))) {
 							$pnl = $pnl + abs($qty)*abs($pr-$prp)*$vp;
 						}
 						else {
