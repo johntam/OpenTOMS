@@ -156,7 +156,7 @@ class Sec extends AppModel {
 		//roll back one period to come to the last coupon date
 		$date=$lastdate;
 		
-		//number of days accrued
+		//accrued interest
 		switch ($method['Sec']['calc_type']) {
 			case '30/360':
 				$days = $this->datediff30($date, $sett);
@@ -171,6 +171,45 @@ class Sec extends AppModel {
 		
 		return(array('code'=>0, 'accrued'=>$acc));
 	}
+	
+	
+	//calculate bond accrued interest for the journal posting screen
+	//basically similar to the function above but simpler because don't have to worry about coupon frequency and date
+	function ledger_accrued($id, $fromdate, $enddate) {
+		//First check if its a bond, but not a bond future
+		if (!$this->is_bond($id) || $this->is_deriv($id)) {
+			return(array('code'=>0, 'message'=>'security is not a bond'));
+		}
+	
+		//get calculation parameters
+		$coupon = $this->read('coupon', $id);
+		$method = $this->read('calc_type', $id);
+		$message = null;
+		if (!$coupon['Sec']['coupon']) { $message = $message.'coupon,'; }
+		if (!$method['Sec']['calc_type']) { $message = $message.'calculation type,'; }
+		if ($message) {
+			//a data item is missing
+			return(array('code'=>1, 'message'=>substr($message,0,-1).' missing from this bond'));
+		}
+		
+		//accrued interest
+		$from_date = strtotime($fromdate);
+		$end_date = strtotime($enddate);
+		switch ($method['Sec']['calc_type']) {
+			case '30/360':
+				$days = $this->datediff30($from_date, $end_date);
+				$acc = ($days/360)*$coupon['Sec']['coupon'];
+			break;
+			
+			case '30/365';
+				$days = $this->datediff30($from_date, $end_date);
+				$acc = ($days/365)*$coupon['Sec']['coupon'];
+			break;
+		}
+		
+		return(array('code'=>0, 'accrued'=>$acc));
+	}
+	
 	
 	//Work out the difference between two dates using the 30 day system
 	//both parameters are Unix timestamps.

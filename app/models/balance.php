@@ -61,6 +61,7 @@ class Balance extends AppModel {
 		
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
 		$cash_acc_id = $this->Account->getNamed('Cash');
+		//$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
 		
 		//we have a two-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $acc=>&$n1) {
@@ -158,6 +159,37 @@ class Balance extends AppModel {
 					$this->create($data);
 					$this->save();
 				}
+				
+				
+				/*
+				//if this is a bond, add in accrued interest which should be calculated from the last
+				//balance calculation date to the journal posting date
+				App::import('model','Sec');
+				$sec = new Sec();
+				$result = $sec->ledger_accrued($secid, $prevdate, $date);
+				if (isset($result['accrued'])) {
+					
+				
+				
+					$data = array(	'act' => 1,
+									'crd' => DboSource::expression('NOW()'),
+									'fund_id' => $fund,
+									'account_id' => $accrued_acc_id,
+									'ledger_date' => $date,
+									'trade_date' => $date,
+									'trade_id' => $tid,
+									'trade_crd' => $tcrd,
+									'ledger_debit' => $cons2,
+									'ledger_credit' => 0,
+									'ledger_cfd' => $cfd2,
+									'currency_id' => $ccy2,
+									'ledger_quantity' => $qty2,
+									'sec_id' => $secid2,
+									'trinv' => $tr2);
+					$this->create($data);
+					$this->save();
+				} */
+				
 			}
 		}
 		

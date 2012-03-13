@@ -167,7 +167,6 @@ class Ledger extends AppModel {
 					$this->save();
 				}
 			}
-			
 			return($posts);
 		}
 		else {
