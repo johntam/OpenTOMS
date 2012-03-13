@@ -335,23 +335,25 @@ class Balance extends AppModel {
 				$qtyp = $c['quantity'];
 				$prp = $c['price'];
 				
+				//echo debug(array('status'=>'before\\\\\\\\\\\\\\\\\\\\\\\\\\','qty'=>$qty, 'pr'=>$pr, 'vp'=>$vp, 'qtyp'=>$qtyp, 'prp'=>$prp, 'pnl'=>$pnl));
+				
 				if ($qty * $qtyp < 0) {
 					if (abs($qty) > abs($qtyp)) {
 						if (($qty < 0) && ($pr >= $prp)) {
-							$pnl = $pnl + abs($qtyp)*($pr-$prp)*$vp;
+							$pnl = $pnl + abs($qtyp)*abs($pr-$prp)*$vp;
 						}
 						else {
-							$pnl = $pnl - abs($qtyp)*($pr-$prp)*$vp;
+							$pnl = $pnl - abs($qtyp)*abs($pr-$prp)*$vp;
 						}
 						$qty = $qty + $qtyp;
 						unset($b[$date]);
 					}
 					else if (abs($qty) == abs($qtyp)) {
 						if (($qty < 0) && ($pr >= $prp)) {
-							$pnl = $pnl + abs($qty)*($pr-$prp)*$vp;
+							$pnl = $pnl + abs($qty)*abs($pr-$prp)*$vp;
 						}
 						else {
-							$pnl = $pnl - abs($qty)*($pr-$prp)*$vp;
+							$pnl = $pnl - abs($qty)*abs($pr-$prp)*$vp;
 						}
 						$qty = 0;
 						unset($b[$date]);
@@ -359,16 +361,19 @@ class Balance extends AppModel {
 					}
 					else {
 						if (($qty < 0) && ($pr >= $prp)) {
-							$pnl = $pnl + abs($qty)*($pr-$prp)*$vp;
+							$pnl = $pnl + abs($qty)*abs($pr-$prp)*$vp;
 						}
 						else {
-							$pnl = $pnl - abs($qty)*($pr-$prp)*$vp;
+							$pnl = $pnl - abs($qty)*abs($pr-$prp)*$vp;
 						}
 						$b[$date]['quantity'] = $qtyp + $qty;
 						$qty = 0;
 						break;
 					}
 				}
+				
+				//echo debug(array('status'=>'atfer\\\\\\\\\\\\\\\\\\\\\\\\\\','qty'=>$qty, 'pr'=>$pr, 'vp'=>$vp, 'qtyp'=>$qtyp, 'prp'=>$prp, 'pnl'=>$pnl));
+				
 			}
 			
 			if ($qty <> 0) {

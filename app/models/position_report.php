@@ -67,7 +67,7 @@ class PositionReport extends AppModel {
 					return (array(false, 'Problem with FIFO calculation, operation aborted '));
 				}
 				$mvlocal = $pnl;
-				$mvusd = $pnl * $fxrate;
+				$mvusd = $pnl * $fxrate;				
 			}
 			
 			//save this record to the database
