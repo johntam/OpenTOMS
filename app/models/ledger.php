@@ -16,7 +16,7 @@ class Ledger extends AppModel {
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
-			'order' => array('Trade.trade_date ASC') 
+			'order' => array('Trade.trade_date ASC', 'Trade.crd ASC') 
 		);
 		
 		//get the date of the previous balance calculation date
@@ -60,6 +60,8 @@ class Ledger extends AppModel {
 		
 		//make inactive all previous ledger entries for this month that are unlocked (the check for the lock occurs in the controller).
 		if ($this->updateAll( array('Ledger.act' => 0), array('Ledger.ledger_date =' => $date, 'Ledger.fund_id =' => $fund, 'Ledger.act =' => 1))) {
+			$last_td = 0;
+			$last_td_crd = 0;
 			foreach ($posts as $post) {
 				$fund = $post['Trade']['fund_id'];
 				$td = $post['Trade']['trade_date'];
@@ -79,7 +81,17 @@ class Ledger extends AppModel {
 				$secid = $post['Sec']['id'];
 				$price = $post['Trade']['execution_price'];
 				$valp = $post['Sec']['valpoint'];
-				$trinv = strtotime($tcrd).':'.$qty.':'.$price.':'.$valp.';';
+				//Get the order right for the trinv so that FIFO etc work properly
+				if (strtotime($td) == $last_td) {
+					$trinv = ($last_td_crd+1).':'.$qty.':'.$price.':'.$valp.';';
+					$last_td_crd += 1;
+				}
+				else {
+					$trinv = strtotime($td).':'.$qty.':'.$price.':'.$valp.';';
+					$last_td_crd = strtotime($td);
+				}
+				$last_td = strtotime($td);
+				//
 				
 				//first line of double-entry
 				if ($debitid > 1) {		//cash

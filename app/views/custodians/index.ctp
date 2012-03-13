@@ -1,6 +1,6 @@
 <!-- File: /app/views/custodians/index.ctp -->
 
-<table style="width: 50%;margin-left:25%;margin-right:25%;">
+<table style="width: 40%;margin-left:30%;margin-right:30%;">
 	<tr>
 		<td>
 			<h1>Custodians</h1>
@@ -8,7 +8,6 @@
 		</td>
 	</tr>
 	<tr>
-		<th style="width: 5%;">Id</th>
 		<th>Custodian Short Name</th>
 		<th>Custodian Long Name</th>
 		<th>Edit</th>
@@ -16,7 +15,6 @@
 
 	<?php foreach ($custodians as $custodian): ?>
 	<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
-		<td><?php echo $custodian['Custodian']['id']; ?></td>
 		<td><?php echo $custodian['Custodian']['custodian_name']; ?></td>
 		<td><?php echo $custodian['Custodian']['custodian_long_name']; ?></td>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $custodian['Custodian']['id']));?></td>

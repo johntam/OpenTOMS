@@ -98,7 +98,7 @@
 		<td style="text-align: right;"><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
 		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>
 		<td style="width: 8%;"><?php echo $trade['Trade']['settlement_date']; ?></td>
-		<td><?php echo $trade['Trade']['execution_price']; ?></td>
+		<td><?php echo number_format($trade['Trade']['execution_price'],4); ?></td>
 		<td><?php echo $trade['Trade']['cancelled']; ?></td>
 		<td><?php echo $trade['Trade']['executed']; ?></td>
 	</tr>

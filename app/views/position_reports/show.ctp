@@ -39,11 +39,11 @@
 			</td>
 			<td style="text-align: right;">
 				<?php if ($position['Sec']['sec_type_id'] > 2) {
-						echo number_format($position['PositionReport']['price'],2);
+						echo number_format($position['PositionReport']['price'],5);
 				}?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo number_format($position['PositionReport']['mkt_val_local'],0); ?>
+				<?php echo number_format($position['PositionReport']['mkt_val_local'],2); ?>
 			</td>
 			<td style="text-align: right;">
 				<?php echo $position['Currency']['currency_iso_code']; ?>
@@ -52,14 +52,14 @@
 				<?php echo number_format($position['PositionReport']['fx_rate'],4); ?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo number_format($position['PositionReport']['mkt_val_usd'],0); 
+				<?php echo number_format($position['PositionReport']['mkt_val_usd'],2); 
 					$totmvusd += $position['PositionReport']['mkt_val_usd']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 		<tr class="total">
 			<td colspan="6"></td>
-			<td style="text-align: right;"><?php echo number_format($totmvusd,0); ?></td>
+			<td style="text-align: right;"><?php echo number_format($totmvusd,2); ?></td>
 		</tr>
 	<?php }; ?>
 </table>

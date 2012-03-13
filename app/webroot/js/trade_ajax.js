@@ -1,4 +1,6 @@
 $(document).ready(function() {
+		$("#TradePrice").val($("#TradePrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
+		$("#TradeExecutionPrice").val($("#TradeExecutionPrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
 		handle_execute_checkbox();		
 		$("#commission_busy").hide();
 		$("#tax_busy").hide();

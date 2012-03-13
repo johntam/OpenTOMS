@@ -32,7 +32,7 @@
 		<tr class="altrow">
 			<td><?php echo $trade['TradeType']['trade_type']; ?></td>
 			<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
-			<td><?php echo $trade['Trade']['price']; ?></td>
+			<td><?php echo number_format($trade['Trade']['price'],4); ?></td>
 			<td><?php echo number_format($trade['Trade']['execution_price'],4); ?></td>
 		</tr>
 	
