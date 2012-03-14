@@ -87,7 +87,7 @@ class LedgersController extends AppController {
 																						'Ledger.ledger_date =' => $date,
 																						'Ledger.act =' => 1,
 																						'Ledger.sec_id >'=> 0), 
-																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
+																	'order'=>array('Ledger.account_id' => 'ASC', 'Ledger.trade_date' => 'ASC'))));
 		}
 		else {
 			$date = $this->data['Ledger']['account_date'];
@@ -105,7 +105,7 @@ class LedgersController extends AppController {
 																						'Ledger.ledger_date =' => $date,
 																						'Ledger.act =' => 1,
 																						'Ledger.sec_id >'=> 0), 
-																	'order'=>'Ledger.account_id ASC, Ledger.trade_date ASC')));
+																	'order'=>array('Ledger.account_id' => 'ASC', 'Ledger.trade_date' => 'ASC'))));
 		}
 	}
 	

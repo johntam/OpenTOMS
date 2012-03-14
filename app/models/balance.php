@@ -72,6 +72,7 @@ class Balance extends AppModel {
 				$ccy = 0;
 				$pnl = 0;
 				$trinv = '';
+				$ref_id = '';
 				foreach ($n2 as $d) {
 					$totdeb += $d['ledger_debit'];
 					$totcred += $d['ledger_credit'];
@@ -79,6 +80,9 @@ class Balance extends AppModel {
 					$ccy = $d['currency_id'];
 					$cfd = $d['cfd'];
 					$tri = $d['trinv'];
+					if (isset($d['ref_id'])) {
+						$ref_id = $ref_id.$d['ref_id'];
+					}
 					
 					if ($acc == 1) {
 						$result = $this->fifo($trinv, $tri);
@@ -90,6 +94,9 @@ class Balance extends AppModel {
 				//process any PnL thrown off this security this month
 				if ($cfd) {
 					//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
+					
+					//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
+					//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
 					if ($pnl > 0) {
 						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
 																				 'ledger_credit'=>0,
@@ -102,21 +109,25 @@ class Balance extends AppModel {
 																					 'quantity'=>0,
 																					 'currency_id'=>$ccy,
 																					 'cfd'=>0,
-																					 'trinv'=>'');
+																					 'trinv'=>'',
+																					 'ref_id'=>
+																								$sec.':'.$cfd.':'.'0'.':'.$pnl.':'.$pnl.';');
 					}
 					else if ($pnl < 0) {
 						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																				 'ledger_credit'=>$pnl,
+																				 'ledger_credit'=>abs($pnl),
 																				 'quantity'=>$pnl,
 																				 'currency_id'=>$ccy,
 																				 'cfd'=>0,
 																				 'trinv'=>'');
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
 																					 'ledger_credit'=>0,
 																					 'quantity'=>0,
 																					 'currency_id'=>$ccy,
 																					 'cfd'=>0,
-																					 'trinv'=>'');
+																					 'trinv'=>'',
+																					 'ref_id'=>
+																								$sec.':'.$cfd.':'.abs($pnl).':'.'0'.':'.$pnl.';');
 					}
 				}
 				else {
@@ -128,16 +139,20 @@ class Balance extends AppModel {
 																					 'quantity'=>0,
 																					 'currency_id'=>$ccy,
 																					 'cfd'=>0,
-																					 'trinv'=>'');
+																					 'trinv'=>'',
+																					 'ref_id'=>
+																								$sec.':'.'0'.':'.$pnl.':'.$pnl.';');
 					}
 					else if ($pnl < 0) {
-						$totcred += $pnl;
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+						$totcred += abs($pnl);
+						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
 																					 'ledger_credit'=>0,
 																					 'quantity'=>0,
 																					 'currency_id'=>$ccy,
 																					 'cfd'=>0,
-																					 'trinv'=>'');
+																					 'trinv'=>'',
+																					 'ref_id'=>
+																								$sec.':'.abs($pnl).':'.'0'.':'.$pnl.';');
 					}
 				}
 				
@@ -155,7 +170,8 @@ class Balance extends AppModel {
 											 'currency_id'=>$ccy,
 											 'balance_quantity'=>$totqty,
 											 'sec_id'=>$sec,
-											 'trinv'=>$trinv);
+											 'trinv'=>$trinv,
+											 'ref_id'=>$ref_id);
 					$this->create($data);
 					$this->save();
 				}

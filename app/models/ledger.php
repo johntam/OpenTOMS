@@ -99,15 +99,23 @@ class Ledger extends AppModel {
 					$qty2 = $cons;
 					$tr2 = '';
 					$ccy2 = $tccy;
-					$cons2 = $cons;
 					$cfd2 = 0;
+					if ($cons > 0) {
+						$cons_debit = $cons;
+						$cons_credit = 0;
+					}
+					else {
+						$cons_debit = 0;
+						$cons_credit = abs($cons);
+					}
 				}
 				else {
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
 					$ccy2 = $ccy;
-					$cons2 = abs($consX);
+					$cons_debit = abs($consX);
+					$cons_credit = 0;
 					$cfd2 = $cfd;
 				}
 				$data = array(	'act' => 1,
@@ -118,13 +126,14 @@ class Ledger extends AppModel {
 								'trade_date' => $td,
 								'trade_id' => $tid,
 								'trade_crd' => $tcrd,
-								'ledger_debit' => $cons2,
-								'ledger_credit' => 0,
+								'ledger_debit' => $cons_debit,
+								'ledger_credit' => $cons_credit,
 								'ledger_cfd' => $cfd2,
 								'currency_id' => $ccy2,
 								'ledger_quantity' => $qty2,
 								'sec_id' => $secid2,
-								'trinv' => $tr2);
+								'trinv' => $tr2,
+								'ref_id' => $secid);	//this is a ref id holding the original security id (used to tag where cash comes from)
 				$this->create($data);
 				$this->save();
 				
@@ -134,20 +143,27 @@ class Ledger extends AppModel {
 					$data['ledger_quantity'] = $cons;
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
-					$data['ledger_credit'] = -$cons;
 					$data['ledger_cfd'] = 0;
+					if ($cons > 0) {
+						$data['ledger_debit'] =  $cons;
+						$data['ledger_credit'] = 0;
+					}
+					else {
+						$data['ledger_debit'] = 0;
+						$data['ledger_credit'] = abs($cons);
+					}
 				}
 				else {
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
 					$data['currency_id'] = $ccy;
+					$data['ledger_debit'] = 0;
 					$data['ledger_credit'] = abs($consX);
 					$data['ledger_cfd'] = $cfd;
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
-				$data['ledger_debit'] = 0;
 				$this->create($data);
 				$this->save();
 				
