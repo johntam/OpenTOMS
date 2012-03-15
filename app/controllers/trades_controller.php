@@ -301,6 +301,20 @@ class TradesController extends AppController {
 		$this->set(compact('data'));
 	}
 	
+	
+	//this function handles the case when we don't immediately know if the trade id we are passing is either an ordinary trade ID or an OID
+	function viewSafe($id) {
+		$oid = $this->Trade->read('oid', $id);
+		$oid = $oid['Trade']['oid'];
+		if ($oid <> $id) {
+			$this->redirect(array('action' => 'view', $oid));
+		}
+		else {
+			$this->redirect(array('action' => 'view', $id));
+		}
+	}
+	
+	
 	function setchoices() {
 		//Could be a lot of securities so cache this list
 		if (($secsCACHE = Cache::read('secs')) === false) {

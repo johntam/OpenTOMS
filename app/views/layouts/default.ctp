@@ -71,8 +71,8 @@ show up on all of your views, include it here -->
 					<li><a href="/accounts">Accounting Books</a></li>
 					<li><a href="/TradeTypes">Trade Types</a></li>
 					<li><a href="/ledgers">Journal Posting</a></li>
-					<li><a href="/CashLedgers">Cash Ledgers</a></li>
 					<li><a href="/balances">Lock Balances</a></li>
+					<li><a href="/CashLedgers">Cash Ledgers</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Reports</a><ul>

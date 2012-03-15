@@ -82,9 +82,7 @@
 		<?php echo $this->Form->end(); ?>
 	</tr>
 	
-	<?php if (isset($locked)) { echo '
-	<tr><td><div style="color: red;">This month end is locked</div></td></tr>
-	';} ?>
+	<?php if (isset($message)) { echo '<tr><td colspan="4"><div style="color: red;">'.$message.'</div></td></tr>';} ?>
 	
 </table>	
 

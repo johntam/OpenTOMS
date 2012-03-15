@@ -100,6 +100,11 @@ class BalancesController extends AppController {
 		
 		if ($this->Balance->islocked($fund, $date)) {
 			$this->set('locked', true);
+			$this->set('message', 'This month end is locked');
+		}
+		
+		if ($this->Balance->needsRecalc($fund, $date)) {
+			$this->set('message', 'A newer journal posting has been made. Please rerun the balance calculation to update the cash ledger.');
 		}
 		
 		$this->dropdownchoices();

@@ -53,7 +53,7 @@
 			<?php echo $this->Form->submit('left.png', array('id'=>'leftarrow', 'name'=>'Backdate', 'value' => 'Backdate', 'style'=>'float:left;')); ?>
 			<?php echo $this->Form->submit('right.png', array('id'=>'rightarrow', 'name'=>'Nextdate', 'value' => 'Nextdate', 'style'=>'float:left;')); ?>			
 		</td>
-		<td style="width: 25%;">
+		<td style="width: 20%;">
 			<div class="high">
 				Choose which cash ledger to view
 				<?php echo $this->Form->input('ccy', array('label'=>false, 'options'=>$currencies, 'id'=>'ccypicker')); ?>
@@ -65,7 +65,10 @@
 	</tr>
 </table>
 
-<table style="width: 80%;margin-left:10%;margin-right:10%;" id="maintable">	
+<table style="width: 80%;margin-left:10%;margin-right:10%;" id="maintable">
+
+	<?php if (isset($message)) { echo '<tr><td colspan="6"><div style="color: red;">'.$message.'</div></td></tr>';} ?>
+	
 	<tr>
 		<th>Security</th>
 		<th>Date</th>
@@ -76,22 +79,22 @@
 	</tr>
 		
 	<tr class="high2">
-		<td colspan="2">Balances brought forward</td>
-		<td style="text-align: right"><?php echo number_format($debit,2); ?></td>
-		<td style="text-align: right"><?php echo number_format($credit,2); ?></td>
-		<td style="text-align: right"><?php echo number_format($qty,2); ?></td>
+		<td colspan="2">Balances brought forward<?php if (isset($prevdate)) {echo ' from '.$prevdate;} ?></td>
+		<td style="text-align: right"><?php if (isset($start_debit)) {echo number_format($start_debit,2);} ?></td>
+		<td style="text-align: right"><?php if (isset($start_credit)) {echo number_format($start_credit,2);} ?></td>
+		<td style="text-align: right"><?php if (isset($start_qty)) {echo number_format($start_qty,2);} ?></td>
 		<td></td>
 	</tr>
 	
-	<?php if (!empty($cashledgers)) { ?>
-	<?php $totdebits = $debit; $totcredits = $credit; $totqty = $qty; ?>
+	<?php if (isset($cashledgers)) { ?>
+	<?php $totdebits = (isset($start_debit))?$start_debit:0; $totcredits = (isset($start_credit))?$start_credit:0; $totqty = (isset($start_qty))?$start_qty:0; ?>
 	
 	<?php foreach ($cashledgers as $cashledger): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
 				<?php echo $cashledger['Sec2']['sec_name']; ?>
 			</td>
-			<td>
+			<td style="text-align: center">
 				<?php echo $cashledger['CashLedger']['trade_date']; ?>
 			</td>
 			<td style="text-align: right">
@@ -107,7 +110,7 @@
 				<?php $totqty += $cashledger['CashLedger']['ledger_quantity']; ?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo $this->Html->link($cashledger['Trade']['oid'], array('controller' => 'trades', 'action' => 'view',$cashledger['Trade']['oid']), array('escape' => false, 'target' => '_blank')); ?>
+				<?php echo $this->Html->link($cashledger['Trade']['id'], array('controller' => 'trades', 'action' => 'viewSafe',$cashledger['Trade']['id']), array('escape' => false, 'target' => '_blank')); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
@@ -119,8 +122,15 @@
 		<td></td>
 	</tr>
 	
-	<?php } else {
-				echo '<tr class="high2"><td colspan="9">No cash journal entries posted for this date</td></tr>';
-			} ?>
+	<?php } ?>
+	
+	<tr class="altrow">
+		<td colspan="2">Balances calculated on Lock Balance screen</td>
+		<td style="text-align: right"><?php if (isset($end_debit)) {echo number_format($end_debit,2);} ?></td>
+		<td style="text-align: right"><?php if (isset($end_credit)) {echo number_format($end_credit,2);} ?></td>
+		<td style="text-align: right"><?php if (isset($end_qty)) {echo number_format($end_qty,2);} ?></td>
+		<td></td>
+	</tr>
+	
 </table>
 <div id='pleasewait' style='display: none; color: red; width: 80%;margin-left:10%;margin-right:10%;'>Please wait...</div>

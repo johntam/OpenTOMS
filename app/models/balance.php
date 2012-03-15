@@ -45,7 +45,9 @@ class Balance extends AppModel {
 																					'quantity'=>$l['Ledger']['ledger_quantity'],
 																					'currency_id'=>$l['Ledger']['currency_id'],
 																					'cfd'=>$l['Ledger']['ledger_cfd'],
-																					'trinv'=>$l['Ledger']['trinv']);
+																					'trinv'=>$l['Ledger']['trinv'],
+																					'trade_date'=>$l['Ledger']['trade_date'],
+																					'trade_id'=>$l['Ledger']['trade_id']);
 		}
 		
 		ksort($newbal);	//make sure that the stock book (id=1) is the first to be processed, throw pnl off to the cash book below
@@ -83,76 +85,89 @@ class Balance extends AppModel {
 					if (isset($d['ref_id'])) {
 						$ref_id = $ref_id.$d['ref_id'];
 					}
+					if (isset($d['trade_date'])) {
+						$td = $d['trade_date'];
+					}
+					else {
+						$td = null;
+					}
+					if (isset($d['trade_id'])) {
+						$tid = $d['trade_id'];
+					}
+					else {
+						$tid = null;
+					}
 					
+					//only work out realised P&L for securities, not cash
 					if ($acc == 1) {
 						$result = $this->fifo($trinv, $tri);
-						$pnl = $pnl + $result[0];
+						$pnl = $result[0];
 						$trinv = $result[1];
-					}
-				}	
-				
-				//process any PnL thrown off this security this month
-				if ($cfd) {
-					//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
-					
-					//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
-					//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
-					if ($pnl > 0) {
-						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
-																				 'ledger_credit'=>0,
-																				 'quantity'=>$pnl,
-																				 'currency_id'=>$ccy,
-																				 'cfd'=>0,
-																				 'trinv'=>'');
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																					 'ledger_credit'=>$pnl,
-																					 'quantity'=>0,
-																					 'currency_id'=>$ccy,
-																					 'cfd'=>0,
-																					 'trinv'=>'',
-																					 'ref_id'=>
-																								$sec.':'.$cfd.':'.'0'.':'.$pnl.':'.$pnl.';');
-					}
-					else if ($pnl < 0) {
-						$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																				 'ledger_credit'=>abs($pnl),
-																				 'quantity'=>$pnl,
-																				 'currency_id'=>$ccy,
-																				 'cfd'=>0,
-																				 'trinv'=>'');
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
-																					 'ledger_credit'=>0,
-																					 'quantity'=>0,
-																					 'currency_id'=>$ccy,
-																					 'cfd'=>0,
-																					 'trinv'=>'',
-																					 'ref_id'=>
-																								$sec.':'.$cfd.':'.abs($pnl).':'.'0'.':'.$pnl.';');
-					}
-				}
-				else {
-					//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
-					if ($pnl > 0) {
-						$totdeb += $pnl;
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																					 'ledger_credit'=>$pnl,
-																					 'quantity'=>0,
-																					 'currency_id'=>$ccy,
-																					 'cfd'=>0,
-																					 'trinv'=>'',
-																					 'ref_id'=>
-																								$sec.':'.'0'.':'.$pnl.':'.$pnl.';');
-					}
-					else if ($pnl < 0) {
-						$totcred += abs($pnl);
-						$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
-																					 'ledger_credit'=>0,
-																					 'quantity'=>0,
-																					 'currency_id'=>$ccy,
-																					 'cfd'=>0,
-																					 'trinv'=>'',
-																					 'ref_id'=>
-																								$sec.':'.abs($pnl).':'.'0'.':'.$pnl.';');
+						
+						//process any PnL thrown off this security this month
+						if ($cfd) {
+							//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
+							
+							//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
+							//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
+							if ($pnl > 0) {
+								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+																						 'ledger_credit'=>0,
+																						 'quantity'=>$pnl,
+																						 'currency_id'=>$ccy,
+																						 'cfd'=>0,
+																						 'trinv'=>'');
+								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																							 'ledger_credit'=>$pnl,
+																							 'quantity'=>0,
+																							 'currency_id'=>$ccy,
+																							 'cfd'=>0,
+																							 'trinv'=>'',
+																							 'ref_id'=>
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.';');
+							}
+							else if ($pnl < 0) {
+								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																						 'ledger_credit'=>abs($pnl),
+																						 'quantity'=>$pnl,
+																						 'currency_id'=>$ccy,
+																						 'cfd'=>0,
+																						 'trinv'=>'');
+								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+																							 'ledger_credit'=>0,
+																							 'quantity'=>0,
+																							 'currency_id'=>$ccy,
+																							 'cfd'=>0,
+																							 'trinv'=>'',
+																							 'ref_id'=>
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.';');
+							}
+						}
+						else {
+							//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
+							if ($pnl > 0) {
+								$totdeb += $pnl;
+								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																							 'ledger_credit'=>$pnl,
+																							 'quantity'=>0,
+																							 'currency_id'=>$ccy,
+																							 'cfd'=>0,
+																							 'trinv'=>'',
+																							 'ref_id'=>
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.';');
+							}
+							else if ($pnl < 0) {
+								$totcred += abs($pnl);
+								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+																							 'ledger_credit'=>0,
+																							 'quantity'=>0,
+																							 'currency_id'=>$ccy,
+																							 'cfd'=>0,
+																							 'trinv'=>'',
+																							 'ref_id'=>
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.';');
+							}
+						}
 					}
 				}
 				
@@ -366,10 +381,54 @@ class Balance extends AppModel {
 	}
 	
 	
+	//check to see if there is a balance calculation for the given date
+	function balanceExists($fund, $date) {
+		$count = $this->find('count', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date =' => $date, 'Balance.act ='=>1)));
+		if ($count > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	
+	//check to see if a more recent journal posting has happened since a balance calculation
+	function needsRecalc($fund, $date) {
+		App::import('model','Ledger');
+		$ledger = new Ledger();
+		
+		$lcrd = $ledger->find('first', array('conditions'=>array('Ledger.fund_id ='=>$fund, 'Ledger.ledger_date =' => $date, 'Ledger.act ='=>1)));
+		if (empty($lcrd)) {
+			return false;	//no journal for this date so balance calc must be up to date
+		}
+		else {
+			$lcrd = strtotime($lcrd['Ledger']['crd']);
+		}
+	
+		$bcrd = $this->find('first', array('conditions'=>array('Balance.fund_id ='=>$fund, 'Balance.balance_date =' => $date, 'Balance.act ='=>1)));
+		if (empty($bcrd)) {
+			return true;	//no balance records found, but a journal posting exists for this date, ergo balance not up to date
+		}
+		else {
+			$bcrd = strtotime($bcrd['Balance']['crd']);
+			if ($bcrd > $lcrd) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	
+	}
+	
+	
 	//this function processes a new trade against a base sequence of historic trades using the fifo convention
 	function fifo($base, $new) {
 		$b = $this->decode($base);
 		$n = $this->decode($new);
+		ksort($b);
+		ksort($n);
 		
 		$pnl = 0;
 		foreach ($n as $dt=>$m) {
@@ -450,7 +509,26 @@ class Balance extends AppModel {
 				$arr[$sp3[0]] = array('quantity'=>$sp3[1], 'price'=>$sp3[2], 'valpoint'=>$sp3[3]);
 			}
 		}
-		ksort($arr);
+		return $arr;
+	}
+	
+	//converts a string in the "ref_id" format into an array
+	//used by the CashLedger controller
+	function decodeRefID($ref_id) {
+		$arr = array();
+		$sp1 = explode(";", $ref_id);
+		foreach ($sp1 as $sp2) {
+			if (!empty($sp2)) {
+				$sp3 = explode(':', "$sp2::::::");
+				$arr[] = array(	'sec_id'=>$sp3[0],
+								'cfd'=>$sp3[1],
+								'trade_id'=>$sp3[2],
+								'trade_date'=>$sp3[3],
+								'debit'=>$sp3[4], 
+								'credit'=>$sp3[5], 
+								'quantity'=>$sp3[6]);
+			}
+		}
 		return $arr;
 	}
 }

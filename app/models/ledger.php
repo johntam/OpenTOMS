@@ -83,11 +83,11 @@ class Ledger extends AppModel {
 				$valp = $post['Sec']['valpoint'];
 				//Get the order right for the trinv so that FIFO etc work properly
 				if (strtotime($td) == $last_td) {
-					$trinv = ($last_td_crd+1).':'.$qty.':'.$price.':'.$valp.';';
+					$trinv = ($last_td_crd+1).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$qty).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$valp).';';
 					$last_td_crd += 1;
 				}
 				else {
-					$trinv = strtotime($td).':'.$qty.':'.$price.':'.$valp.';';
+					$trinv = strtotime($td).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$qty).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$valp).';';
 					$last_td_crd = strtotime($td);
 				}
 				$last_td = strtotime($td);
