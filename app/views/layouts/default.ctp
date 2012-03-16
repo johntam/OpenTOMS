@@ -70,6 +70,7 @@ show up on all of your views, include it here -->
 				<ul>
 					<li><a href="/accounts">Accounting Books</a></li>
 					<li><a href="/TradeTypes">Trade Types</a></li>
+					<li><a href="/journals">Journal Entry</a></li>
 					<li><a href="/ledgers">Journal Posting</a></li>
 					<li><a href="/balances">Lock Balances</a></li>
 					<li><a href="/CashLedgers">Cash Ledgers</a></li>
