@@ -118,6 +118,9 @@
 				<?php 	if (($balance['Account']['id'] == 1) && ($balance['Sec']['sec_type_id'] <> 2)) {
 							//No fx rate for non-cash securities
 						}
+						else if ($balance['Balance']['balance_quantity'] == 0) {
+							//No pricing for zero holdings
+						}
 						else if (empty($balance['PriceFX']['fx_rate'])) {
 									echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
 										"' value='missing' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
@@ -137,6 +140,9 @@
 			<td style="text-align: right">
 				<?php 	if ($balance['Account']['id'] > 1) {
 							//No price allowed for cash books
+						}
+						else if ($balance['Balance']['balance_quantity'] == 0) {
+							//No pricing for zero holdings
 						}
 						else if ($balance['Sec']['sec_type_id'] == 2) {
 							//No price allowed for cash securities in non-cash books either

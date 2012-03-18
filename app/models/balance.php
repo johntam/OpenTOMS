@@ -47,7 +47,8 @@ class Balance extends AppModel {
 																					'cfd'=>$l['Ledger']['ledger_cfd'],
 																					'trinv'=>$l['Ledger']['trinv'],
 																					'trade_date'=>$l['Ledger']['trade_date'],
-																					'trade_id'=>$l['Ledger']['trade_id']);
+																					'trade_id'=>$l['Ledger']['trade_id'],
+																					'settlement_date'=>$l['Ledger']['settlement_date']);
 		}
 		
 		ksort($newbal);	//make sure that the stock book (id=1) is the first to be processed, throw pnl off to the cash book below
@@ -97,6 +98,12 @@ class Balance extends AppModel {
 					else {
 						$tid = null;
 					}
+					if (isset($d['settlement_date'])) {
+						$sd = $d['settlement_date'];
+					}
+					else {
+						$sd = null;
+					}
 					
 					//only work out realised P&L for securities, not cash
 					if ($acc == 1) {
@@ -124,7 +131,7 @@ class Balance extends AppModel {
 																							 'cfd'=>0,
 																							 'trinv'=>'',
 																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.';');
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
 							else if ($pnl < 0) {
 								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
@@ -140,7 +147,7 @@ class Balance extends AppModel {
 																							 'cfd'=>0,
 																							 'trinv'=>'',
 																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.';');
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
 						}
 						else {
@@ -154,7 +161,7 @@ class Balance extends AppModel {
 																							 'cfd'=>0,
 																							 'trinv'=>'',
 																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.';');
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
 							else if ($pnl < 0) {
 								$totcred += abs($pnl);
@@ -165,7 +172,7 @@ class Balance extends AppModel {
 																							 'cfd'=>0,
 																							 'trinv'=>'',
 																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.';');
+																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
 						}
 					}
@@ -519,14 +526,15 @@ class Balance extends AppModel {
 		$sp1 = explode(";", $ref_id);
 		foreach ($sp1 as $sp2) {
 			if (!empty($sp2)) {
-				$sp3 = explode(':', "$sp2::::::");
+				$sp3 = explode(':', "$sp2:::::::");
 				$arr[] = array(	'sec_id'=>$sp3[0],
 								'cfd'=>$sp3[1],
 								'trade_id'=>$sp3[2],
 								'trade_date'=>$sp3[3],
 								'debit'=>$sp3[4], 
 								'credit'=>$sp3[5], 
-								'quantity'=>$sp3[6]);
+								'quantity'=>$sp3[6],
+								'settlement_date'=>$sp3[7]);
 			}
 		}
 		return $arr;

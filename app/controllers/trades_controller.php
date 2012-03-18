@@ -4,7 +4,7 @@ class TradesController extends AppController {
 	var $funds = array();
 	
 	function index($pass = null) {
-		$this->paginate = array(
+		$this->paginate = array('conditions' => array('TradeType.category =' => 'Trading'),
 								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
 														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.trade_date','Trade.settlement_date',
 														'Trade.execution_price','Trade.cancelled','Trade.executed'),

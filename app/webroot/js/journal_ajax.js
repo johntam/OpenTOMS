@@ -1,9 +1,17 @@
 $(document).ready(function() {
-	$(document).ready(function() {
-		$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd' });
+	var lockeddate = $('#lockeddate').val();
+	$('#dateinput').datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date(lockeddate) });
 		
+	showHistory();
+	
+	$('#fundpicker').change(function() {
+		$('#journal_history').html('');
 		showHistory();
-		
+	});
+	
+	$('#ttpicker').change(function() {
+		$('#journal_history').html('');
+		showHistory();
 	});
 	
 	function showHistory() {

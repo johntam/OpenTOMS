@@ -250,6 +250,9 @@ table .highlight td {
 table .high2 td {
 	background: #EDBEED;
 }
+table .highred td {
+	background: #FC8981;
+}
 td.actions {
 	text-align: center;
 	white-space: nowrap;

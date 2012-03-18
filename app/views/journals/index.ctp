@@ -18,13 +18,13 @@
 			<?php echo $this->Form->input('account_date', array('label'=>false, 'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'), 'style'=>'float: left;')); ?>
 		</td>
 		<td>
-			<?php echo $this->Form->input('trade_type_id', array('label'=>false, 'options'=>$tradeTypes)); ?>
+			<?php echo $this->Form->input('trade_type_id', array('label'=>false, 'options'=>$tradeTypes, 'id'=>'ttpicker')); ?>
 		</td>
 		<td>
-			<?php echo $this->Form->input('quantity', array('label'=>false)); ?>
+			<?php echo $this->Form->input('quantity', array('label'=>false, 'id'=>'quantitypicker')); ?>
 		</td>
 		<td>
-			<?php echo $this->Form->input('currency_id', array('label'=>false, 'options'=>$currencies)); ?>
+			<?php echo $this->Form->input('currency_id', array('label'=>false, 'options'=>$currencies, 'id'=>'currencypicker')); ?>
 		</td>
 		<td>
 			<?php echo $this->Form->end('Post'); ?>

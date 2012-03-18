@@ -15,8 +15,31 @@ class Ledger extends AppModel {
 								 ),
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
-							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 'Sec.currency_id'),
-			'order' => array('Trade.trade_date ASC', 'Trade.crd ASC') 
+							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 
+							'Sec.currency_id', 'Debit.account_type', 'Credit.account_type', 'Trade.settlement_date'),
+			'joins' => array(	array('table'=>'trade_types',
+									  'alias'=>'TradeType2',
+									  'type'=>'inner',
+									  'foreignKey'=>false,
+									  'conditions'=>
+											array(	'TradeType2.id=Trade.trade_type_id')
+									  ),
+								array('table'=>'accounts',
+									  'alias'=>'Debit',
+									  'type'=>'inner',
+									  'foreignKey'=>false,
+									  'conditions'=>
+											array(	'Debit.id=TradeType2.debit_account_id')
+									  ),
+								array('table'=>'accounts',
+									  'alias'=>'Credit',
+									  'type'=>'inner',
+									  'foreignKey'=>false,
+									  'conditions'=>
+											array(	'Credit.id=TradeType2.credit_account_id')
+									  )
+								),
+			'order' => array('Trade.trade_date ASC', 'Trade.crd ASC')
 		);
 		
 		//get the date of the previous balance calculation date
@@ -43,6 +66,7 @@ class Ledger extends AppModel {
 							'account_id' => 1,	//cash
 							'ledger_date' => $date,
 							'trade_date' => $date,
+							'settlement_date' => $date,
 							'trade_id' => 0,
 							'trade_crd' => DboSource::expression('NOW()'),
 							'ledger_debit' => 0,
@@ -64,7 +88,10 @@ class Ledger extends AppModel {
 			$last_td_crd = 0;
 			foreach ($posts as $post) {
 				$fund = $post['Trade']['fund_id'];
+				$debitacctype = $post['Debit']['account_type'];
+				$creditacctype = $post['Credit']['account_type'];
 				$td = $post['Trade']['trade_date'];
+				$sd = $post['Trade']['settlement_date'];
 				$tid = $post['Trade']['id'];
 				$ttid = $post['Trade']['trade_type_id'];
 				$tcrd = $post['Trade']['crd'];
@@ -93,30 +120,31 @@ class Ledger extends AppModel {
 				$last_td = strtotime($td);
 				//
 				
-				//first line of double-entry
-				if ($debitid > 1) {		//cash
+				//first line of double-entry, doing the DEBIT side
+				if ($debitid > 1) {		//cash type account
 					$secid2 = $this->Currency->getsecid($tccy);
 					$qty2 = $cons;
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cfd2 = 0;
-					if ($cons > 0) {
-						$cons_debit = $cons;
+					//if (($debitid == 2) && ($debitacctype == 'Assets') || ($debitacctype == 'Expenses'))  {
+						$cons_debit = abs($cons);
 						$cons_credit = 0;
-					}
-					else {
-						$cons_debit = 0;
-						$cons_credit = abs($cons);
-					}
+					//}
+					//else {
+					//	$cons_debit = 0;
+					//	$cons_credit = abs($cons);
+					//}
 				}
-				else {
+				else {	//special case of stocks
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
 					$ccy2 = $ccy;
+					$cfd2 = $cfd;
+					////
 					$cons_debit = abs($consX);
 					$cons_credit = 0;
-					$cfd2 = $cfd;
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -124,6 +152,7 @@ class Ledger extends AppModel {
 								'account_id' => $debitid,
 								'ledger_date' => $date,
 								'trade_date' => $td,
+								'settlement_date' => $sd,
 								'trade_id' => $tid,
 								'trade_crd' => $tcrd,
 								'ledger_debit' => $cons_debit,
@@ -137,30 +166,31 @@ class Ledger extends AppModel {
 				$this->create($data);
 				$this->save();
 				
-				//second line of double-entry
+				//second line of double-entry, doing the CREDIT side
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($tccy);
 					$data['ledger_quantity'] = $cons;
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
 					$data['ledger_cfd'] = 0;
-					if ($cons > 0) {
-						$data['ledger_debit'] =  $cons;
-						$data['ledger_credit'] = 0;
-					}
-					else {
-						$data['ledger_debit'] = 0;
+					//if (($creditid == 2) && ($creditacctype == 'Assets') || ($creditacctype == 'Expenses')) {
+						$data['ledger_debit'] =  0;
 						$data['ledger_credit'] = abs($cons);
-					}
+					//}
+					//else {
+					//	$data['ledger_debit'] = abs($cons);
+					//	$data['ledger_credit'] = 0;
+					//}
 				}
-				else {
+				else {	//special case of stocks
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
 					$data['currency_id'] = $ccy;
+					$data['ledger_cfd'] = $cfd;
+					////
 					$data['ledger_debit'] = 0;
 					$data['ledger_credit'] = abs($consX);
-					$data['ledger_cfd'] = $cfd;
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
@@ -175,10 +205,11 @@ class Ledger extends AppModel {
 					$data['trinv'] = '';
 					$data['crd'] = DboSource::expression('NOW()');
 					$data['account_id'] = $trad_cost_acc_id;
-					$data['ledger_debit'] = abs($trading_costs);
-					$data['ledger_credit'] = 0;
 					$data['ledger_cfd'] = 0;
 					$data['currency_id'] = $tccy;
+					////
+					$data['ledger_debit'] = abs($trading_costs);
+					$data['ledger_credit'] = 0;
 					$this->create($data);
 					$this->save();
 				}
