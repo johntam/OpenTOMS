@@ -64,6 +64,7 @@ class CashLedgersController extends AppController {
 		}
 		else {
 			$this->set('cashledgers', $this->CashLedger->getCash($fund, $date, $ccy));
+			$this->set('thisdate', $date);
 			
 			//get the balances calculated at the end date from the balances table
 			list($end_debit, $end_credit, $end_qty) = $this->CashLedger->carry_forward($fund, $date, $ccy);

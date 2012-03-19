@@ -79,7 +79,7 @@
 	</tr>
 		
 	<tr class="high2">
-		<td colspan="2">Balances brought forward<?php if (isset($prevdate)) {echo ' from '.$prevdate;} ?></td>
+		<td colspan="2">Settled balances<?php if (isset($prevdate)) {echo ' as at '.$prevdate;} ?></td>
 		<td style="text-align: right"><?php if (isset($start_debit)) {echo number_format($start_debit,2);} ?></td>
 		<td style="text-align: right"><?php if (isset($start_credit)) {echo number_format($start_credit,2);} ?></td>
 		<td style="text-align: right"><?php if (isset($start_qty)) {echo number_format($start_qty,2);} ?></td>
@@ -125,7 +125,7 @@
 	<?php } ?>
 	
 	<tr class="altrow">
-		<td colspan="2">Balances calculated on Lock Balance screen</td>
+		<td colspan="2">Settled balances<?php if (isset($thisdate)) {echo ' as at '.$thisdate;} ?></td>
 		<td style="text-align: right"><?php if (isset($end_debit)) {echo number_format($end_debit,2);} ?></td>
 		<td style="text-align: right"><?php if (isset($end_credit)) {echo number_format($end_credit,2);} ?></td>
 		<td style="text-align: right"><?php if (isset($end_qty)) {echo number_format($end_qty,2);} ?></td>
