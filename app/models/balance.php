@@ -36,7 +36,8 @@ class Balance extends AppModel {
 																					'quantity'=>$b['Balance']['balance_quantity'],
 																					'currency_id'=>$b['Balance']['currency_id'],
 																					'cfd'=>$b['Balance']['balance_cfd'],
-																					'trinv'=>$b['Balance']['trinv']);
+																					'trinv'=>$b['Balance']['trinv'],
+																					'unsettled'=>$b['Balance']['unsettled']);
 		}
 				
 		foreach ($ledgdata as $l) {
@@ -76,6 +77,7 @@ class Balance extends AppModel {
 				$pnl = 0;
 				$trinv = '';
 				$ref_id = '';
+				$unsettled = '';
 				foreach ($n2 as $d) {
 					$totdeb += $d['ledger_debit'];
 					$totcred += $d['ledger_credit'];
@@ -84,7 +86,8 @@ class Balance extends AppModel {
 					$cfd = $d['cfd'];
 					$tri = $d['trinv'];
 					if (isset($d['ref_id'])) {
-						$ref_id = $ref_id.$d['ref_id'];
+						$ref_id .= $d['ref_id'];
+						$unsettled .= $d['ref_id'];	//remove the settled trades later on
 					}
 					if (isset($d['trade_date'])) {
 						$td = $d['trade_date'];
@@ -104,6 +107,10 @@ class Balance extends AppModel {
 					else {
 						$sd = null;
 					}
+					if (isset($d['unsettled'])) {
+						$unsettled .= $d['unsettled'];
+					}
+					
 					
 					//only work out realised P&L for securities, not cash
 					if ($acc == 1) {
@@ -130,8 +137,7 @@ class Balance extends AppModel {
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>0,
 																							 'trinv'=>'',
-																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
+																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
 							else if ($pnl < 0) {
 								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
@@ -146,8 +152,7 @@ class Balance extends AppModel {
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>0,
 																							 'trinv'=>'',
-																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
+																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
 						}
 						else {
@@ -160,8 +165,7 @@ class Balance extends AppModel {
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>0,
 																							 'trinv'=>'',
-																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
+																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
 							else if ($pnl < 0) {
 								$totcred += abs($pnl);
@@ -171,12 +175,27 @@ class Balance extends AppModel {
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>0,
 																							 'trinv'=>'',
-																							 'ref_id'=>
-																										$sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
+																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
 						}
 					}
 				}
+				
+				
+				//For the unsettled field entry, remove any trades that have settled this month.
+				//This field is used by the CashLedger model to add back in any unsettled trades into
+				//the cash figures.
+				$still_unsettled = '';
+				$sp1 = explode(";", $unsettled);
+				foreach ($sp1 as $sp2) {
+					if (!empty($sp2)) {
+						$sp3 = explode(':', "$sp2:::::::");
+						if (strtotime($sp3[7]) > strtotime($date)) {	//$sp3[7] is the settlement date
+							$still_unsettled .= $sp2.';';
+						}
+					}
+				}
+				
 				
 				//write this result line to the database, only if the position is non-zero though
 				if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
@@ -193,7 +212,8 @@ class Balance extends AppModel {
 											 'balance_quantity'=>$totqty,
 											 'sec_id'=>$sec,
 											 'trinv'=>$trinv,
-											 'ref_id'=>$ref_id);
+											 'ref_id'=>$ref_id,
+											 'unsettled'=>$still_unsettled);
 					$this->create($data);
 					$this->save();
 				}

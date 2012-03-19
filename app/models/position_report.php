@@ -19,7 +19,7 @@ class PositionReport extends AppModel {
 		
 		//check to see if there are any missing prices or fx rates
 		foreach ($baldata as $b) {
-			if (empty($b['Price']['price']) || empty($b['PriceFX']['fx_rate'])) {
+			if ((empty($b['Price']['price']) || empty($b['PriceFX']['fx_rate'])) && ($b['Balance']['balance_quantity'] <> 0)) {
 				$missing = true;
 			}
 		}
