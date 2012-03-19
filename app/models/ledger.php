@@ -123,7 +123,12 @@ class Ledger extends AppModel {
 				//first line of double-entry, doing the DEBIT side
 				if ($debitid > 1) {		//cash type account
 					$secid2 = $this->Currency->getsecid($tccy);
-					$qty2 = $cons;
+					if ($debitid == 2) {
+						$qty2 = $cons;	//only cash book itself has a quantity
+					}
+					else {
+						$qty2 = 0;
+					}
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cfd2 = 0;
@@ -169,7 +174,12 @@ class Ledger extends AppModel {
 				//second line of double-entry, doing the CREDIT side
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($tccy);
-					$data['ledger_quantity'] = $cons;
+					if ($creditid == 2) {
+						$data['ledger_quantity'] = $cons; //only cash book itself has a quantity
+					}
+					else {
+						$data['ledger_quantity'] = 0;
+					}
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
 					$data['ledger_cfd'] = 0;
