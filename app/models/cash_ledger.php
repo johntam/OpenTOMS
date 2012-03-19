@@ -37,7 +37,7 @@ class CashLedger extends AppModel {
 			$credit = $credit - $u['CashLedger']['ledger_credit'];
 			$quantity = $quantity - $u['CashLedger']['ledger_quantity'];
 		}
-		
+				
 		//now add back any realised P&L from cfd type instruments which have not settle yet at this $date
 		//this information is held in the "unsettled" field in the balances table which stores all the
 		//prior trades which are unsettled as of balance_date
@@ -46,13 +46,13 @@ class CashLedger extends AppModel {
 																	'Balance.balance_date ='=>$date,
 																	'Balance.account_id ='=>$pnl_acc__id,
 																	'Balance.currency_id ='=>$ccy), 
-												'fields'=>array('Balance.unsettled')));
+												'fields'=>array('Balance.unsettled')));	
 		
 		if (!empty($result)) {
 			$unsettled = $balmodel->decodeRefID($result[0]['Balance']['unsettled']);
 			foreach ($unsettled as $u) {
-				$debit = $debit - $u['debit'];
-				$credit = $credit - $u['credit'];
+				$debit = $debit - $u['credit'];	//swap debit and credit as P&L account has opposite Db/Cr entry to cash account.
+				$credit = $credit - $u['debit'];
 				$quantity = $quantity - $u['quantity'];
 			}
 		}
@@ -63,6 +63,8 @@ class CashLedger extends AppModel {
 	
 	//work out the cash ledger entries, also combining in any realised PnL for cfd type instruments
 	function getCash($fund, $date, $ccy) {
+		App::import('model','Balance');
+		$balmodel = new Balance();
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
 		
@@ -93,13 +95,57 @@ class CashLedger extends AppModel {
 																			array(	'CashLedger.ref_id=Sec2.id')
 																	  ))));
 		
+		//add on the non-cfd trades which settle after the previous balance calculation date
+		$prevdate = $balmodel->getPrevBalanceDate($fund, $date);
+		if (!empty($prevdate)) {
+			$unsettled = $this->getUnsettled($fund, $prevdate, $ccy);
+			//change the trade date to the settlement date for each of these trades
+			foreach ($unsettled as &$u) {
+				$u['CashLedger']['trade_date'] = $u['CashLedger']['settlement_date'];
+			}
+						
+			
+			$cashdata = array_merge($cashdata, $unsettled);
+			
+
+			
+			//add in any cfd-type trades which settle after the previous balance date
+			//this information is held in the "unsettled" field in the balances table which stores all the
+			//prior trades which are unsettled as of the balance_date
+			$result = $balmodel->find('all', array( 'conditions'=>array('Balance.act ='=>1,
+																		'Balance.fund_id ='=>$fund,
+																		'Balance.balance_date ='=>$prevdate,
+																		'Balance.account_id ='=>$pnl_acc__id,
+																		'Balance.currency_id ='=>$ccy), 
+													'fields'=>array('Balance.unsettled')));
+			
+			
+			
+			if (!empty($result)) {
+				$unsettled = $balmodel->decodeRefID($result[0]['Balance']['unsettled']);
+				
+				
+				
+				foreach ($unsettled as $n) {
+					$sec_name = $this->Sec->read('sec_name', $n['sec_id']);
+					$sec_name = $sec_name['Sec']['sec_name'];
+					$cashdata[] = array('CashLedger' => array('trade_date'=>$n['settlement_date'],	//put the trade date equal to the settlement date, if this date is after $date, then it will be truncated near the end
+															  'settlement_date'=>$n['settlement_date'],
+															  'ledger_debit'=>$n['credit'],	//debits and credits are swapped around because the P&L account where these numbers
+															  'ledger_credit'=>$n['debit'],	//come from is an expense type account whereas Cash is an asset type account
+															  'ledger_quantity'=>$n['quantity']),
+										'Trade' =>		array('id' => $n['trade_id']),
+										'Sec2' =>		array('sec_name' => $sec_name));
+				}
+				
+				
+				
+			}
+		}
 		
 		
 		
 		
-		//add on the unsettled trades at the start of the period (i.e. at the previous balance calculation date)
-		App::import('model','Balance');
-		$balmodel = new Balance();
 		
 		/*
 		$prevdate = $balmodel->getPrevBalanceDate($fund, $date);
@@ -154,6 +200,9 @@ class CashLedger extends AppModel {
 		}
 		
 		//remove all entries with trade date after $date (these were created by the getUnsettled function
+
+		
+		
 		foreach ($cashdata as $key=>$c) {
 			if (strtotime($c['CashLedger']['trade_date']) > strtotime($date)) {
 				unset($cashdata[$key]);
@@ -189,9 +238,14 @@ class CashLedger extends AppModel {
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		
 		//get the unsettled trades
-		$cashdata = $this->find('all', array( 	'fields'=>array('CashLedger.ledger_debit',
+		$cashdata = $this->find('all', array( 	'fields'=>array('CashLedger.trade_date',
+																'CashLedger.settlement_date',
+																'CashLedger.ledger_debit',
 																'CashLedger.ledger_credit',
-																'CashLedger.ledger_quantity'),
+																'CashLedger.ledger_quantity',
+																'CashLedger.ledger_date',
+																'Trade.id',
+																'Sec2.sec_name'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $cash_acc_id,
 																	'AND'=>array('CashLedger.trade_date <=' => $date,

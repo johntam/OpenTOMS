@@ -87,7 +87,9 @@ class Balance extends AppModel {
 					$tri = $d['trinv'];
 					if (isset($d['ref_id'])) {
 						$ref_id .= $d['ref_id'];
-						$unsettled .= $d['ref_id'];	//remove the settled trades later on
+						if ($cfd == 1) {
+							$unsettled .= $d['ref_id'];	//remove the settled trades later on
+						}
 					}
 					if (isset($d['trade_date'])) {
 						$td = $d['trade_date'];
@@ -129,13 +131,13 @@ class Balance extends AppModel {
 																						 'ledger_credit'=>0,
 																						 'quantity'=>$pnl,
 																						 'currency_id'=>$ccy,
-																						 'cfd'=>0,
+																						 'cfd'=>$cfd,
 																						 'trinv'=>'');
 								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
 																							 'ledger_credit'=>$pnl,
 																							 'quantity'=>0,
 																							 'currency_id'=>$ccy,
-																							 'cfd'=>0,
+																							 'cfd'=>$cfd,
 																							 'trinv'=>'',
 																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
@@ -144,13 +146,13 @@ class Balance extends AppModel {
 																						 'ledger_credit'=>abs($pnl),
 																						 'quantity'=>$pnl,
 																						 'currency_id'=>$ccy,
-																						 'cfd'=>0,
+																						 'cfd'=>$cfd,
 																						 'trinv'=>'');
 								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
 																							 'ledger_credit'=>0,
 																							 'quantity'=>0,
 																							 'currency_id'=>$ccy,
-																							 'cfd'=>0,
+																							 'cfd'=>$cfd,
 																							 'trinv'=>'',
 																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
@@ -163,7 +165,7 @@ class Balance extends AppModel {
 																							 'ledger_credit'=>$pnl,
 																							 'quantity'=>0,
 																							 'currency_id'=>$ccy,
-																							 'cfd'=>0,
+																							 'cfd'=>$cfd,
 																							 'trinv'=>'',
 																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
 							}
@@ -173,7 +175,7 @@ class Balance extends AppModel {
 																							 'ledger_credit'=>0,
 																							 'quantity'=>0,
 																							 'currency_id'=>$ccy,
-																							 'cfd'=>0,
+																							 'cfd'=>$cfd,
 																							 'trinv'=>'',
 																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
 							}
