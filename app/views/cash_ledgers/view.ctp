@@ -110,7 +110,9 @@
 				<?php $totqty += $cashledger['CashLedger']['ledger_quantity']; ?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo $this->Html->link($cashledger['Trade']['id'], array('controller' => 'trades', 'action' => 'viewSafe',$cashledger['Trade']['id']), array('escape' => false, 'target' => '_blank')); ?>
+				<?php if (isset($cashledger['Trade']['id'])) {
+						echo $this->Html->link($cashledger['Trade']['id'], array('controller' => 'trades', 'action' => 'viewSafe',$cashledger['Trade']['id']), array('escape' => false, 'target' => '_blank')); 
+					  } ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

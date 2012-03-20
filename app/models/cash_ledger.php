@@ -75,7 +75,8 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_quantity',
 																'CashLedger.ledger_date',
 																'Trade.id',
-																'Sec2.sec_name'),
+																'Sec2.sec_name',
+																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $cash_acc_id,
 																	'AND'=>array('CashLedger.ledger_date =' => $date,
@@ -100,8 +101,8 @@ class CashLedger extends AppModel {
 		if (!empty($prevdate)) {
 			$unsettled = $this->getUnsettled($fund, $prevdate, $ccy);
 			//change the trade date to the settlement date for each of these trades
-			foreach ($unsettled as &$u) {
-				$u['CashLedger']['trade_date'] = $u['CashLedger']['settlement_date'];
+			foreach ($unsettled as $key=>$u) {
+				$unsettled[$key]['CashLedger']['trade_date'] = $u['CashLedger']['settlement_date'];
 			}
 			$cashdata = array_merge($cashdata, $unsettled);
 			
@@ -118,15 +119,15 @@ class CashLedger extends AppModel {
 			if (!empty($result)) {
 				$unsettled = $balmodel->decodeRefID($result[0]['Balance']['unsettled']);
 				
-				foreach ($unsettled as $n) {
-					$sec_name = $this->Sec->read('sec_name', $n['sec_id']);
+				foreach ($unsettled as $u) {
+					$sec_name = $this->Sec->read('sec_name', $u['sec_id']);
 					$sec_name = $sec_name['Sec']['sec_name'];
-					$cashdata[] = array('CashLedger' => array('trade_date'=>$n['settlement_date'],	//put the trade date equal to the settlement date, if this date is after $date, then it will be truncated near the end
-															  'settlement_date'=>$n['settlement_date'],
-															  'ledger_debit'=>$n['credit'],	//debits and credits are swapped around because the P&L account where these numbers
-															  'ledger_credit'=>$n['debit'],	//come from is an expense type account whereas Cash is an asset type account
-															  'ledger_quantity'=>$n['quantity']),
-										'Trade' =>		array('id' => $n['trade_id']),
+					$cashdata[] = array('CashLedger' => array('trade_date'=>$u['settlement_date'],	//put the trade date equal to the settlement date, if this date is after $date, then it will be truncated near the end
+															  'settlement_date'=>$u['settlement_date'],
+															  'ledger_debit'=>$u['credit'],	//debits and credits are swapped around because the P&L account where these numbers
+															  'ledger_credit'=>$u['debit'],	//come from is an expense type account whereas Cash is an asset type account
+															  'ledger_quantity'=>$u['quantity']),
+										'Trade' =>		array('id' => $u['trade_id']),
 										'Sec2' =>		array('sec_name' => $sec_name));
 				}
 			}
@@ -174,6 +175,21 @@ class CashLedger extends AppModel {
 			}
 		}
 		
+		//for non-trading lines, replace the security name with the account book name to make it clearer
+		foreach ($cashdata as $key=>$c) {
+			if (isset($c['CashLedger']['other_account_id'])) {
+				$other = $c['CashLedger']['other_account_id'];
+				if ($other > 1) {
+					//this must be a non-trading transaction, otherwise the other account would be stocks, i.e. id=1
+					$acc_name = $this->Account->read('account_name', $other);
+					$acc_name = $acc_name['Account']['account_name'];
+					$cashdata[$key]['Sec2']['sec_name'] = $acc_name;
+					//also remove trade id field
+					unset($cashdata[$key]['Trade']['id']);
+				}
+			}
+		}
+		
 		//sort the merged results array by trade date and return back to controller
 		return($this->sortByTradeDate($cashdata));
 	}
@@ -209,7 +225,8 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_quantity',
 																'CashLedger.ledger_date',
 																'Trade.id',
-																'Sec2.sec_name'),
+																'Sec2.sec_name',
+																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $cash_acc_id,
 																	'AND'=>array('CashLedger.trade_date <=' => $date,
@@ -225,7 +242,7 @@ class CashLedger extends AppModel {
 																	  'foreignKey'=>false,
 																	  'conditions'=>
 																			array(	'CashLedger.ref_id=Sec2.id')
-																	  ))));	
+																	  ))));
 		return($cashdata);
 	}
 }
