@@ -8,6 +8,7 @@
 <tr><td><?php echo $this->Form->input('trade_type'); ?></td></tr>
 <tr><td><?php echo $this->Form->input('debit_account_id', array('options'=>$accountlist)); ?></td></tr>
 <tr><td><?php echo $this->Form->input('credit_account_id', array('options'=>$accountlist)); ?></td></tr>
+<tr><td><?php echo $this->Form->input('category', array('options'=>array('Trading'=>'Trading','Non-trading'=>'Non-trading'))); ?></td></tr>
 <tr><td><?php echo $this->Form->end('Save Trade Type'); ?></td></tr>
 
 </table>

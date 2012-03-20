@@ -1,4 +1,30 @@
 <!-- File: /app/views/trades/view.ctp -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		var tt = $("#tradetype").html();
+			if ((tt.substr(0,6) == "Coupon") || (tt.substr(0,8) == "Dividend")) {
+				$("#TradeExecutionPrice").hide();
+				$("#TradePrice").hide();
+				$("#row4").hide();
+				$("#row5").hide();
+				$("#row6").hide();
+				$("#head4").hide();
+				$("#head5").hide();
+				$("#head6").hide();
+				$("#TradeExecutionPrice").val('');
+			}
+			else {
+				$("#TradeExecutionPrice").show();
+				$("#TradePrice").show();
+				$("#row4").show();
+				$("#row5").show();
+				$("#row6").show();
+				$("#head4").show();
+				$("#head5").show();
+				$("#head6").show();
+			}
+	});
+</script>
 
 <table <?php if (($data['0']['Trade']['cancelled'] == 1) || ($data['0']['Trade']['act'] == 0)) {echo 'class="cancelled"';} ?>>	
 	<tr>
@@ -30,7 +56,7 @@
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $trade['TradeType']['trade_type']; ?></td>
+			<td id="tradetype"><?php echo $trade['TradeType']['trade_type']; ?></td>
 			<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
 			<td><?php echo number_format($trade['Trade']['price'],4); ?></td>
 			<td><?php echo number_format($trade['Trade']['execution_price'],4); ?></td>
@@ -50,42 +76,42 @@
 			<td><?php echo $trade['Trader']['trader_name']; ?></td>
 		</tr>
 		
-	<tr class="highlight">
+	<tr class="highlight" id="head4">
 		<td>Broker</td>
 		<td>Broker Contact</td>
 		<td>Order Time</td>
 		<td>Trade Reason</td>
 	</tr>
 	
-		<tr class="altrow">
+		<tr class="altrow" id="row4">
 			<td><?php echo $trade['Broker']['broker_name']; ?></td>
 			<td><?php echo $trade['Trade']['broker_contact']; ?></td>
 			<td><?php echo $trade['Trade']['order_time']; ?></td>
 			<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		</tr>
 
-	<tr class="highlight">
+	<tr class="highlight" id="head5">
 		<td>Commission</td>
 		<td>Tax</td>
 		<td>Other Costs</td>
 		<td>Total Consideration</td>
 	</tr>
 
-		<tr class="altrow">
+		<tr class="altrow" id="row5">
 			<td><?php echo number_format($trade['Trade']['commission'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['tax'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['other_costs'],2); ?></td>
 			<td><?php echo $trade['Trade']['consideration']; ?></td>
 		</tr>
 
-	<tr class="highlight">
+	<tr class="highlight" id="head6">
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td>Accrued Interest</td>
 		<td>Notional Value</td>
 	</tr>
 
-		<tr class="altrow">
+		<tr class="altrow" id="row6">
 			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
 			<td><?php echo number_format($trade['Trade']['accrued'],2); ?></td>

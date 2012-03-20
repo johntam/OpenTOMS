@@ -16,27 +16,13 @@ class Ledger extends AppModel {
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 
-							'Sec.currency_id', 'Debit.account_type', 'Credit.account_type', 'Trade.settlement_date', 'TradeType.category'),
+							'Sec.currency_id', 'Trade.settlement_date'),
 			'joins' => array(	array('table'=>'trade_types',
 									  'alias'=>'TradeType2',
 									  'type'=>'inner',
 									  'foreignKey'=>false,
 									  'conditions'=>
 											array(	'TradeType2.id=Trade.trade_type_id')
-									  ),
-								array('table'=>'accounts',
-									  'alias'=>'Debit',
-									  'type'=>'inner',
-									  'foreignKey'=>false,
-									  'conditions'=>
-											array(	'Debit.id=TradeType2.debit_account_id')
-									  ),
-								array('table'=>'accounts',
-									  'alias'=>'Credit',
-									  'type'=>'inner',
-									  'foreignKey'=>false,
-									  'conditions'=>
-											array(	'Credit.id=TradeType2.credit_account_id')
 									  )
 								),
 			'order' => array('Trade.trade_date ASC', 'Trade.crd ASC')
@@ -88,8 +74,6 @@ class Ledger extends AppModel {
 			$last_td_crd = 0;
 			foreach ($posts as $post) {
 				$fund = $post['Trade']['fund_id'];
-				$debitacctype = $post['Debit']['account_type'];
-				$creditacctype = $post['Credit']['account_type'];
 				$td = $post['Trade']['trade_date'];
 				$sd = $post['Trade']['settlement_date'];
 				$tid = $post['Trade']['id'];
@@ -108,7 +92,6 @@ class Ledger extends AppModel {
 				$secid = $post['Sec']['id'];
 				$price = $post['Trade']['execution_price'];
 				$valp = $post['Sec']['valpoint'];
-				$ttcat = $post['TradeType']['category'];
 				//Get the order right for the trinv so that FIFO etc work properly
 				if (strtotime($td) == $last_td) {
 					$trinv = ($last_td_crd+1).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$qty).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price).':'.preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$valp).';';
@@ -133,14 +116,8 @@ class Ledger extends AppModel {
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cfd2 = 0;
-					//if (($debitid == 2) && ($debitacctype == 'Assets') || ($debitacctype == 'Expenses'))  {
-						$cons_debit = abs($cons);
-						$cons_credit = 0;
-					//}
-					//else {
-					//	$cons_debit = 0;
-					//	$cons_credit = abs($cons);
-					//}
+					$cons_debit = abs($cons);
+					$cons_credit = 0;
 				}
 				else {	//special case of stocks
 					$secid2 = $secid;
@@ -168,7 +145,6 @@ class Ledger extends AppModel {
 								'ledger_quantity' => $qty2,
 								'sec_id' => $secid2,
 								'other_account_id' => $creditid,
-								'trade_type_category' => $ttcat,
 								'trinv' => $tr2,
 								'ref_id' => $secid);	//this is a ref id holding the original security id (used to tag where cash comes from)
 				$this->create($data);
@@ -186,14 +162,8 @@ class Ledger extends AppModel {
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
 					$data['ledger_cfd'] = 0;
-					//if (($creditid == 2) && ($creditacctype == 'Assets') || ($creditacctype == 'Expenses')) {
-						$data['ledger_debit'] =  0;
-						$data['ledger_credit'] = abs($cons);
-					//}
-					//else {
-					//	$data['ledger_debit'] = abs($cons);
-					//	$data['ledger_credit'] = 0;
-					//}
+					$data['ledger_debit'] =  0;
+					$data['ledger_credit'] = abs($cons);
 				}
 				else {	//special case of stocks
 					$data['sec_id']  = $secid;

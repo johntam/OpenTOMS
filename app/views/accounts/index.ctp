@@ -6,8 +6,8 @@
 
 <table style="width: 50%; margin-left: 25%; margin-right: 25%;">
 	<tr>
-		<td>
-			<div class="high">
+		<td colspan="3">
+			<div>
 				<?php echo $this->Html->link('Add Account', array('controller' => 'accounts', 'action' => 'add')); ?>
 			</div>
 		</td>

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+		alter_form_coupon();
 		$("#TradePrice").val($("#TradePrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
 		$("#TradeExecutionPrice").val($("#TradeExecutionPrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
 		handle_execute_checkbox();		
@@ -43,6 +44,7 @@ $(document).ready(function() {
 		});
 		
 		$("#TradeTradeTypeId").change(function() {
+			alter_form_coupon();
 			recalculate_consideration();
 		});
 		
@@ -138,6 +140,32 @@ $(document).ready(function() {
 		});
 		
 	});
+	
+	
+	function alter_form_coupon() {
+		var tt = $("#TradeTradeTypeId option:selected").text();
+			if ((tt.substr(0,6) == "Coupon") || (tt.substr(0,8) == "Dividend")) {
+				$("#TradeExecutionPrice").hide();
+				$("#TradePrice").hide();
+				$("#row4").hide();
+				$("#row5").hide();
+				$("#row6").hide();
+				$("#head4").hide();
+				$("#head5").hide();
+				$("#head6").hide();
+				$("#TradeExecutionPrice").val('');
+			}
+			else {
+				$("#TradeExecutionPrice").show();
+				$("#TradePrice").show();
+				$("#row4").show();
+				$("#row5").show();
+				$("#row6").show();
+				$("#head4").show();
+				$("#head5").show();
+				$("#head6").show();
+			}
+	}
 	
 	
 	function handle_execute_checkbox() {

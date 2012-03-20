@@ -168,9 +168,26 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
 			$this->data['Trade']['consideration'] = str_replace(',','',$this->data['Trade']['consideration']);
-			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 			$this->data['Trade']['accrued'] = str_replace(',','',$this->data['Trade']['accrued']);
+			
+			//case of dividend and coupon income
+			$type = $this->Trade->TradeType->read('trade_type', $this->data['Trade']['trade_type_id']);
+			$type = $type['TradeType']['trade_type'];
+			if ((substr($type,0,4) == 'Coup') || (substr($type,0,4) == 'Divi')) {
+				if (stripos($type,'income') > 0) {
+					$sign = 1;
+				}
+				else {
+					$sign = -1;
+				}
+				$this->data['Trade']['execution_price'] = 1;
+				$this->data['Trade']['executed'] = 1;
+				$this->data['Trade']['reason_id'] = 999;	//undefined
+				$this->data['Trade']['broker_id'] = 35;	//undefined
+				$this->data['Trade']['quantity'] = $sign * abs($this->data['Trade']['quantity']);
+				$this->data['Trade']['consideration'] = $sign * abs($this->data['Trade']['quantity']);
+			}
 		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
@@ -324,7 +341,7 @@ class TradesController extends AppController {
 
 		$this->set('secs', $secsCACHE);
 		$this->set('funds', $this->Trade->Fund->find('list', array('fields'=>array('Fund.fund_name'),'order'=>array('Fund.fund_name'))));
-		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'),'order'=>array('TradeType.id'))));
+		$this->set('tradeTypes', $this->Trade->TradeType->find('list', array('fields'=>array('TradeType.trade_type'),'conditions'=>array('TradeType.category ='=>'Trading'),'order'=>array('TradeType.id'))));
 		$this->set('reasons', $this->Trade->Reason->find('list', array('fields'=>array('Reason.reason_desc'),'order'=>array('Reason.reason_desc'))));
 		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'),'order'=>array('Broker.broker_name'))));
 		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'),'order'=>array('Trader.trader_name'))));
@@ -428,7 +445,8 @@ class TradesController extends AppController {
 	function ajax_quantity() {
 		$ttid = $this->params['form']['tradetype'];
 		$qty = str_replace(',','',$this->params['form']['quantity']);
-		$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
+		$is_sell = ($ttid == 3) || ($ttid == 4);	//trade type id 3 or 4 are the trading Sells. The line below fails for coupons and dividends.
+		//$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
 	
 		if ($is_sell) {
 			$quantity = -abs($qty);

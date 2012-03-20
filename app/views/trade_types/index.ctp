@@ -1,10 +1,10 @@
 <!-- File: /app/views/trade_types/index.ctp -->
 
-<table>
+<table style="width: 70%;margin-left:15%;margin-right:15%;">
 	<tr>
-		<td>
-			<h1>Trade Types</h1>
-				<div class="high">
+		<td colspan="5">
+			<h1>Trade Types</h1></br>
+				<div>
 					<?php echo $this->Html->link('Add Trade Type', array('controller' => 'trade_types', 'action' => 'add')); ?>
 				</div>
 		</td>
@@ -14,6 +14,7 @@
 		<th>Trade Type</th>
 		<th>Debit Account</th>
 		<th>Credit Account</th>
+		<th>Category</th>
 	</tr>
 
 	<?php foreach ($tradetypes as $tradetype): ?>
@@ -22,6 +23,7 @@
 			<td><?php echo $tradetype['TradeType']['trade_type']; ?></td>
 			<td><?php echo $tradetype['Debit']['account_name']; ?></td>
 			<td><?php echo $tradetype['Credit']['account_name']; ?></td>
+			<td><?php echo $tradetype['TradeType']['category']; ?></td>
 		</tr>
 	<?php endforeach; ?>
 </table>

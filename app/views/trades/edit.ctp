@@ -50,14 +50,14 @@
 			<td><?php echo $this->Form->input('trader_id',array('label'=>false)); ?></td>
 		</tr>
 		
-	<tr class="highlight">
+	<tr class="highlight" id="head4">
 		<td>Broker</td>
 		<td>Broker Contact</td>
 		<td>Order Time</td>
 		<td>Trade Reason</td>
 	</tr>
 	
-		<tr class="altrow">
+		<tr class="altrow" id="row4">
 			<td><?php echo $this->Form->input('broker_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('broker_contact',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
@@ -65,28 +65,28 @@
 		</tr>
 	
 	
-	<tr class="highlight">
+	<tr class="highlight" id="head5">
 		<td>Commission<img src="/img/ajax-busy.gif" id="commission_busy"/></td>
 		<td>Tax<img src="/img/ajax-busy.gif" id="tax_busy"/></td>
 		<td>Other Costs<img src="/img/ajax-busy.gif" id="othercosts_busy"/></td>
 		<td>Total Consideration<img src="/img/ajax-busy.gif" id="consideration_busy"/></td>
 	</tr>
 	
-		<tr class="altrow">
+		<tr class="altrow" id="row5">
 			<td><?php echo $this->Form->input('commission',array('label'=>false, 'div'=>array('id'=>'TradeCommId'))); ?></td>
 			<td><?php echo $this->Form->input('tax',array('label'=>false, 'div'=>array('id'=>'TradeTaxId'))); ?></td>
 			<td><?php echo $this->Form->input('other_costs',array('label'=>false, 'div'=>array('id'=>'TradeOtherCostsId'))); ?></td>
 			<td><?php echo $this->Form->input('consideration',array('label'=>false, 'div'=>array('id'=>'TradeConsiderationId'))); ?></td>
 		</tr>
 	
-	<tr class="highlight">
+	<tr class="highlight" id="head6">
 		<td>Executed</td>
 		<td>Cancelled</td>
 		<td>Accrued Interest<img src="/img/ajax-busy.gif" id="accrued_busy"/></td>
 		<td><div>Notional Value<img src="/img/ajax-busy.gif" id="notional_busy"/></div></td>
 	</tr>
 
-		<tr class="altrow">
+		<tr class="altrow" id="row6">
 			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?><div class="error-message" id="accrued_error"></div></td>

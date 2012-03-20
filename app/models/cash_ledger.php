@@ -183,9 +183,15 @@ class CashLedger extends AppModel {
 					//this must be a non-trading transaction, otherwise the other account would be stocks, i.e. id=1
 					$acc_name = $this->Account->read('account_name', $other);
 					$acc_name = $acc_name['Account']['account_name'];
-					$cashdata[$key]['Sec2']['sec_name'] = $acc_name;
-					//also remove trade id field
-					unset($cashdata[$key]['Trade']['id']);
+					if ((substr($acc_name,0,6) == 'Coupon') || (substr($acc_name,0,8) == 'Dividend')) {
+						//special case of dividend or coupon income in which case tag the security name on as well
+						$cashdata[$key]['Sec2']['sec_name'] = $acc_name.' ('.$cashdata[$key]['Sec2']['sec_name'].')';
+					}
+					else {
+						$cashdata[$key]['Sec2']['sec_name'] = $acc_name;
+						//also remove trade id field
+						unset($cashdata[$key]['Trade']['id']);
+					}
 				}
 			}
 		}

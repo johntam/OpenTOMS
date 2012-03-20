@@ -11,6 +11,7 @@
 		<td>Trade Type</td>
 		<td>Debit Account</td>
 		<td>Credit Account</td>
+		<td>Category</td>
 	</tr>
 	
 	<tr>
@@ -18,6 +19,7 @@
 		<td><?php echo $this->Form->input('trade_type', array('label'=>false)); ?></td>
 		<td><?php echo $this->Form->input('debit_account_id', array('label'=>false, 'options'=>$accountlist)); ?></td>
 		<td><?php echo $this->Form->input('credit_account_id', array('label'=>false, 'options'=>$accountlist)); ?></td>
+		<td><?php echo $this->Form->input('category', array('label'=>false, 'options'=>array('Trading'=>'Trading','Non-trading'=>'Non-trading'))); ?></td>
 		<td><?php
 			echo $this->Form->input('id', array('type' => 'hidden')); 
 			echo $this->Form->end('Update Trade Type');
