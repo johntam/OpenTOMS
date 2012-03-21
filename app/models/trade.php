@@ -2,7 +2,7 @@
 
 class Trade extends AppModel {
     var $name = 'Trade';
-	var $belongsTo = 'Fund,Sec,TradeType,Reason,Broker,Trader,Currency';
+	var $belongsTo = 'Fund,Sec,TradeType,Reason,Broker,Trader,Currency,Custodian';
 	var $validate = array(
 		'quantity' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank'),
 		'sec_id' => array('rule' => 'notEmpty', 'message' => 'Must choose a security'),

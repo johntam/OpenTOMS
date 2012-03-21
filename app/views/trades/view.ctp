@@ -63,14 +63,14 @@
 		</tr>
 	
 	<tr class="highlight">
-		<td>Decision Time</td>
+		<td>Custodian</td>
 		<td>Trade Date</td>
 		<td>Settlement Date</td>
 		<td>Trader</td>
 	</tr>
 	
 		<tr class="altrow">
-			<td><?php echo $trade['Trade']['decision_time']; ?></td>
+			<td><?php echo $trade['Custodian']['custodian_name']; ?></td>
 			<td><?php echo $trade['Trade']['trade_date']; ?></td>
 			<td><?php echo $trade['Trade']['settlement_date']; ?></td>
 			<td><?php echo $trade['Trader']['trader_name']; ?></td>
@@ -79,14 +79,14 @@
 	<tr class="highlight" id="head4">
 		<td>Broker</td>
 		<td>Broker Contact</td>
-		<td>Order Time</td>
+		<td></td>
 		<td>Trade Reason</td>
 	</tr>
 	
 		<tr class="altrow" id="row4">
 			<td><?php echo $trade['Broker']['broker_name']; ?></td>
 			<td><?php echo $trade['Trade']['broker_contact']; ?></td>
-			<td><?php echo $trade['Trade']['order_time']; ?></td>
+			<td></td>
 			<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		</tr>
 
@@ -105,17 +105,31 @@
 		</tr>
 
 	<tr class="highlight" id="head6">
-		<td>Executed</td>
-		<td>Cancelled</td>
+		<td>Decision Time</td>
+		<td>Order Time</td>
 		<td>Accrued Interest</td>
 		<td>Notional Value</td>
 	</tr>
 
 		<tr class="altrow" id="row6">
-			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
-			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
+			<td><?php echo $trade['Trade']['decision_time']; ?></td>
+			<td><?php echo $trade['Trade']['order_time']; ?></td>
 			<td><?php echo number_format($trade['Trade']['accrued'],2); ?></td>
 			<td><?php echo $trade['Trade']['notional_value']; ?></td>
+		</tr>
+		
+	<tr class="highlight" id="head7">
+		<td>Executed</td>
+		<td>Cancelled</td>
+		<td></td>
+		<td></td>
+	</tr>
+
+		<tr class="altrow" id="row7">
+			<td><?php if ($trade['Trade']['executed'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
+			<td><?php if ($trade['Trade']['cancelled'] == 0) {echo 'No';} else {echo 'Yes';} ?></td>
+			<td></td>
+			<td></td>
 		</tr>
 	
 </table>

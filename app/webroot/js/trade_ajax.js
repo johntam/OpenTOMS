@@ -150,9 +150,11 @@ $(document).ready(function() {
 				$("#row4").hide();
 				$("#row5").hide();
 				$("#row6").hide();
+				$("#row7").hide();
 				$("#head4").hide();
 				$("#head5").hide();
 				$("#head6").hide();
+				$("#head7").hide();
 				$("#TradeExecutionPrice").val('');
 			}
 			else {
@@ -161,9 +163,11 @@ $(document).ready(function() {
 				$("#row4").show();
 				$("#row5").show();
 				$("#row6").show();
+				$("#row7").show();
 				$("#head4").show();
 				$("#head5").show();
 				$("#head6").show();
+				$("#head7").show();
 			}
 	}
 	

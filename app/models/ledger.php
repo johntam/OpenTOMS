@@ -16,7 +16,7 @@ class Ledger extends AppModel {
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 
-							'Sec.currency_id', 'Trade.settlement_date'),
+							'Sec.currency_id', 'Trade.settlement_date', 'Currency.sec_id'),
 			'joins' => array(	array('table'=>'trade_types',
 									  'alias'=>'TradeType2',
 									  'type'=>'inner',
@@ -90,6 +90,7 @@ class Ledger extends AppModel {
 				$ccy = $post['Sec']['currency_id'];
 				$qty = $post['Trade']['quantity'];
 				$secid = $post['Sec']['id'];
+				$ccysecid = $post['Currency']['sec_id'];
 				$price = $post['Trade']['execution_price'];
 				$valp = $post['Sec']['valpoint'];
 				//Get the order right for the trinv so that FIFO etc work properly
@@ -123,7 +124,13 @@ class Ledger extends AppModel {
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
-					$ccy2 = $ccy;
+					//special special case of fx trades where the currencies are treated as stocks :-)
+					if ($secid == $ccysecid) {
+						$ccy2 = $tccy;
+					}
+					else {
+						$ccy2 = $ccy;
+					}
 					$cfd2 = $cfd;
 					////
 					$cons_debit = abs($consX);
@@ -169,7 +176,13 @@ class Ledger extends AppModel {
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
-					$data['currency_id'] = $ccy;
+					//special special case of fx trades where the currencies are treated as stocks :-)
+					if ($secid == $ccysecid) {
+						$data['currency_id'] = $tccy;
+					}
+					else {
+						$data['currency_id'] = $ccy;
+					}
 					$data['ledger_cfd'] = $cfd;
 					////
 					$data['ledger_debit'] = 0;

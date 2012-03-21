@@ -346,6 +346,7 @@ class TradesController extends AppController {
 		$this->set('brokers', $this->Trade->Broker->find('list', array('fields'=>array('Broker.broker_name'),'order'=>array('Broker.broker_name'))));
 		$this->set('traders', $this->Trade->Trader->find('list', array('fields'=>array('Trader.trader_name'),'order'=>array('Trader.trader_name'))));
 		$this->set('currencies', $this->Trade->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+		$this->set('custodians', $this->Trade->Custodian->find('list', array('fields'=>array('Custodian.custodian_name'),'order'=>array('Custodian.custodian_name'))));
 	}
 	
 	
