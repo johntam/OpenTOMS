@@ -57,6 +57,12 @@ class CashLedger extends AppModel {
 			}
 		}
 		
+		//Add in any FX trades detail to include that part of the trades which has been booked in the "stocks" account
+		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy);
+		$debit += $a;
+		$credit += $b;
+		$quantity += $c;
+		
 		return array($debit, $credit, $quantity);
 	}
 	
@@ -67,7 +73,6 @@ class CashLedger extends AppModel {
 		$balmodel = new Balance();
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
-		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		$cashdata = $this->find('all', array( 'fields'=>array(	'CashLedger.trade_date',
 																'CashLedger.settlement_date',
@@ -77,15 +82,9 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_date',
 																'Trade.id',
 																'Sec2.sec_name',
-																'Sec.sec_name',
-																'CashLedger.other_account_id',
-																'CashLedger.account_id',
-																'SecType.sec_type_name',
-																'Trade.currency_id'),
+																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
-																	'OR'=>array('CashLedger.account_id =' => $cash_acc_id,
-																				'AND'=>array('SecType.sec_type_name =' => 'Exchrate',
-																							 'CashLedger.account_id =' => $stocks_acc_id)),	//include cash treated as stocks
+																	'CashLedger.account_id =' => $cash_acc_id,
 																	'AND'=>array('CashLedger.ledger_date =' => $date,
 																				 'CashLedger.settlement_date <=' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -101,13 +100,6 @@ class CashLedger extends AppModel {
 																	  'foreignKey'=>false,
 																	  'conditions'=>
 																			array(	'CashLedger.ref_id=Sec2.id')
-																	  ),
-																array('table'=>'sec_types',
-																	  'alias'=>'SecType',
-																	  'type'=>'left',
-																	  'foreignKey'=>false,
-																	  'conditions'=>
-																			array(	'SecType.id=Sec2.sec_type_id')
 																	  ))));
 		
 		//add on the non-cfd trades which settle after the previous balance calculation date
@@ -182,6 +174,10 @@ class CashLedger extends AppModel {
 			}
 		}
 		
+		//Add in any FX trades detail to include that part of the trades which has been booked in the "stocks" account
+		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy, $prevdate);
+		$cashdata = array_merge($cashdata, $arr);
+		
 		//remove all entries with trade date after $date, in case any were introduced by the code above
 		foreach ($cashdata as $key=>$c) {
 			if (strtotime($c['CashLedger']['trade_date']) > strtotime($date)) {
@@ -191,29 +187,10 @@ class CashLedger extends AppModel {
 		
 		//for non-trading lines, replace the security name with the account book name to make it clearer
 		foreach ($cashdata as $key=>$c) {
-			//first determine if its an fx trade (account will be stocks and security type will be Exchrate)
-			if (isset($c['CashLedger']['account_id']) && isset($c['SecType']['sec_type_name'])) {
-				if (($c['CashLedger']['account_id'] == $stocks_acc_id) && ($c['SecType']['sec_type_name'] == 'Exchrate')) {
-					//use the trade currency name (first leg of fx trade)
-					$tccy = $this->Currency->read('currency_iso_code', $c['Trade']['currency_id']);
-					$tccy = $tccy['Currency']['currency_iso_code'];
-					$cashdata[$key]['Sec2']['sec_name'] = $tccy;
-					$fxqty = $c['CashLedger']['ledger_quantity'];
-					//put in the value of the other side of the fx trade into the debits and credits
-					if ($fxqty > 0) {
-						$cashdata[$key]['CashLedger']['ledger_debit'] = $fxqty;
-						$cashdata[$key]['CashLedger']['ledger_credit'] = 0;
-					}
-					else {
-						$cashdata[$key]['CashLedger']['ledger_debit'] = 0;
-						$cashdata[$key]['CashLedger']['ledger_credit'] = abs($fxqty);
-					}
-				}
-			}
-			else if (isset($c['CashLedger']['other_account_id'])) {
+			if (isset($c['CashLedger']['other_account_id'])) {
 				$other = $c['CashLedger']['other_account_id'];
-				if ($other != $stocks_acc_id) {
-					//this must be a non-trading transaction, otherwise the other account would be stocks
+				if ($other > 1) {
+					//this must be a non-trading transaction, otherwise the other account would be stocks, i.e. id=1
 					$acc_name = $this->Account->read('account_name', $other);
 					$acc_name = $acc_name['Account']['account_name'];
 					if ((substr($acc_name,0,6) == 'Coupon') || (substr($acc_name,0,8) == 'Dividend')) {
@@ -255,7 +232,6 @@ class CashLedger extends AppModel {
 	function getUnsettled($fund, $date, $ccy) {
 		//get id of the cash book
 		$cash_acc_id = $this->Account->getNamed('Cash');
-		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		//get the unsettled trades
 		$cashdata = $this->find('all', array( 	'fields'=>array('CashLedger.trade_date',
@@ -266,15 +242,9 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_date',
 																'Trade.id',
 																'Sec2.sec_name',
-																'Sec.sec_name',
-																'CashLedger.other_account_id',
-																'CashLedger.account_id',
-																'SecType.sec_type_name',
-																'Trade.currency_id'),
+																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
-																	'OR'=>array('CashLedger.account_id =' => $cash_acc_id,
-																				'AND'=>array('SecType.sec_type_name =' => 'Exchrate',
-																							 'CashLedger.account_id =' => $stocks_acc_id)),
+																	'CashLedger.account_id =' => $cash_acc_id,
 																	'AND'=>array('CashLedger.trade_date <=' => $date,
 																				 'CashLedger.settlement_date >' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -288,15 +258,62 @@ class CashLedger extends AppModel {
 																	  'foreignKey'=>false,
 																	  'conditions'=>
 																			array(	'CashLedger.ref_id=Sec2.id')
-																	  ),
-																array('table'=>'sec_types',
-																	  'alias'=>'SecType',
+																	  ))));
+		return($cashdata);
+	}
+	
+	//Handle FX trades. In the ledger screen, any FX trades are split into two parts, one part in the "stocks" book
+	//and one in the "cash" book. This means that the cash ledger data only has half of the FX trades detail. Remedy this here.
+	function getFXtrades($fund, $date, $ccy, $prevdate = null) {
+		$stocks_acc_id = $this->Account->getNamed('Stocks');
+		$ccysecid = $this->Currency->getsecid($ccy);
+		if (empty($prevdate)) { $prevdate = '1999-12-31'; }
+		
+		$cashdata = $this->find('all', array( 	'fields'=>array('CashLedger.trade_date',
+																'CashLedger.settlement_date',
+																'CashLedger.ledger_debit',
+																'CashLedger.ledger_credit',
+																'CashLedger.ledger_quantity',
+																'Trade.id',
+																'Sec2.sec_name'),
+												'conditions'=>array('CashLedger.fund_id =' => $fund,
+																	'CashLedger.account_id =' => $stocks_acc_id,
+																	'AND'=>array('CashLedger.trade_date >' => $prevdate,
+																				 'CashLedger.trade_date <=' => $date,
+																				 'CashLedger.settlement_date <=' => $date),
+																	'CashLedger.sec_id ='=> $ccysecid,
+																	'CashLedger.act =' => 1,
+																	'(ABS(CashLedger.ledger_debit)+ABS(CashLedger.ledger_credit)+ABS(CashLedger.ledger_quantity)) >'=>0.0001), //ignore zero lines
+												'joins' => array(
+																array('table'=>'secs',
+																	  'alias'=>'Sec2',
 																	  'type'=>'left',
 																	  'foreignKey'=>false,
 																	  'conditions'=>
-																			array(	'SecType.id=Sec2.sec_type_id')
+																			array(	'CashLedger.ref_id=Sec2.id')
 																	  ))));
-		return($cashdata);
+	
+		//form the return array in the required format, take totals as well
+		$totdeb = 0;
+		$totcred = 0;
+		$totqty = 0;
+		foreach ($cashdata as $key=>$c) {
+			$fxqty = $c['CashLedger']['ledger_quantity'];	
+			
+			if ($fxqty > 0) {
+				$cashdata[$key]['CashLedger']['ledger_debit'] = $fxqty;
+				$cashdata[$key]['CashLedger']['ledger_credit'] = 0;
+			}
+			else {
+				$cashdata[$key]['CashLedger']['ledger_debit'] = 0;
+				$cashdata[$key]['CashLedger']['ledger_credit'] = abs($fxqty);
+			}
+			$totdeb += $cashdata[$key]['CashLedger']['ledger_debit'];
+			$totcred += $cashdata[$key]['CashLedger']['ledger_credit'];
+			$totqty += $fxqty;
+		}
+	
+		return (array($totdeb, $totcred, $totqty, $cashdata));
 	}
 }
 
