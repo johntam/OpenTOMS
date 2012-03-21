@@ -67,6 +67,7 @@ class CashLedger extends AppModel {
 		$balmodel = new Balance();
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
+		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		$cashdata = $this->find('all', array( 'fields'=>array(	'CashLedger.trade_date',
 																'CashLedger.settlement_date',
@@ -76,9 +77,15 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_date',
 																'Trade.id',
 																'Sec2.sec_name',
-																'CashLedger.other_account_id'),
+																'Sec.sec_name',
+																'CashLedger.other_account_id',
+																'CashLedger.account_id',
+																'SecType.sec_type_name',
+																'Trade.currency_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
-																	'CashLedger.account_id =' => $cash_acc_id,
+																	'OR'=>array('CashLedger.account_id =' => $cash_acc_id,
+																				'AND'=>array('SecType.sec_type_name =' => 'Exchrate',
+																							 'CashLedger.account_id =' => $stocks_acc_id)),	//include cash treated as stocks
 																	'AND'=>array('CashLedger.ledger_date =' => $date,
 																				 'CashLedger.settlement_date <=' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -94,6 +101,13 @@ class CashLedger extends AppModel {
 																	  'foreignKey'=>false,
 																	  'conditions'=>
 																			array(	'CashLedger.ref_id=Sec2.id')
+																	  ),
+																array('table'=>'sec_types',
+																	  'alias'=>'SecType',
+																	  'type'=>'left',
+																	  'foreignKey'=>false,
+																	  'conditions'=>
+																			array(	'SecType.id=Sec2.sec_type_id')
 																	  ))));
 		
 		//add on the non-cfd trades which settle after the previous balance calculation date
@@ -177,10 +191,29 @@ class CashLedger extends AppModel {
 		
 		//for non-trading lines, replace the security name with the account book name to make it clearer
 		foreach ($cashdata as $key=>$c) {
-			if (isset($c['CashLedger']['other_account_id'])) {
+			//first determine if its an fx trade (account will be stocks and security type will be Exchrate)
+			if (isset($c['CashLedger']['account_id']) && isset($c['SecType']['sec_type_name'])) {
+				if (($c['CashLedger']['account_id'] == $stocks_acc_id) && ($c['SecType']['sec_type_name'] == 'Exchrate')) {
+					//use the trade currency name (first leg of fx trade)
+					$tccy = $this->Currency->read('currency_iso_code', $c['Trade']['currency_id']);
+					$tccy = $tccy['Currency']['currency_iso_code'];
+					$cashdata[$key]['Sec2']['sec_name'] = $tccy;
+					$fxqty = $c['CashLedger']['ledger_quantity'];
+					//put in the value of the other side of the fx trade into the debits and credits
+					if ($fxqty > 0) {
+						$cashdata[$key]['CashLedger']['ledger_debit'] = $fxqty;
+						$cashdata[$key]['CashLedger']['ledger_credit'] = 0;
+					}
+					else {
+						$cashdata[$key]['CashLedger']['ledger_debit'] = 0;
+						$cashdata[$key]['CashLedger']['ledger_credit'] = abs($fxqty);
+					}
+				}
+			}
+			else if (isset($c['CashLedger']['other_account_id'])) {
 				$other = $c['CashLedger']['other_account_id'];
-				if ($other > 1) {
-					//this must be a non-trading transaction, otherwise the other account would be stocks, i.e. id=1
+				if ($other != $stocks_acc_id) {
+					//this must be a non-trading transaction, otherwise the other account would be stocks
 					$acc_name = $this->Account->read('account_name', $other);
 					$acc_name = $acc_name['Account']['account_name'];
 					if ((substr($acc_name,0,6) == 'Coupon') || (substr($acc_name,0,8) == 'Dividend')) {
@@ -222,6 +255,7 @@ class CashLedger extends AppModel {
 	function getUnsettled($fund, $date, $ccy) {
 		//get id of the cash book
 		$cash_acc_id = $this->Account->getNamed('Cash');
+		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		//get the unsettled trades
 		$cashdata = $this->find('all', array( 	'fields'=>array('CashLedger.trade_date',
@@ -232,9 +266,15 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_date',
 																'Trade.id',
 																'Sec2.sec_name',
-																'CashLedger.other_account_id'),
+																'Sec.sec_name',
+																'CashLedger.other_account_id',
+																'CashLedger.account_id',
+																'SecType.sec_type_name',
+																'Trade.currency_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
-																	'CashLedger.account_id =' => $cash_acc_id,
+																	'OR'=>array('CashLedger.account_id =' => $cash_acc_id,
+																				'AND'=>array('SecType.sec_type_name =' => 'Exchrate',
+																							 'CashLedger.account_id =' => $stocks_acc_id)),
 																	'AND'=>array('CashLedger.trade_date <=' => $date,
 																				 'CashLedger.settlement_date >' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -248,6 +288,13 @@ class CashLedger extends AppModel {
 																	  'foreignKey'=>false,
 																	  'conditions'=>
 																			array(	'CashLedger.ref_id=Sec2.id')
+																	  ),
+																array('table'=>'sec_types',
+																	  'alias'=>'SecType',
+																	  'type'=>'left',
+																	  'foreignKey'=>false,
+																	  'conditions'=>
+																			array(	'SecType.id=Sec2.sec_type_id')
 																	  ))));
 		return($cashdata);
 	}
