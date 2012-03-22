@@ -275,7 +275,8 @@ class CashLedger extends AppModel {
 																'CashLedger.ledger_credit',
 																'CashLedger.ledger_quantity',
 																'Trade.id',
-																'Sec2.sec_name'),
+																'Sec2.sec_name',
+																'CashLedger.currency_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $stocks_acc_id,
 																	'AND'=>array('CashLedger.trade_date >' => $prevdate,
@@ -296,7 +297,7 @@ class CashLedger extends AppModel {
 		//form the return array in the required format, take totals as well
 		$totdeb = 0;
 		$totcred = 0;
-		$totqty = 0;
+		$totqty = 0;		
 		foreach ($cashdata as $key=>$c) {
 			$fxqty = $c['CashLedger']['ledger_quantity'];	
 			
@@ -311,6 +312,11 @@ class CashLedger extends AppModel {
 			$totdeb += $cashdata[$key]['CashLedger']['ledger_debit'];
 			$totcred += $cashdata[$key]['CashLedger']['ledger_credit'];
 			$totqty += $fxqty;
+			
+			//change security name to the most appropriate currency name to display on this screen
+			$ccyname = $this->Currency->read('currency_iso_code', $c['CashLedger']['currency_id']);
+			$ccyname = $ccyname['Currency']['currency_iso_code'];
+			$cashdata[$key]['Sec2']['sec_name'] = $ccyname;
 		}
 	
 		return (array($totdeb, $totcred, $totqty, $cashdata));

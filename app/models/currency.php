@@ -18,5 +18,13 @@ class Currency extends AppModel {
 			return($secid['Sec']['id']);
 		}
 	}
+	
+	//gets the currency ID of the given security, if not it returns zero
+	//function can be used to determine whether a given security id is a currency instrument or not
+	function getCurrencyID($secid) {
+		$id = $this->find('first', array('conditions'=>array('Currency.sec_id =' => $secid)));
+		$id = $id['Currency']['id'];
+		return (empty($id) ? 0 : $id);
+	}
 }
 ?>

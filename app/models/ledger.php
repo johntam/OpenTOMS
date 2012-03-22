@@ -16,7 +16,7 @@ class Ledger extends AppModel {
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 
-							'Sec.currency_id', 'Trade.settlement_date', 'Currency.sec_id'),
+							'Sec.currency_id', 'Trade.settlement_date'),
 			'joins' => array(	array('table'=>'trade_types',
 									  'alias'=>'TradeType2',
 									  'type'=>'inner',
@@ -42,7 +42,7 @@ class Ledger extends AppModel {
 		}
 		
 		//get trades from the last balance calculation date to the date selected
-		$posts = $this->Trade->find('all', $sqlparam);
+		$posts = $this->Trade->find('all', $sqlparam);		
 		
 		if (empty($posts)) {
 			//no trades to post, however must create a dummy line in the table so that we can choose this date on the balances screen
@@ -90,7 +90,6 @@ class Ledger extends AppModel {
 				$ccy = $post['Sec']['currency_id'];
 				$qty = $post['Trade']['quantity'];
 				$secid = $post['Sec']['id'];
-				$ccysecid = $post['Currency']['sec_id'];
 				$price = $post['Trade']['execution_price'];
 				$valp = $post['Sec']['valpoint'];
 				//Get the order right for the trinv so that FIFO etc work properly
@@ -124,8 +123,8 @@ class Ledger extends AppModel {
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
-					//special special case of fx trades where the currencies are treated as stocks :-)
-					if ($secid == $ccysecid) {
+					//special special case of fx trades where the currencies are treated as stocks :-)					
+					if ($this->Currency->getCurrencyID($secid)) {
 						$ccy2 = $tccy;
 					}
 					else {
@@ -177,7 +176,7 @@ class Ledger extends AppModel {
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
 					//special special case of fx trades where the currencies are treated as stocks :-)
-					if ($secid == $ccysecid) {
+					if ($this->Currency->getCurrencyID($secid)) {
 						$data['currency_id'] = $tccy;
 					}
 					else {
