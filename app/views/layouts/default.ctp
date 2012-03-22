@@ -42,7 +42,8 @@ show up on all of your views, include it here -->
 		<ul id="navbar">
 			<li><a href="#">Trades</a><ul>
 				<li><a href="/trades/add">New</a></li>
-				<li><a href="/trades/index">Blotter</a></li></ul>
+				<li><a href="/trades/index">Blotter</a></li>
+				<li><a href="/Holdings/index">Holdings</a></li></ul>
 			</li>
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
@@ -77,7 +78,7 @@ show up on all of your views, include it here -->
 				</ul>
 			</li>
 			<li><a href="#">Reports</a><ul>
-				<li><a href="/PositionReports">Positions</a></li></ul>
+				<li><a href="/ValuationReports">Valuation</a></li></ul>
 			</li>
 			<li><a href="#">Admin</a><ul>
 				<li><a href="/users">Users</a></li>

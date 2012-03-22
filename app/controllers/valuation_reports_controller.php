@@ -1,7 +1,7 @@
 <?php
-class PositionReportsController extends AppController {
+class ValuationReportsController extends AppController {
 	var $helpers = array ('Html','Form');
-	var $name = 'PositionReports';
+	var $name = 'ValuationReports';
 
 	
 	function index($fund_id = false) {
@@ -9,16 +9,16 @@ class PositionReportsController extends AppController {
 		$d = new Dispatcher();
 			
 		if (isset($this->params['form']['Submit']) && !$fund_id) {
-			$this->Session->write('fund_chosen', $this->data['PositionReport']['fund_id']);
+			$this->Session->write('fund_chosen', $this->data['ValuationReport']['fund_id']);
 			
 			switch ($this->params['form']['Submit']) {
 				case 'Run':
-					$d->dispatch(array('controller' => 'PositionReports', 'action' => 'run'),
+					$d->dispatch(array('controller' => 'ValuationReports', 'action' => 'run'),
 								 array('data' => $this->data));
 					break;
 					
 				default:
-					$d->dispatch(array('controller' => 'PositionReports', 'action' => 'view'),
+					$d->dispatch(array('controller' => 'ValuationReports', 'action' => 'view'),
 								 array('data' => $this->data));
 			}
 		}
@@ -32,12 +32,12 @@ class PositionReportsController extends AppController {
 				$fund = $this->Session->read('fund_chosen');
 			}
 			else {
-				$fund = $this->PositionReport->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
+				$fund = $this->ValuationReport->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
 				$fund = $fund['Fund']['id'];
 			}
 			
-			$this->data['PositionReport'] = array('fund_id'=>$fund);
-			$d->dispatch(array('controller' => 'PositionReports', 'action' => 'view'),
+			$this->data['ValuationReport'] = array('fund_id'=>$fund);
+			$d->dispatch(array('controller' => 'ValuationReports', 'action' => 'view'),
 								 array('data' => $this->data));
 		}
 	}
@@ -45,7 +45,7 @@ class PositionReportsController extends AppController {
 	
 	function view() {																				 
 		//get a list of balance calculation dates
-		$fund = $this->data['PositionReport']['fund_id'];
+		$fund = $this->data['ValuationReport']['fund_id'];
 		App::import('model','Balance');
 		$balmodel = new Balance();
 		$datelist = $balmodel->find('all', array('conditions'=>array('Balance.act ='=>1, 
@@ -59,26 +59,26 @@ class PositionReportsController extends AppController {
 		$this->set('run_dates', $run_dates);
 		
 		//get list of reports for this fund
-		$this->set('reports', $this->PositionReport->find('all', array('limit'=>10,
-																	   'conditions'=>array('PositionReport.fund_id ='=>$fund),
-																	   'order'=>array('PositionReport.crd DESC'),
-																	   'fields' => array('DISTINCT PositionReport.final', 
+		$this->set('reports', $this->ValuationReport->find('all', array('limit'=>10,
+																	   'conditions'=>array('ValuationReport.fund_id ='=>$fund),
+																	   'order'=>array('ValuationReport.crd DESC'),
+																	   'fields' => array('DISTINCT ValuationReport.final', 
 																	                     'Fund.fund_name',
 																						 'Fund.id',
-																						 'PositionReport.pos_date',
-																						 'PositionReport.crd'))));
+																						 'ValuationReport.pos_date',
+																						 'ValuationReport.crd'))));
 		//render
 		$this->dropdownchoices();
 	}
 	
-	//run the position report (based on balance calculation)
+	//run the valuation report (based on balance calculation)
 	function run() {
 		$this->autoRender = false;
 		
-		$fund = $this->data['PositionReport']['fund_id'];
-		$date = $this->data['PositionReport']['run_date'];
+		$fund = $this->data['ValuationReport']['fund_id'];
+		$date = $this->data['ValuationReport']['run_date'];
 		
-		list($success, $msg) = $this->PositionReport->getPositions($fund, $date);
+		list($success, $msg) = $this->ValuationReport->getValuation($fund, $date);
 		if ($success) {
 			$this->redirect(array('action' => 'show', $fund, $date));
 		}
@@ -91,15 +91,15 @@ class PositionReportsController extends AppController {
 	
 	//show report
 	function show($fund, $date) {
-		$this->set('positions', $this->PositionReport->find('all', array('conditions'=>array('PositionReport.act'=>1, 
-																							 'PositionReport.pos_date'=>$date, 
-																							 'PositionReport.fund_id'=>$fund), 
-																		 'order'=>array('PositionReport.sec_type_id DESC', 'PositionReport.currency_id'))));
+		$this->set('valuations', $this->ValuationReport->find('all', array('conditions'=>array('ValuationReport.act'=>1, 
+																							 'ValuationReport.pos_date'=>$date, 
+																							 'ValuationReport.fund_id'=>$fund), 
+																		 'order'=>array('ValuationReport.sec_type_id DESC', 'ValuationReport.currency_id'))));
 	}
 	
 	
 	function dropdownchoices() {
-		$this->set('funds', $this->PositionReport->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
+		$this->set('funds', $this->ValuationReport->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
 	}
 }
 ?>

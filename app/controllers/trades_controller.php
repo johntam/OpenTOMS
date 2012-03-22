@@ -50,7 +50,12 @@ class TradesController extends AppController {
 		//fund dropdown
 		if (isset($this->params['url']['fundchosen'])) {
 			 $fundchosen = $this->params['url']['fundchosen'];
-			 $this->Session->write('fund_chosen', $fundchosen);
+			 if (!empty($fundchosen)) {
+				$this->Session->write('fund_chosen', $fundchosen);
+			 }
+			 else {
+				$this->Session->delete('fund_chosen');
+			 }
 		}
 		else if ($this->Session->check('fund_chosen')) {
 			$fundchosen = $this->Session->read('fund_chosen');

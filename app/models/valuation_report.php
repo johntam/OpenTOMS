@@ -1,12 +1,12 @@
 <?php
 
-class PositionReport extends AppModel {
-    var $name = 'PositionReport';
+class ValuationReport extends AppModel {
+    var $name = 'ValuationReport';
 	var $belongsTo ='Fund, Currency, Sec';
 	
 	
 	//combine latest trades with the last recorded locked balance (from the Balance model)
-	function getPositions($fund, $date) {
+	function getValuation($fund, $date) {
 		App::import('model','Balance');
 		$balmodel = new Balance();
 		$baldata = $balmodel->attachprices($fund, $date);
@@ -27,10 +27,10 @@ class PositionReport extends AppModel {
 			return (array(false, 'Missing prices and fx rates for this date, operation aborted'));
 		}
 		
-		//deactivate all previous position reports for this date
-		if (!$this->updateAll(array('PositionReport.act' => 0), 
-									array('PositionReport.pos_date =' => $date,
-										  'PositionReport.fund_id =' => $fund))) {
+		//deactivate all previous valuation reports for this date
+		if (!$this->updateAll(array('ValuationReport.act' => 0), 
+									array('ValuationReport.pos_date =' => $date,
+										  'ValuationReport.fund_id =' => $fund))) {
 			return (array(false, 'Could not access database, operation aborted'));
 		}
 		
@@ -71,7 +71,7 @@ class PositionReport extends AppModel {
 			}
 			
 			//save this record to the database
-			$data['PositionReport'] = array('act' => 1,
+			$data['ValuationReport'] = array('act' => 1,
 											'crd'=>$timenow,
 											'final'=>$final,
 											'pos_date'=>$date,
