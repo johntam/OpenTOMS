@@ -49,8 +49,8 @@
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('custodian_id',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('trade_date',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('settlement_date',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('trade_date_input',array('label'=>false, 'id'=>'tradedatepicker', 'size'=>15, 'default'=>date('Y-m-d'))); ?></td>
+			<td><?php echo $this->Form->input('settlement_date_input',array('label'=>false, 'id'=>'settlementdatepicker', 'size'=>15, 'default'=>date('Y-m-d'))); ?></td>
 			<td><?php echo $this->Form->input('trader_id',array('label'=>false)); ?></td>
 		</tr>
 		

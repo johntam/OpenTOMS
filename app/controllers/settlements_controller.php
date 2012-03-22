@@ -22,7 +22,7 @@ class SettlementsController extends AppController {
 		
 		$this->set('settlements', $this->Settlement->find('all', $params));
 		$this->set('sectype_id', $sectype_id);
-		$this->set('secTypes', $this->Settlement->SecType->find('list', array('fields'=>array('SecType.sec_type_name'),'order'=>array('SecType.sec_type_name'))));
+		$this->set('secTypes', $this->Settlement->SecType->find('list', array('conditions'=>array('SecType.act ='=>1),'fields'=>array('SecType.sec_type_name'),'order'=>array('SecType.sec_type_name'))));
 		$this->set('countries', $this->Settlement->Country->find('list', array('fields'=>array('Country.country_name'),'order'=>array('Country.country_name'))));
 		
 		//Find the default settlement rule for this sec type

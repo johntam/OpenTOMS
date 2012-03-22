@@ -12,6 +12,9 @@ class SecType extends AppModel {
 		else if ($data['SecType']['exchrate'] == 1) {
 			return 2;
 		}
+		else if ($data['SecType']['cfd'] == 1) {
+			return 0;
+		}
 		else {
 			return 3;
 		}

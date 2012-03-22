@@ -193,6 +193,10 @@ class TradesController extends AppController {
 				$this->data['Trade']['quantity'] = $sign * abs($this->data['Trade']['quantity']);
 				$this->data['Trade']['consideration'] = $sign * abs($this->data['Trade']['quantity']);
 			}
+			
+			//put in trade date and settlement date
+			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
+			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
 		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
@@ -535,10 +539,7 @@ class TradesController extends AppController {
 	
 	//calculate settlement date
 	function ajax_settdate() {
-		$td_year = $this->params['data']['Trade']['trade_date']['year'];
-		$td_month = $this->params['data']['Trade']['trade_date']['month'];
-		$td_day = $this->params['data']['Trade']['trade_date']['day'];
-		$td = mktime(0,0,0,$td_month,$td_day,$td_year);
+		$td = strtotime($this->params['data']['Trade']['trade_date_input']);
 		$sec_id = $this->params['data']['Trade']['sec_id'];
 	
 		if (!empty($sec_id)) {
@@ -611,10 +612,39 @@ class TradesController extends AppController {
 		$this->render('/elements/ajax_settdate', 'ajax');
 	}
 	
+	
+	//check that the trade date just chosen is not a holiday or a weekend day
+	function ajax_checktradedate() {	
+		$trade_date = strtotime($this->params['form']['trade_date']);
+		$sec_id = $this->params['form']['sec_id'];
+		$datecheck = 0;
+		
+		//check date is not a weekend day
+		if ((date('l', $trade_date) == 'Saturday') || (date('l', $trade_date) == 'Sunday')) {
+			$datecheck = 1;
+		}
+	
+		//check date is not a holiday, first find country of selected security
+		$country_id = $this->Trade->Sec->read('country_id', $sec_id);
+		$country_id = $country_id['Sec']['country_id'];
+		App::import('model','Holiday');
+		$holmodel = new Holiday();
+		$hols = $holmodel->find('count', array('conditions'=>array('Holiday.country_id =' => $country_id,
+																   'Holiday.holiday_day =' => date('d', $trade_date) ,
+																   'Holiday.holiday_month =' => date('m', $trade_date))));
+		if ($hols > 0) {
+			$datecheck = 2;
+		}
+		
+		$this->set('data', $datecheck);
+		$this->render('/elements/ajax_common', 'ajax');		
+	}
+	
+	
 	//Check price entered is not too far away from a price in the price history table
 	function ajax_checkprice() {
 		$exec_price = $this->params['data']['Trade']['execution_price'];
-		$trade_date = $this->params['data']['Trade']['trade_date'];
+		$trade_date = $this->params['data']['Trade']['trade_date_input'];
 		$sec_id = $this->params['data']['Trade']['sec_id'];
 		$this->set('checkprice', null);
 		
@@ -637,7 +667,7 @@ class TradesController extends AppController {
 	
 	//work out the accrued interest
 	function ajax_accrued() {
-		$settdate = $this->params['data']['Trade']['settlement_date'];
+		$settdate = $this->params['data']['Trade']['settlement_date_input'];
 		$secid = $this->params['data']['Trade']['sec_id'];
 		$qty = str_replace(',','',$this->params['data']['Trade']['quantity']);
 			

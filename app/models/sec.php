@@ -133,7 +133,7 @@ class Sec extends AppModel {
 		
 		//first find out when the last coupon date was
 		$date = strtotime($coupon_date['Sec']['prev_coupon_date']);
-		$sett = mktime(0,0,0,$settdate['month'],$settdate['day'],$settdate['year']);
+		$sett = strtotime($settdate);
 		if ($freq['Sec']['coupon_frequency'] == 'ann') {
 			$period = '+1 Year';
 		}

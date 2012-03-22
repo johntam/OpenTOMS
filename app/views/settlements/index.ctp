@@ -27,7 +27,7 @@
 			<?php echo $this->Form->input('country_id', array('label'=>false)); ?>
 		</td>
 		<td style="width: 5%;">
-			<?php echo $this->Form->input('settlement_days', array('label'=>false,'options' => array(1=>'T+1',2=>'T+2',3=>'T+3',4=>'T+4',5=>'T+5'))); ?>
+			<?php echo $this->Form->input('settlement_days', array('label'=>false,'options' => array(0=>'T+0', 1=>'T+1',2=>'T+2',3=>'T+3',4=>'T+4',5=>'T+5'))); ?>
 		</td>
 		<td style="width: 8%;">
 			<?php echo $this->Form->input('sec_type_id', array('type'=>'hidden', 'default'=>$sectype_id)); ?>

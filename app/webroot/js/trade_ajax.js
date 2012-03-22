@@ -11,6 +11,8 @@ $(document).ready(function() {
 		$("#settdate_busy").hide();
 		$("#notional_busy").hide();
 		put_seclink();
+		$('#tradedatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+		$('#settlementdatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	
 		$("#TradeSecId").change(function() {
 			$("#sec_link").html("");
@@ -114,12 +116,13 @@ $(document).ready(function() {
 		});
 		
 		
-		$("select[id^=TradeTradeDate]").change(function() {
+		$("#tradedatepicker").change(function() {
 			if ($("#TradeSecId option:selected").text() != 'Select Security') {
 				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
 				$("#settdate_busy").show();
 				check_price();
 				calc_settdate();
+				check_tradedate();
 				
 				$.when( calc_settdate() )
 					.then(function(){
@@ -204,10 +207,7 @@ $(document).ready(function() {
 				$("#TradeInputForm").serialize(),
 				function(data) {
 					if (data.indexOf("-") > 0) {
-						var myDate = data.split("-");
-						$("#TradeSettlementDateMonth").val(myDate[1]);
-						$("#TradeSettlementDateDay").val(myDate[2]);
-						$("#TradeSettlementDateYear").val(myDate[0]);
+						$("#settlementdatepicker").val(data);
 						$("#settdate_busy").hide();
 					}
 					
@@ -390,4 +390,21 @@ $(document).ready(function() {
 						"text"
 					);
 			}
+	}
+	
+	function check_tradedate() {
+		if ($("#TradeSecId option:selected").text() != 'Select Security') {
+			$.post("/trades/ajax_checktradedate?" + (new Date()).getTime(),
+					{ trade_date : $("#tradedatepicker").val() , sec_id : $("#TradeSecId option:selected").val() },
+					function(data) {
+						if (data == 1) {
+							alert("Warning: trade date is a weekend");
+						}
+						else if (data == 2) {
+							alert("Warning: trade date falls on a holiday");
+						}						
+					},
+					"text"
+				);
+		}
 	}
