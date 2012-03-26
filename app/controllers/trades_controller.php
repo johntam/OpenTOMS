@@ -495,13 +495,13 @@ class TradesController extends AppController {
 			$valpoint = $valpointCACHE[$secid];
 		
 			//Check to see if this trade-type is a credit/debit to the trading cash ledger
-			if (($creditCACHE = Cache::read('creditdebit')) === false) {
-				$readdb = $this->Trade->TradeType->find('all', array('fields' => array('TradeType.id', 'TradeType.credit_debit')));
+			if (($creditCACHE = Cache::read('trade_type_credit')) === false) {
+				$readdb = $this->Trade->TradeType->find('all', array('fields' => array('TradeType.id', 'TradeType.credit_account_id')));
 				$creditCACHE = array(); 
 				foreach($readdb as $c) { 
-					$creditCACHE[$c['TradeType']['id']] = $c['TradeType']['credit_debit']; 
+					$creditCACHE[$c['TradeType']['id']] = $c['TradeType']['credit_account_id']; 
 				}
-				Cache::write('creditdebit', $creditCACHE);
+				Cache::write('trade_type_credit', $creditCACHE);
 			}
 			$credit = $creditCACHE[$ttid];
 
@@ -509,21 +509,21 @@ class TradesController extends AppController {
 			$consid = 0;
 			
 			if (!$this->Trade->Sec->is_deriv($secid)) {
-				//handle cashflow differently for buys and sells
-				if ($credit == 'credit') {
-					$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts + $accrued;
+				//handle cashflow differently for buys and sells, credit account 2 is cash
+				if ($credit == 2) {
+					$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts - $accrued;
 				}
 				else {
-					$consid = -abs($qty * $price * $valpoint) - $commission - $tax - $othercosts - $accrued;
+					$consid = abs($qty * $price * $valpoint) - $commission - $tax - $othercosts + $accrued;
 				}
 			}
 			else {
 				$consid = - $commission - $tax - $othercosts;
-				if ($credit == 'credit') {
-					$notional = abs($qty * $price * $valpoint);
+				if ($credit == 2) {
+					$notional = -abs($qty * $price * $valpoint);
 				}
 				else {
-					$notional = -abs($qty * $price * $valpoint);
+					$notional = abs($qty * $price * $valpoint);
 				}
 			}
 			
@@ -674,7 +674,7 @@ class TradesController extends AppController {
 		$return = $this->Trade->Sec->accrued($secid, $settdate);
 		if ($return['code'] == 0) {
 			$accrued = $return['accrued'];
-			$this->set('data', number_format($qty * $accrued / 100,2));
+			$this->set('data', number_format(abs($qty) * $accrued / 100,2));
 		}
 		elseif ($return['code'] == 1) {
 			$this->set('data', 'error:'.$return['message']);

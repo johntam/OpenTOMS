@@ -16,7 +16,7 @@ class Ledger extends AppModel {
 			'fields' => array('Trade.fund_id','Trade.trade_date','Trade.id','Trade.crd','Trade.trade_type_id','TradeType.trade_type','TradeType.debit_account_id',
 							'TradeType.credit_account_id', 'Trade.consideration', 'Trade.notional_value','Currency.id','Currency.currency_iso_code','Trade.quantity',
 							'Fund.fund_name', 'Sec.sec_name', 'Sec.id', 'Trade.execution_price', 'Sec.valpoint','Trade.commission','Trade.tax','Trade.other_costs', 
-							'Sec.currency_id', 'Trade.settlement_date'),
+							'Sec.currency_id', 'Trade.settlement_date','Trade.custodian_id'),
 			'joins' => array(	array('table'=>'trade_types',
 									  'alias'=>'TradeType2',
 									  'type'=>'inner',
@@ -74,6 +74,7 @@ class Ledger extends AppModel {
 			$last_td_crd = 0;
 			foreach ($posts as $post) {
 				$fund = $post['Trade']['fund_id'];
+				$cust = $post['Trade']['custodian_id'];
 				$td = $post['Trade']['trade_date'];
 				$sd = $post['Trade']['settlement_date'];
 				$tid = $post['Trade']['id'];
@@ -139,6 +140,7 @@ class Ledger extends AppModel {
 								'crd' => DboSource::expression('NOW()'),
 								'fund_id' => $fund,
 								'account_id' => $debitid,
+								'custodian_id' => $cust,
 								'ledger_date' => $date,
 								'trade_date' => $td,
 								'settlement_date' => $sd,

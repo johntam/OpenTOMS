@@ -143,6 +143,7 @@ class JournalsController extends AppController {
 		$this->set('funds', $this->Journal->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
 		$this->set('tradeTypes', $this->Journal->TradeType->find('list', array('conditions'=>array('TradeType.category ='=>'Non-trading'),'fields'=>array('TradeType.trade_type'),'order'=>array('TradeType.id'))));
 		$this->set('currencies', $this->Journal->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+		$this->set('custodians', $this->Journal->Custodian->find('list', array('fields'=>array('Custodian.custodian_name'),'order'=>array('Custodian.custodian_name'))));
 	}
 }
 ?>

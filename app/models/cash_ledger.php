@@ -7,7 +7,7 @@ class CashLedger extends AppModel {
 	
 	
 	//get the carried forward cash balance at $date on a settlement date basis
-	function carry_forward($fund, $date, $ccy) {
+	function carry_forward($fund, $date, $ccy, $cust) {
 		$debit = 0;
 		$credit = 0;
 		$quantity = 0;

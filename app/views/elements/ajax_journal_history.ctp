@@ -1,6 +1,7 @@
 	<tr>
 		<th>Date</th>
 		<th>Type</th>
+		<th>Custodian</th>
 		<th>Amount</th>
 		<th>Currency</th>
 		<th>Action</th>
@@ -15,6 +16,9 @@
 			</td>
 			<td>
 				<?php echo $journal['TradeType']['trade_type']; ?>
+			</td>
+			<td>
+				<?php echo $journal['Custodian']['custodian_name']; ?>
 			</td>
 			<td style="text-align: right;">
 				<div id="dispqty"><?php echo preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$journal['Journal']['quantity']); ?></div>

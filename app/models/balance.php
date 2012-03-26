@@ -31,7 +31,7 @@ class Balance extends AppModel {
 		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
 		$newbal = array();
 		foreach ($baldata as $b) {
-			$newbal[$b['Balance']['account_id']][$b['Balance']['sec_id']][] = array('ledger_debit'=>$b['Balance']['balance_debit'],
+			$newbal[$b['Balance']['custodian_id']][$b['Balance']['account_id']][$b['Balance']['sec_id']][] = array('ledger_debit'=>$b['Balance']['balance_debit'],
 																					'ledger_credit'=>$b['Balance']['balance_credit'],
 																					'quantity'=>$b['Balance']['balance_quantity'],
 																					'currency_id'=>$b['Balance']['currency_id'],
@@ -41,7 +41,7 @@ class Balance extends AppModel {
 		}
 				
 		foreach ($ledgdata as $l) {
-			$newbal[$l['Ledger']['account_id']][$l['Ledger']['sec_id']][] = array(  'ledger_debit'=>$l['Ledger']['ledger_debit'],
+			$newbal[$l['Ledger']['custodian_id']][$l['Ledger']['account_id']][$l['Ledger']['sec_id']][] = array(  'ledger_debit'=>$l['Ledger']['ledger_debit'],
 																					'ledger_credit'=>$l['Ledger']['ledger_credit'],
 																					'quantity'=>$l['Ledger']['ledger_quantity'],
 																					'currency_id'=>$l['Ledger']['currency_id'],
@@ -50,9 +50,9 @@ class Balance extends AppModel {
 																					'trade_date'=>$l['Ledger']['trade_date'],
 																					'trade_id'=>$l['Ledger']['trade_id'],
 																					'settlement_date'=>$l['Ledger']['settlement_date']);
-		}
-		
-		ksort($newbal);	//make sure that the stock book (id=1) is the first to be processed, throw pnl off to the cash book below
+		}		
+
+		$newbal = $this->sortByAccountID($newbal);	//make sure that the stock book (id=1) is the first to be processed, throw pnl off to the cash book below
 		
 		//deactivate all previous balances for this month end
 		$result = $this->updateAll( array('Balance.act' => 0), 
@@ -67,192 +67,194 @@ class Balance extends AppModel {
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		//$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
 		
-		//we have a two-dimensional array of aggregated data, save it to the table now
-		foreach ($newbal as $acc=>&$n1) {
-			foreach ($n1 as $sec=>$n2) {
-				$totdeb = 0;
-				$totcred = 0;
-				$totqty = 0;
-				$ccy = 0;
-				$pnl = 0;
-				$trinv = '';
-				$ref_id = '';
-				$unsettled = '';
-				foreach ($n2 as $d) {
-					$totdeb += $d['ledger_debit'];
-					$totcred += $d['ledger_credit'];
-					$totqty += $d['quantity'];
-					$ccy = $d['currency_id'];
-					$cfd = $d['cfd'];
-					$tri = $d['trinv'];
-					if (isset($d['ref_id'])) {
-						$ref_id .= $d['ref_id'];
-						if ($cfd == 1) {
-							$unsettled .= $d['ref_id'];	//remove the settled trades later on
+		//we have a three-dimensional array of aggregated data, save it to the table now
+		foreach ($newbal as $cust=>$n0) {
+			foreach ($n0 as $acc=>&$n1) {
+				foreach ($n1 as $sec=>$n2) {
+					$totdeb = 0;
+					$totcred = 0;
+					$totqty = 0;
+					$ccy = 0;
+					$pnl = 0;
+					$trinv = '';
+					$ref_id = '';
+					$unsettled = '';
+					foreach ($n2 as $d) {
+						$totdeb += $d['ledger_debit'];
+						$totcred += $d['ledger_credit'];
+						$totqty += $d['quantity'];
+						$ccy = $d['currency_id'];
+						$cfd = $d['cfd'];
+						$tri = $d['trinv'];
+						if (isset($d['ref_id'])) {
+							$ref_id .= $d['ref_id'];
+							if ($cfd == 1) {
+								$unsettled .= $d['ref_id'];	//remove the settled trades later on
+							}
 						}
-					}
-					if (isset($d['trade_date'])) {
-						$td = $d['trade_date'];
-					}
-					else {
-						$td = null;
-					}
-					if (isset($d['trade_id'])) {
-						$tid = $d['trade_id'];
-					}
-					else {
-						$tid = null;
-					}
-					if (isset($d['settlement_date'])) {
-						$sd = $d['settlement_date'];
-					}
-					else {
-						$sd = null;
-					}
-					if (isset($d['unsettled'])) {
-						$unsettled .= $d['unsettled'];
-					}
-					
-					
-					//only work out realised P&L for securities, not cash
-					if ($acc == 1) {
-						$result = $this->fifo($trinv, $tri);
-						$pnl = $result[0];
-						$trinv = $result[1];
-						
-						//process any PnL thrown off this security this month
-						if ($cfd) {
-							//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
-							
-							//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
-							//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
-							if ($pnl > 0) {
-								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
-																						 'ledger_credit'=>0,
-																						 'quantity'=>$pnl,
-																						 'currency_id'=>$ccy,
-																						 'cfd'=>$cfd,
-																						 'trinv'=>'');
-								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																							 'ledger_credit'=>$pnl,
-																							 'quantity'=>0,
-																							 'currency_id'=>$ccy,
-																							 'cfd'=>$cfd,
-																							 'trinv'=>'',
-																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
-							}
-							else if ($pnl < 0) {
-								$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																						 'ledger_credit'=>abs($pnl),
-																						 'quantity'=>$pnl,
-																						 'currency_id'=>$ccy,
-																						 'cfd'=>$cfd,
-																						 'trinv'=>'');
-								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
-																							 'ledger_credit'=>0,
-																							 'quantity'=>0,
-																							 'currency_id'=>$ccy,
-																							 'cfd'=>$cfd,
-																							 'trinv'=>'',
-																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
-							}
+						if (isset($d['trade_date'])) {
+							$td = $d['trade_date'];
 						}
 						else {
-							//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
-							if ($pnl > 0) {
-								$totdeb += $pnl;
-								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
-																							 'ledger_credit'=>$pnl,
-																							 'quantity'=>0,
-																							 'currency_id'=>$ccy,
-																							 'cfd'=>$cfd,
-																							 'trinv'=>'',
-																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.';');
-							}
-							else if ($pnl < 0) {
-								$totcred += abs($pnl);
-								$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+							$td = null;
+						}
+						if (isset($d['trade_id'])) {
+							$tid = $d['trade_id'];
+						}
+						else {
+							$tid = null;
+						}
+						if (isset($d['settlement_date'])) {
+							$sd = $d['settlement_date'];
+						}
+						else {
+							$sd = null;
+						}
+						if (isset($d['unsettled'])) {
+							$unsettled .= $d['unsettled'];
+						}
+						
+						
+						//only work out realised P&L for securities, not cash
+						if ($acc == 1) {
+							$result = $this->fifo($trinv, $tri);
+							$pnl = $result[0];
+							$trinv = $result[1];
+							
+							//process any PnL thrown off this security this month
+							if ($cfd) {
+								//for cfd types need to add the pnl to cash, double-entry to the opposite side in the PnL account
+								
+								//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
+								//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
+								if ($pnl > 0) {
+									$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
 																							 'ledger_credit'=>0,
-																							 'quantity'=>0,
+																							 'quantity'=>$pnl,
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>$cfd,
-																							 'trinv'=>'',
-																							 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.';');
+																							 'trinv'=>'');
+									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																								 'ledger_credit'=>$pnl,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.':'.$cust.';');
+								}
+								else if ($pnl < 0) {
+									$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																							 'ledger_credit'=>abs($pnl),
+																							 'quantity'=>$pnl,
+																							 'currency_id'=>$ccy,
+																							 'cfd'=>$cfd,
+																							 'trinv'=>'');
+									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+																								 'ledger_credit'=>0,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.':'.$cust.';');
+								}
+							}
+							else {
+								//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
+								if ($pnl > 0) {
+									$totdeb += $pnl;
+									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																								 'ledger_credit'=>$pnl,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.':'.$cust.';');
+								}
+								else if ($pnl < 0) {
+									$totcred += abs($pnl);
+									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+																								 'ledger_credit'=>0,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($pnl).':'.'0'.':'.$pnl.':'.$sd.':'.$cust.';');
+								}
 							}
 						}
 					}
-				}
-				
-				
-				//For the unsettled field entry, remove any trades that have settled this month.
-				//This field is used by the CashLedger model to add back in any unsettled trades into
-				//the cash figures.
-				$still_unsettled = '';
-				$sp1 = explode(";", $unsettled);
-				foreach ($sp1 as $sp2) {
-					if (!empty($sp2)) {
-						$sp3 = explode(':', "$sp2:::::::");
-						if (strtotime($sp3[7]) > strtotime($date)) {	//$sp3[7] is the settlement date
-							$still_unsettled .= $sp2.';';
+					
+					
+					//For the unsettled field entry, remove any trades that have settled this month.
+					//This field is used by the CashLedger model to add back in any unsettled trades into
+					//the cash figures.
+					$still_unsettled = '';
+					$sp1 = explode(";", $unsettled);
+					foreach ($sp1 as $sp2) {
+						if (!empty($sp2)) {
+							$sp3 = explode(':', "$sp2::::::::");
+							if (strtotime($sp3[7]) > strtotime($date)) {	//$sp3[7] is the settlement date
+								$still_unsettled .= $sp2.';';
+							}
 						}
 					}
-				}
-				
-				
-				//write this result line to the database, only if the position is non-zero though
-				if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
-					$data['Balance'] = array('act' => 1,
-											 'locked' => 0,
-											 'crd'=>DboSource::expression('NOW()'),
-											 'fund_id' => $fund,
-											 'account_id'=>$acc,
-											 'balance_date'=>$date,
-											 'balance_debit'=>$totdeb,
-											 'balance_credit'=>$totcred,
-											 'balance_cfd'=>$cfd,
-											 'currency_id'=>$ccy,
-											 'balance_quantity'=>$totqty,
-											 'sec_id'=>$sec,
-											 'trinv'=>$trinv,
-											 'ref_id'=>$ref_id,
-											 'unsettled'=>$still_unsettled);
-					$this->create($data);
-					$this->save();
-				}
-				
-				
-				/*
-				//if this is a bond, add in accrued interest which should be calculated from the last
-				//balance calculation date to the journal posting date
-				App::import('model','Sec');
-				$sec = new Sec();
-				$result = $sec->ledger_accrued($secid, $prevdate, $date);
-				if (isset($result['accrued'])) {
 					
-				
-				
-					$data = array(	'act' => 1,
-									'crd' => DboSource::expression('NOW()'),
-									'fund_id' => $fund,
-									'account_id' => $accrued_acc_id,
-									'ledger_date' => $date,
-									'trade_date' => $date,
-									'trade_id' => $tid,
-									'trade_crd' => $tcrd,
-									'ledger_debit' => $cons2,
-									'ledger_credit' => 0,
-									'ledger_cfd' => $cfd2,
-									'currency_id' => $ccy2,
-									'ledger_quantity' => $qty2,
-									'sec_id' => $secid2,
-									'trinv' => $tr2);
-					$this->create($data);
-					$this->save();
-				} */
-				
+					
+					//write this result line to the database, only if the position is non-zero though
+					if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
+						$data['Balance'] = array('act' => 1,
+												 'locked' => 0,
+												 'crd'=>DboSource::expression('NOW()'),
+												 'fund_id' => $fund,
+												 'account_id'=>$acc,
+												 'custodian_id'=>$cust,
+												 'balance_date'=>$date,
+												 'balance_debit'=>$totdeb,
+												 'balance_credit'=>$totcred,
+												 'balance_cfd'=>$cfd,
+												 'currency_id'=>$ccy,
+												 'balance_quantity'=>$totqty,
+												 'sec_id'=>$sec,
+												 'trinv'=>$trinv,
+												 'ref_id'=>$ref_id,
+												 'unsettled'=>$still_unsettled);
+						$this->create($data);
+						$this->save();
+					}
+					
+					
+					/*
+					//if this is a bond, add in accrued interest which should be calculated from the last
+					//balance calculation date to the journal posting date
+					App::import('model','Sec');
+					$sec = new Sec();
+					$result = $sec->ledger_accrued($secid, $prevdate, $date);
+					if (isset($result['accrued'])) {
+						
+					
+					
+						$data = array(	'act' => 1,
+										'crd' => DboSource::expression('NOW()'),
+										'fund_id' => $fund,
+										'account_id' => $accrued_acc_id,
+										'ledger_date' => $date,
+										'trade_date' => $date,
+										'trade_id' => $tid,
+										'trade_crd' => $tcrd,
+										'ledger_debit' => $cons2,
+										'ledger_credit' => 0,
+										'ledger_cfd' => $cfd2,
+										'currency_id' => $ccy2,
+										'ledger_quantity' => $qty2,
+										'sec_id' => $secid2,
+										'trinv' => $tr2);
+						$this->create($data);
+						$this->save();
+					} */
+					
+				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -548,7 +550,7 @@ class Balance extends AppModel {
 		$sp1 = explode(";", $ref_id);
 		foreach ($sp1 as $sp2) {
 			if (!empty($sp2)) {
-				$sp3 = explode(':', "$sp2:::::::");
+				$sp3 = explode(':', "$sp2::::::::");
 				$arr[] = array(	'sec_id'=>$sp3[0],
 								'cfd'=>$sp3[1],
 								'trade_id'=>$sp3[2],
@@ -556,10 +558,24 @@ class Balance extends AppModel {
 								'debit'=>$sp3[4], 
 								'credit'=>$sp3[5], 
 								'quantity'=>$sp3[6],
-								'settlement_date'=>$sp3[7]);
+								'settlement_date'=>$sp3[7],
+								'custodian_id'=>$sp3[8]);
 			}
 		}
 		return $arr;
+	}
+	
+	
+	//sort the multidimensional array $newbal by the second dimension, ie account_id
+	function sortByAccountID(array $array) {
+		$result = array();
+		foreach ($array as $cust => $value) {
+			$value2 = $value;
+			ksort($value2);
+			$result[$cust] = $value2;
+		}
+		   
+		return $result;
 	}
 }
 
