@@ -81,6 +81,12 @@ class BalancesController extends AppController {
 		$balances = $this->Balance->attachprices($fund, $date);
 		$this->set('balances', $balances);
 		
+		//check to see if we need to add an extra line for the fund currency fx rate
+		list($foundfundccy, $fundccysecid, $fundccyname) = $this->Balance->hasfundccy($fund, $date, $balances);
+		if (!$foundfundccy) {
+			$this->set(compact('foundfundccy', 'fundccysecid', 'fundccyname'));
+		}
+		
 		//get a list of ledger posting dates which are after the last locked balance date on the system
 		$lastlockeddate = $this->Balance->getPrevLockedDate($fund);
 		if (empty($lastlockeddate)) { $lastlockeddate = '1999-12-31'; }

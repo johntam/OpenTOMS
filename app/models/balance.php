@@ -325,7 +325,41 @@ class Balance extends AppModel {
 						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date),
 						'order' => array('Balance.custodian_id'=>'ASC', 'Balance.account_id'=>'ASC')
 					);		
+		
 		return ($this->find('all', $params));
+	}
+	
+	
+	//check to make sure that the fund currency is included in a balance list of securities, or that it has already been given an fx rate for this date
+	function hasfundccy($fund, $date, $balances) {	
+		$fundccyid = $this->Fund->read('currency_id', $fund);
+			$fundccyid = $fundccyid['Fund']['currency_id'];
+		$fundccyname = $this->Currency->read('currency_iso_code', $fundccyid);
+			$fundccyname = $fundccyname['Currency']['currency_iso_code'];
+		$fundccysecid = $this->Currency->read('sec_id', $fundccyid);
+			$fundccysecid = $fundccysecid['Currency']['sec_id'];
+		
+		$found = false;
+		
+		//first check price table
+		App::import('model','Price');
+		$pricemodel = new Price();
+		$price = $pricemodel->get_price($fundccysecid, $date);
+		
+		if (empty($price)) {
+			//not in price table so see if its in the balance list (where the user will be asked to input a price for it)
+			foreach ($balances as $b) {
+				if ($b['Sec']['sec_name'] == $fundccyname) {
+					$found = true;
+					break;
+				}
+			}
+		}
+		else {
+			$found = true;
+		}
+		
+		return (array($found, $fundccysecid, $fundccyname));
 	}
 	
 	

@@ -173,11 +173,17 @@ class Price extends AppModel {
 	//Return price of the given security on the given date
 	//$date is expected in the standard cakephp array format
 	function get_price($sec_id, $date) {
+		if (is_array($date)) {
+			$pricedate = date('Y-m-d', mktime(0,0,0,$date['month'],$date['day'],$date['year']));
+		}
+		else {
+			$pricedate = $date;
+		}
 	
 		$params=array(
 			'fields' => array('Price.price'),
 			'conditions' => array( 'Price.sec_id =' => $sec_id,
-								   'Price.price_date =' => date('Y-m-d', mktime(0,0,0,$date['month'],$date['day'],$date['year'])))
+								   'Price.price_date =' => $pricedate)
 		);
 		$result = $this->find('first', $params);
 		

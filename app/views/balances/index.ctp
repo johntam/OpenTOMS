@@ -169,6 +169,22 @@
 	<?php endforeach; ?>
 	
 	<?php }; ?>
+	
+	<?php if (isset($foundfundccy)) { echo '
+		<tr>
+			<td style="text-align: right;" colspan="5">
+				Fund Currency
+			</td>
+			<td>
+				<input type="text" maxLength="10" id="fx_'.$fundccysecid.'" value="enter fx" class="missingprices" name="data[Balance][Pricebox][fx_'.$fundccysecid.']" />					
+			</td>
+			<td>
+				'.$fundccyname.'
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
+	'; $missingprices = true;} ?>
 </table>
 <div id='pleasewait' style='display: none; color: red; width: 80%;margin-left:10%;margin-right:10%;'>Please wait...</div>
 
