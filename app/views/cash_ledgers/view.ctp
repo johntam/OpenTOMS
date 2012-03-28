@@ -28,6 +28,13 @@
 						$('#CashLedgerForm').submit();
 					});
 					
+					$('#custodianpicker').change(function() {
+						var selectfund = $('select option:selected').val();
+						$('#maintable').html('');
+						$('#pleasewait').show();
+						$('#CashLedgerForm').submit();
+					});
+					
 					$('#leftarrow').click(function() {
 						$('#maintable').html('');
 						$('#pleasewait').show();
@@ -42,7 +49,7 @@
 
 <table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
-		<td colspan="3"><h1>Cash Ledgers</h1></td>
+		<td colspan="4"><h1>Cash Ledgers</h1></td>
 	</tr>
 	
 	<tr class="altrow">
@@ -57,6 +64,12 @@
 			<div class="high">
 				Choose which cash ledger to view
 				<?php echo $this->Form->input('ccy', array('label'=>false, 'options'=>$currencies, 'id'=>'ccypicker')); ?>
+			</div>
+		</td>
+		<td style="width: 20%;">
+			<div class="high">
+				Choose which custodian to view
+				<?php echo $this->Form->input('custodian_id', array('label'=>false, 'options'=>$custodians, 'id'=>'custodianpicker', 'empty'=>'All')); ?>
 			</div>
 		</td>
 		<td>

@@ -42,7 +42,7 @@ $(document).ready(function() {
 						}
 						
 						$.post("/balances/ajax_checkfinished?" + (new Date()).getTime(),
-							$("#baltable").find('input').serialize(),
+							$("#maintable").find('input').serialize(),
 							function(data) {
 								if (data == "yes") {
 									$("#LockButtonID").show();

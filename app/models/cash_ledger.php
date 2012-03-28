@@ -3,7 +3,7 @@
 class CashLedger extends AppModel {
     var $name = 'CashLedger';
 	var $useTable = 'ledgers';
-	var $belongsTo ='Account, Trade, Fund, Currency, Sec';
+	var $belongsTo ='Account, Trade, Fund, Currency, Sec, Custodian';
 	
 	
 	//get the carried forward cash balance at $date on a settlement date basis
@@ -21,6 +21,7 @@ class CashLedger extends AppModel {
 																	'Balance.fund_id ='=>$fund,
 																	'Balance.balance_date ='=>$date,
 																	'Balance.account_id ='=>$cash_acc_id,
+																	'Balance.custodian_id LIKE'=>$cust,
 																	'Balance.currency_id ='=>$ccy), 
 												'fields'=>array('Balance.balance_debit', 'Balance.balance_credit', 'Balance.balance_quantity')));
 		
@@ -31,7 +32,7 @@ class CashLedger extends AppModel {
 		}
 		
 		//add back any unsettled trades
-		$unsettled = $this->getUnsettled($fund, $date, $ccy);
+		$unsettled = $this->getUnsettled($fund, $date, $ccy, $cust);
 		foreach ($unsettled as $u) {
 			$debit = $debit - $u['CashLedger']['ledger_debit'];
 			$credit = $credit - $u['CashLedger']['ledger_credit'];
@@ -45,7 +46,8 @@ class CashLedger extends AppModel {
 																	'Balance.fund_id ='=>$fund,
 																	'Balance.balance_date ='=>$date,
 																	'Balance.account_id ='=>$pnl_acc__id,
-																	'Balance.currency_id ='=>$ccy), 
+																	'Balance.custodian_id LIKE'=>$cust,
+																	'Balance.currency_id ='=>$ccy),
 												'fields'=>array('Balance.unsettled')));	
 		
 		if (!empty($result)) {
@@ -58,7 +60,7 @@ class CashLedger extends AppModel {
 		}
 		
 		//Add in any FX trades detail to include that part of the trades which has been booked in the "stocks" account
-		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy);
+		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy, $cust);
 		$debit += $a;
 		$credit += $b;
 		$quantity += $c;
@@ -68,7 +70,7 @@ class CashLedger extends AppModel {
 	
 	
 	//work out the cash ledger entries, also combining in any realised PnL for cfd type instruments
-	function getCash($fund, $date, $ccy) {
+	function getCash($fund, $date, $ccy, $cust) {
 		App::import('model','Balance');
 		$balmodel = new Balance();
 		$cash_acc_id = $this->Account->getNamed('Cash');
@@ -85,6 +87,7 @@ class CashLedger extends AppModel {
 																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $cash_acc_id,
+																	'CashLedger.custodian_id LIKE' => $cust,
 																	'AND'=>array('CashLedger.ledger_date =' => $date,
 																				 'CashLedger.settlement_date <=' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -105,7 +108,7 @@ class CashLedger extends AppModel {
 		//add on the non-cfd trades which settle after the previous balance calculation date
 		$prevdate = $balmodel->getPrevBalanceDate($fund, $date);
 		if (!empty($prevdate)) {
-			$unsettled = $this->getUnsettled($fund, $prevdate, $ccy);
+			$unsettled = $this->getUnsettled($fund, $prevdate, $ccy, $cust);
 			//change the trade date to the settlement date for each of these trades
 			foreach ($unsettled as $key=>$u) {
 				$unsettled[$key]['CashLedger']['trade_date'] = $u['CashLedger']['settlement_date'];
@@ -119,6 +122,7 @@ class CashLedger extends AppModel {
 																		'Balance.fund_id ='=>$fund,
 																		'Balance.balance_date ='=>$prevdate,
 																		'Balance.account_id ='=>$pnl_acc__id,
+																		'Balance.custodian_id LIKE'=>$cust,
 																		'Balance.currency_id ='=>$ccy), 
 													'fields'=>array('Balance.unsettled')));
 			
@@ -150,6 +154,7 @@ class CashLedger extends AppModel {
 																	'Balance.fund_id ='=>$fund,
 																	'Balance.balance_date ='=>$date,
 																	'Balance.account_id ='=>$pnl_acc__id,
+																	'Balance.custodian_id LIKE'=>$cust,
 																	'Balance.currency_id ='=>$ccy),
 												'fields'=>array('Balance.ref_id')));
 		
@@ -175,7 +180,7 @@ class CashLedger extends AppModel {
 		}
 		
 		//Add in any FX trades detail to include that part of the trades which has been booked in the "stocks" account
-		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy, $prevdate);
+		list($a, $b, $c, $arr) = $this->getFXtrades($fund, $date, $ccy, $cust, $prevdate);
 		$cashdata = array_merge($cashdata, $arr);
 		
 		//remove all entries with trade date after $date, in case any were introduced by the code above
@@ -229,7 +234,7 @@ class CashLedger extends AppModel {
 	
 	
 	//Get the unsettled trades as at $date
-	function getUnsettled($fund, $date, $ccy) {
+	function getUnsettled($fund, $date, $ccy, $cust) {
 		//get id of the cash book
 		$cash_acc_id = $this->Account->getNamed('Cash');
 		
@@ -245,6 +250,7 @@ class CashLedger extends AppModel {
 																'CashLedger.other_account_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $cash_acc_id,
+																	'CashLedger.custodian_id LIKE' => $cust,
 																	'AND'=>array('CashLedger.trade_date <=' => $date,
 																				 'CashLedger.settlement_date >' => $date),
 																	'CashLedger.currency_id =' => $ccy,
@@ -264,7 +270,7 @@ class CashLedger extends AppModel {
 	
 	//Handle FX trades. In the ledger screen, any FX trades are split into two parts, one part in the "stocks" book
 	//and one in the "cash" book. This means that the cash ledger data only has half of the FX trades detail. Remedy this here.
-	function getFXtrades($fund, $date, $ccy, $prevdate = null) {
+	function getFXtrades($fund, $date, $ccy, $cust, $prevdate = null) {
 		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		$ccysecid = $this->Currency->getsecid($ccy);
 		if (empty($prevdate)) { $prevdate = '1999-12-31'; }
@@ -279,6 +285,7 @@ class CashLedger extends AppModel {
 																'CashLedger.currency_id'),
 												'conditions'=>array('CashLedger.fund_id =' => $fund,
 																	'CashLedger.account_id =' => $stocks_acc_id,
+																	'CashLedger.custodian_id LIKE' => $cust,
 																	'AND'=>array('CashLedger.trade_date >' => $prevdate,
 																				 'CashLedger.trade_date <=' => $date,
 																				 'CashLedger.settlement_date <=' => $date),

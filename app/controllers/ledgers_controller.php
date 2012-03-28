@@ -82,31 +82,28 @@ class LedgersController extends AppController {
 		if (empty($this->data)) {
 			$date = date('Y-m-d');
 			$fund = $this->Ledger->Fund->find('first', array('fields'=>array('Fund.id'),'order'=>array('Fund.fund_name')));
-		
-			$this->set('ledgers', $this->Ledger->find('all', array( 'conditions'=>array( 'Ledger.fund_id =' => $fund['Fund']['id'], 
-																						'Ledger.ledger_date =' => $date,
-																						'Ledger.act =' => 1,
-																						'Ledger.sec_id >'=> 0), 
-																	'order'=>array('Ledger.account_id' => 'ASC', 'Ledger.trade_date' => 'ASC'))));
+			$fund = $fund['Fund']['id'];
 		}
 		else {
 			$date = $this->data['Ledger']['account_date'];
 			$fund = $this->data['Ledger']['fund_id'];
-			$this->set('ledgers', $this->Ledger->find('all', array( 'fields'=>array(	'Fund.fund_name',
-																						'Account.account_name',
-																						'Ledger.trade_date',
-																						'Ledger.ledger_debit',
-																						'Ledger.ledger_credit',
-																						'Currency.currency_iso_code',
-																						'Sec.sec_name',
-																						'Ledger.ledger_quantity',
-																						'Trade.oid'),
-																	'conditions'=>array('Ledger.fund_id =' => $fund,
-																						'Ledger.ledger_date =' => $date,
-																						'Ledger.act =' => 1,
-																						'Ledger.sec_id >'=> 0), 
-																	'order'=>array('Ledger.account_id' => 'ASC', 'Ledger.trade_date' => 'ASC'))));
 		}
+		
+		$this->set('ledgers', $this->Ledger->find('all', array( 'fields'=>array('Fund.fund_name',
+																				'Account.account_name',
+																				'Custodian.custodian_name',
+																				'Ledger.trade_date',
+																				'Ledger.ledger_debit',
+																				'Ledger.ledger_credit',
+																				'Currency.currency_iso_code',
+																				'Sec.sec_name',
+																				'Ledger.ledger_quantity',
+																				'Trade.oid'),
+																'conditions'=>array('Ledger.fund_id =' => $fund,
+																					'Ledger.ledger_date =' => $date,
+																					'Ledger.act =' => 1,
+																					'Ledger.sec_id >'=> 0), 
+																'order'=>array('Ledger.custodian_id' => 'ASC', 'Ledger.account_id' => 'ASC', 'Ledger.trade_date' => 'ASC'))));
 	}
 	
 	

@@ -2,7 +2,7 @@
 
 class Ledger extends AppModel {
     var $name = 'Ledger';
-	var $belongsTo ='Account, Trade, Fund, Currency, Sec';
+	var $belongsTo ='Account, Trade, Fund, Currency, Sec, Custodian';
 	
 	//Post trade journal entries to the general ledger
 	function post($fund, $date) {	

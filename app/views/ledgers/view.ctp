@@ -67,6 +67,7 @@
 <table style="width: 80%;margin-left:10%;margin-right:10%;" id="maintable">	
 	<tr>
 		<th>Fund</th>
+		<th>Custodian</th>
 		<th>Book</th>
 		<th>Date</th>
 		<th>Debit</th>
@@ -77,12 +78,18 @@
 		<th>Trade OID</th>
 	</tr>
 	
-	<?php if (!empty($ledgers)) { ?>
+	<?php if (!empty($ledgers)) { $last_cust = $ledgers[0]['Custodian']['custodian_name']; ?>
 	
 	<?php foreach ($ledgers as $ledger): ?>
+		<?php if ($ledger['Custodian']['custodian_name'] <> $last_cust) {
+				echo '<tr class="highred"><td colspan="10"></td></tr>';
+			} ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
 				<?php echo $ledger['Fund']['fund_name']; ?>
+			</td>
+			<td>
+				<?php echo $ledger['Custodian']['custodian_name']; ?>
 			</td>
 			<td>
 				<?php echo $ledger['Account']['account_name']; ?>
@@ -106,13 +113,14 @@
 				<?php echo number_format($ledger['Ledger']['ledger_quantity'],0); ?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo $this->Html->link($ledger['Trade']['oid'], array('controller' => 'trades', 'action' => 'view',$ledger['Trade']['oid']), array('escape' => false, 'target' => '_blank')); ?>
+				<?php echo $this->Html->link($ledger['Trade']['oid'], array('controller' => 'trades', 'action' => 'view',$ledger['Trade']['oid']), array('escape' => false, 'target' => '_blank')); 
+				$last_cust = $ledger['Custodian']['custodian_name']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 	
 	<?php } else {
-				echo '<tr class="high2"><td colspan="9">No trades posted for this date</td></tr>';
+				echo '<tr class="high2"><td colspan="10">No trades posted for this date</td></tr>';
 			} ?>
 </table>
 <div id='pleasewait' style='display: none; color: red; width: 80%;margin-left:10%;margin-right:10%;'>Please wait...</div>

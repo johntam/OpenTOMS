@@ -12,7 +12,8 @@ class Holding extends AppModel {
 																 'Holding.trade_date <=' => $date,
 																 'Holding.cancelled =' => 0,
 																 'Holding.executed =' => 1,
-																 'Holding.act =' => 1),
+																 'Holding.act =' => 1,
+																 'Holding.trade_type_id <' => 5),	//only consider buy and sells, not dividend income, etc.
 											 'fields'=>array('Sec.sec_name', 'SUM(Holding.quantity) AS quantity'),
 											 'group'=>array('Sec.id', 'Sec.sec_name HAVING quantity <> 0'),
 											 'order'=>array('Sec.sec_type_id="2" ASC', 'Sec.sec_name ASC'),

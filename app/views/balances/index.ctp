@@ -89,6 +89,7 @@
 <table style="width: 80%;margin-left:10%;margin-right:10%;" id="maintable">
 	<tr>
 		<th>Fund</th>
+		<th>Custodian</th>
 		<th>Book</th>
 		<th>Debit</th>
 		<th>Credit</th>
@@ -98,12 +99,18 @@
 		<th>Price</th>
 	</tr>
 	
-	<?php if (isset($balances)) { ?>
+	<?php if (isset($balances[0])) { $last_cust = $balances[0]['Custodian']['custodian_name']; ?>
 	
 	<?php foreach ($balances as $balance): ?>
+		<?php if ($balance['Custodian']['custodian_name'] <> $last_cust) {
+				echo '<tr class="highred"><td colspan="9"></td></tr>';
+			} ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td>
 				<?php echo $balance['Fund']['fund_name']; ?>
+			</td>
+			<td>
+				<?php echo $balance['Custodian']['custodian_name']; ?>
 			</td>
 			<td>
 				<?php echo $balance['Account']['account_name']; ?>
@@ -123,7 +130,7 @@
 						}
 						else if (empty($balance['PriceFX']['fx_rate'])) {
 									echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
-										"' value='missing' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
+										"' value='enter fx' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
 									$missingprices = true;
 						}
 						else {
@@ -149,7 +156,7 @@
 						}
 						else if (empty($balance['Price']['price'])) {
 							echo "<input type='text' maxLength='10' id='pr_".$balance['Sec']['id'].
-								"' value='missing' class='missingprices' name='data[Balance][Pricebox][pr_".$balance['Sec']['id']."]' />";
+								"' value='enter price' class='missingprices' name='data[Balance][Pricebox][pr_".$balance['Sec']['id']."]' />";
 							$missingprices = true;
 						}
 						else {
@@ -158,6 +165,7 @@
 				?>
 			</td>
 		</tr>
+		<?php $last_cust = $balance['Custodian']['custodian_name']; ?>
 	<?php endforeach; ?>
 	
 	<?php }; ?>

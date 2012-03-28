@@ -2,7 +2,7 @@
 
 class Balance extends AppModel {
     var $name = 'Balance';
-	var $belongsTo ='Account, Currency, Fund, Sec';
+	var $belongsTo ='Account, Currency, Fund, Sec, Custodian';
 	
 	//calculate the month end balances, using the last month end balances and this month's general ledger
 	function calc($fund, $date) {
@@ -28,7 +28,7 @@ class Balance extends AppModel {
 																   'Ledger.sec_id >' => 0), 
 											   'order'=>array('Ledger.trade_crd ASC')));
 		
-		//Aggregate these two sets together, GROUP BY (account_id, sec_id)
+		//Aggregate these two sets together, GROUP BY (custodian_id, account_id, sec_id)
 		$newbal = array();
 		foreach ($baldata as $b) {
 			$newbal[$b['Balance']['custodian_id']][$b['Balance']['account_id']][$b['Balance']['sec_id']][] = array('ledger_debit'=>$b['Balance']['balance_debit'],
@@ -266,6 +266,7 @@ class Balance extends AppModel {
 		$params=array(	'fields' => array(	'Fund.fund_name',
 											'Account.id',
 											'Account.account_name',
+											'Custodian.custodian_name',
 											'Balance.balance_debit',
 											'Balance.balance_credit',
 											'Currency.currency_iso_code',
@@ -322,7 +323,7 @@ class Balance extends AppModel {
 											  )
 										),
 						'conditions' => array('Balance.act ='=>1, 'Balance.fund_id ='=>$fund, 'Balance.balance_date ='=>$date),
-						'order' => array('Balance.account_id')
+						'order' => array('Balance.custodian_id'=>'ASC', 'Balance.account_id'=>'ASC')
 					);		
 		return ($this->find('all', $params));
 	}

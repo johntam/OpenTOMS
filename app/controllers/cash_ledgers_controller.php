@@ -52,6 +52,15 @@ class CashLedgersController extends AppController {
 		$date = $this->data['CashLedger']['account_date'];
 		$fund = $this->data['CashLedger']['fund_id'];
 		$ccy = $this->data['CashLedger']['ccy'];
+		if (!isset($this->data['CashLedger']['custodian_id'])) { 
+			$cust = '%';
+		}
+		else if (empty($this->data['CashLedger']['custodian_id'])) {
+			$cust = '%';
+		}
+		else {
+			$cust = $this->data['CashLedger']['custodian_id'];
+		}
 		
 		App::import('model','Balance');
 		$balmodel = new Balance();
@@ -63,11 +72,11 @@ class CashLedgersController extends AppController {
 			$this->set('message', 'A newer journal posting has been made. Please rerun the balance calculation to update the cash ledger.');
 		}
 		else {
-			$this->set('cashledgers', $this->CashLedger->getCash($fund, $date, $ccy));
+			$this->set('cashledgers', $this->CashLedger->getCash($fund, $date, $ccy, $cust));
 			$this->set('thisdate', $date);
 			
 			//get the balances calculated at the end date from the balances table
-			list($end_debit, $end_credit, $end_qty) = $this->CashLedger->carry_forward($fund, $date, $ccy);
+			list($end_debit, $end_credit, $end_qty) = $this->CashLedger->carry_forward($fund, $date, $ccy, $cust);
 			$this->set(compact('end_debit', 'end_credit', 'end_qty'));
 		}
 																	
@@ -75,7 +84,7 @@ class CashLedgersController extends AppController {
 		//need the balance date prior to $date
 		$prevdate = $balmodel->getPrevBalanceDate($fund, $date);
 		if (!empty($prevdate)) {
-			list($start_debit, $start_credit, $start_qty) = $this->CashLedger->carry_forward($fund, $prevdate, $ccy);
+			list($start_debit, $start_credit, $start_qty) = $this->CashLedger->carry_forward($fund, $prevdate, $ccy, $cust);
 			$this->set(compact('start_debit', 'start_credit', 'start_qty'));
 			$this->set('prevdate', $prevdate);
 		}
@@ -88,6 +97,7 @@ class CashLedgersController extends AppController {
 	function dropdownchoices() {
 		$this->set('funds', $this->CashLedger->Fund->find('list', array('fields'=>array('Fund.id','Fund.fund_name'),'order'=>array('Fund.fund_name'))));
 		$this->set('currencies', $this->CashLedger->Currency->find('list', array('fields'=>array('Currency.currency_iso_code'),'order'=>array('Currency.currency_iso_code'))));
+		$this->set('custodians', $this->CashLedger->Custodian->find('list', array('fields'=>array('Custodian.id','Custodian.custodian_name'),'order'=>array('Custodian.custodian_name'))));
 	}
 	
 	
