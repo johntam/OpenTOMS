@@ -74,7 +74,6 @@ class ValuationReportsController extends AppController {
 	//run the valuation report (based on balance calculation)
 	function run() {
 		$this->autoRender = false;
-		
 		$fund = $this->data['ValuationReport']['fund_id'];
 		$date = $this->data['ValuationReport']['run_date'];
 		
@@ -91,6 +90,7 @@ class ValuationReportsController extends AppController {
 	
 	//show report
 	function show($fund, $date) {
+		$this->set('fundccyname', $this->ValuationReport->Fund->get_fund_ccy_name($fund));
 		$this->set('valuations', $this->ValuationReport->find('all', array('conditions'=>array('ValuationReport.act'=>1, 
 																							 'ValuationReport.pos_date'=>$date, 
 																							 'ValuationReport.fund_id'=>$fund), 

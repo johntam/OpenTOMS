@@ -24,10 +24,10 @@
 		<th>Market Val (Local)</th>
 		<th>Currency</th>
 		<th>FX Rate</th>
-		<th>Market Val (USD)</th>
+		<th>Market Val (<?php echo $fundccyname; ?>)</th>
 	</tr>
 	
-	<?php if (isset($valuations)) { $totmvusd = 0; ?>
+	<?php if (isset($valuations)) { $totmvfund = 0; ?>
 	
 	<?php foreach ($valuations as $valuation): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
@@ -52,14 +52,14 @@
 				<?php echo number_format($valuation['ValuationReport']['fx_rate'],4); ?>
 			</td>
 			<td style="text-align: right;">
-				<?php echo number_format($valuation['ValuationReport']['mkt_val_usd'],2); 
-					$totmvusd += $valuation['ValuationReport']['mkt_val_usd']; ?>
+				<?php echo number_format($valuation['ValuationReport']['mkt_val_fund'],2); 
+					$totmvfund += $valuation['ValuationReport']['mkt_val_fund']; ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 		<tr class="total">
 			<td colspan="6"></td>
-			<td style="text-align: right;"><?php echo number_format($totmvusd,2); ?></td>
+			<td style="text-align: right;"><?php echo number_format($totmvfund,2); ?></td>
 		</tr>
 	<?php }; ?>
 </table>

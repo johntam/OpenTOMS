@@ -196,6 +196,22 @@ class Price extends AppModel {
 	}
 	
 	
+	//Return price of the given security on the given date
+	function get_fx($ccyid, $date) {
+		App::import('model','Currency');
+		$currency = new Currency();
+		$ccysecid = $currency->getsecid($ccyid);
+		
+		$fx = $this->find('all', array('conditions'=>array('Price.price_date ='=>$date, 'Price.sec_id ='=>$ccysecid, 'Price.price_source ='=>'DFLT')));
+		if (!empty($fx)) {
+			return($fx[0]['Price']['fx_rate']);
+		}
+		else {
+			return false;
+		}	
+	}
+	
+	
 	//write a price to the database. used by the ajax routines on the balance view page.
 	function put_price($sec_id, $date, $price, $fx_rate) {		
 		if ($this->islocked($sec_id, $date)) {

@@ -17,7 +17,15 @@ class ValuationReport extends AppModel {
 			$final = 0;
 		}
 		
-		//check to see if there are any missing prices or fx rates
+		//check to see if fx rate for fund currency to USD exists or not
+		$fundccy = $this->Fund->get_fund_ccy($fund);
+		App::import('model','Price');
+		$pricemodel = new Price();
+		if (!($fundfx = $pricemodel->get_fx($fundccy, $date))) {
+			return (array(false, 'Missing fx rate for fund currency for date '.$date));
+		}
+		
+		//check to see if there are any other missing prices or fx rates
 		foreach ($baldata as $b) {
 			if ((empty($b['Price']['price']) || empty($b['PriceFX']['fx_rate'])) && ($b['Balance']['balance_quantity'] <> 0)) {
 				$missing = true;
@@ -34,7 +42,7 @@ class ValuationReport extends AppModel {
 			return (array(false, 'Could not access database, operation aborted'));
 		}
 		
-		//need to segregate all cash items together, this will group all accounts and custodians together
+		//need to aggregate all individual securities and cash, this will group by accounts and custodians
 		$temp = array();
 		foreach ($baldata as $b) {
 			$temp[$b['Sec']['id']][] = $b;
@@ -45,23 +53,31 @@ class ValuationReport extends AppModel {
 		foreach ($temp as $secid=>$s) {
 			$totqty = 0;
 			$mvlocal = 0;
-			$mvusd = 0;
+			$mvfund = 0;
 			foreach ($s as $c) {
 				$secid = $c['Sec']['id'];
 				$sectype = $c['Sec']['sec_type_id'];
 				$qty = $c['Balance']['balance_quantity'];
 				$price = $c['Price']['price'];
 				$ccy = $c['Balance']['currency_id'];
-				$fxrate = $c['PriceFX']['fx_rate'];
 				$valpoint = $c['Sec']['valpoint'];
 				$cfd = $c['SecType']['cfd'];
 				$trinv = $c['Balance']['trinv'];
+				if (empty($c['Price']['fx_rate'])) {
+					//normal security
+					$fxrate = $c['PriceFX']['fx_rate'] / $fundfx;
+				}
+				else {
+					//cash security
+					$fxrate = $c['Price']['fx_rate'] / $fundfx;
+					$ccy = $this->Currency->getCurrencyID($secid);
+				}
 				
 				//now calculate totals
 				$totqty += $qty;
 				if ($cfd == 0) {
 					$mvlocal += ($qty * $price * $valpoint);
-					$mvusd += ($qty * $price * $valpoint * $fxrate);
+					$mvfund += ($qty * $price * $valpoint * $fxrate);
 				}
 				else {
 					$closeout = strtotime('now').':'.(-$qty).':'.$price.':'.$valpoint.';';
@@ -70,7 +86,7 @@ class ValuationReport extends AppModel {
 						return (array(false, 'Problem with FIFO calculation, operation aborted '));
 					}
 					$mvlocal += $pnl;
-					$mvusd += ($pnl * $fxrate);				
+					$mvfund += ($pnl * $fxrate);	
 				}
 			}
 			
@@ -87,7 +103,7 @@ class ValuationReport extends AppModel {
 											'currency_id'=>$ccy,
 											'fx_rate'=>$fxrate,
 											'mkt_val_local'=>$mvlocal,
-											'mkt_val_usd'=>$mvusd);
+											'mkt_val_fund'=>$mvfund);
 			$this->create();
 			$this->save($data);
 		}

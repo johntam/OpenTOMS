@@ -272,6 +272,7 @@ class Balance extends AppModel {
 											'Sec.sec_name',
 											'Balance.balance_quantity',
 											'Price.price',
+											'Price.fx_rate',	//used for cash securities in stocks account
 											'PriceFX.fx_rate',
 											'Price.sec_id',
 											'Balance.sec_id',
