@@ -68,8 +68,8 @@ class Balance extends AppModel {
 		//$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
 		
 		//we have a three-dimensional array of aggregated data, save it to the table now
-		foreach ($newbal as $cust=>$n0) {
-			foreach ($n0 as $acc=>&$n1) {
+		foreach ($newbal as $cust=>&$n0) {
+			foreach ($n0 as $acc=>$n1) {
 				foreach ($n1 as $sec=>$n2) {
 					$totdeb = 0;
 					$totcred = 0;
@@ -128,13 +128,13 @@ class Balance extends AppModel {
 								//also, for the use of the cash ledger screen, for the benefit of other functions, record the trade details in the ref_id column under the Profit and Loss Account entries
 								//the format of the ref_id "atoms" are sec_id:cfd:debit amt:credit amt:quantity;
 								if ($pnl > 0) {
-									$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
+									$newbal[$cust][$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>$pnl,
 																							 'ledger_credit'=>0,
 																							 'quantity'=>$pnl,
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>$cfd,
 																							 'trinv'=>'');
-									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+									$newbal[$cust][$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
 																								 'ledger_credit'=>$pnl,
 																								 'quantity'=>0,
 																								 'currency_id'=>$ccy,
@@ -143,13 +143,13 @@ class Balance extends AppModel {
 																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$pnl.':'.$pnl.':'.$sd.':'.$cust.';');
 								}
 								else if ($pnl < 0) {
-									$newbal[$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+									$newbal[$cust][$cash_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
 																							 'ledger_credit'=>abs($pnl),
 																							 'quantity'=>$pnl,
 																							 'currency_id'=>$ccy,
 																							 'cfd'=>$cfd,
 																							 'trinv'=>'');
-									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+									$newbal[$cust][$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
 																								 'ledger_credit'=>0,
 																								 'quantity'=>0,
 																								 'currency_id'=>$ccy,
@@ -162,7 +162,7 @@ class Balance extends AppModel {
 								//for non-cfd types need to add pnl back to security line, double-entry to the opposite side in the PnL account
 								if ($pnl > 0) {
 									$totdeb += $pnl;
-									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+									$newbal[$cust][$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
 																								 'ledger_credit'=>$pnl,
 																								 'quantity'=>0,
 																								 'currency_id'=>$ccy,
@@ -172,7 +172,7 @@ class Balance extends AppModel {
 								}
 								else if ($pnl < 0) {
 									$totcred += abs($pnl);
-									$newbal[$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
+									$newbal[$cust][$pnl_acc__id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($pnl),
 																								 'ledger_credit'=>0,
 																								 'quantity'=>0,
 																								 'currency_id'=>$ccy,
@@ -198,7 +198,6 @@ class Balance extends AppModel {
 							}
 						}
 					}
-					
 					
 					//write this result line to the database, only if the position is non-zero though
 					if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		

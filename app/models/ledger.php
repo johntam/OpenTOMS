@@ -108,22 +108,33 @@ class Ledger extends AppModel {
 				//first line of double-entry, doing the DEBIT side
 				if ($debitid > 1) {		//cash type account
 					$secid2 = $this->Currency->getsecid($tccy);
-					if ($debitid == 2) {
-						$qty2 = $cons;	//only cash book itself has a quantity
-					}
-					else {
-						$qty2 = 0;
-					}
 					$tr2 = '';
 					$ccy2 = $tccy;
 					$cfd2 = 0;
-					$cons_debit = abs($cons);
-					$cons_credit = 0;
+					$qty2 = 0;
+						
+					//cash has the full quantity whereas other accounts below it have zero quantity
+					if ($debitid == 2) {
+						$qty2 = $cons;
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($debitid, $cons);
+					}
+					else if ($debitid == 3) {
+						//contributed capital can be either + or - as we are using the same account for both subs and reds
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($debitid, $cons);
+					}
+					else {
+						//other accounts are only "one-way" with respect to cash
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($debitid, abs($cons));
+					}
 				}
-				else {	//special case of stocks
+				else {	//stock type account
 					$secid2 = $secid;
 					$qty2 = $qty;
 					$tr2 = $trinv;
+					$cfd2 = $cfd;
+					$cons_debit = abs($consX);
+					$cons_credit = 0;
+					
 					//special special case of fx trades where the currencies are treated as stocks :-)					
 					if ($this->Currency->getCurrencyID($secid)) {
 						$ccy2 = $tccy;
@@ -131,10 +142,6 @@ class Ledger extends AppModel {
 					else {
 						$ccy2 = $ccy;
 					}
-					$cfd2 = $cfd;
-					////
-					$cons_debit = abs($consX);
-					$cons_credit = 0;
 				}
 				$data = array(	'act' => 1,
 								'crd' => DboSource::expression('NOW()'),
@@ -161,22 +168,35 @@ class Ledger extends AppModel {
 				//second line of double-entry, doing the CREDIT side
 				if ($creditid > 1) { 	//cash
 					$data['sec_id']  = $this->Currency->getsecid($tccy);
-					if ($creditid == 2) {
-						$data['ledger_quantity'] = $cons; //only cash book itself has a quantity
-					}
-					else {
-						$data['ledger_quantity'] = 0;
-					}
 					$data['trinv'] = '';
 					$data['currency_id'] = $tccy;
 					$data['ledger_cfd'] = 0;
-					$data['ledger_debit'] =  0;
-					$data['ledger_credit'] = abs($cons);
+					$data['ledger_quantity'] = 0;
+					
+					//cash has the full quantity whereas other accounts below it have zero quantity
+					if ($creditid == 2) {
+						$data['ledger_quantity'] = $cons;
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($creditid, $cons);
+					}
+					else if ($creditid == 3) {
+						//contributed capital can be either + or - as we are using the same account for both subs and reds
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($creditid, $cons);
+					}
+					else {
+						//other accounts are only "one-way" with respect to cash
+						list($cons_debit, $cons_credit) = $this->Account->debitcredit($creditid, abs($cons));
+					}
+					$data['ledger_debit'] =  $cons_debit;
+					$data['ledger_credit'] = $cons_credit;
 				}
-				else {	//special case of stocks
+				else {	//stocks
 					$data['sec_id']  = $secid;
 					$data['ledger_quantity'] = $qty;
 					$data['trinv'] = $trinv;
+					$data['ledger_cfd'] = $cfd;
+					$data['ledger_debit'] = 0;
+					$data['ledger_credit'] = abs($consX);
+					
 					//special special case of fx trades where the currencies are treated as stocks :-)
 					if ($this->Currency->getCurrencyID($secid)) {
 						$data['currency_id'] = $tccy;
@@ -184,10 +204,6 @@ class Ledger extends AppModel {
 					else {
 						$data['currency_id'] = $ccy;
 					}
-					$data['ledger_cfd'] = $cfd;
-					////
-					$data['ledger_debit'] = 0;
-					$data['ledger_credit'] = abs($consX);
 				}
 				$data['crd'] = DboSource::expression('NOW()');
 				$data['account_id'] = $creditid;
@@ -196,7 +212,7 @@ class Ledger extends AppModel {
 				$this->save();
 				
 				//third line for trading costs
-				//trading costs are an expense and so usually should be debited
+				//trading costs are always an expense and so usually should be debited
 				if ($trading_costs <> 0) {
 					$data['sec_id']  = $this->Currency->getsecid($tccy);
 					$data['ledger_quantity'] = 0;
