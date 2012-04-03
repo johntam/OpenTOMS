@@ -303,11 +303,13 @@ class TradesController extends AppController {
 	//If a trade has been added or changed, then deactivate any reports which have a run_date on or after the trade date of this trade.
 	//This is to make sure that any future run reports do not depend on these saved reports which could now be invalid.
 	function update_report_table() {
+		/*
 		App::import('model','Report');
 		$report = new Report();
 		$report->run_date = date('Y-m-d',mktime(0,0,0,$this->data['Trade']['trade_date']['month'],$this->data['Trade']['trade_date']['day'],$this->data['Trade']['trade_date']['year']));
 		$report->fund_id = $this->data['Trade']['fund_id'];
 		$report->deactivate();
+		*/
 	}
 	
 	
