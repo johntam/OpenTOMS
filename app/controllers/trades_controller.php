@@ -220,10 +220,13 @@ class TradesController extends AppController {
 			//remove any commas from quantity, consideration and notional value
 			$this->params['data']['Trade']['quantity'] = str_replace(',','',$this->params['data']['Trade']['quantity']);
 			$this->params['data']['Trade']['consideration'] = str_replace(',','',$this->params['data']['Trade']['consideration']);
-			//if (empty($this->data['Trade']['notional_value'])) {$this->data['Trade']['notional_value'] = 0;};	//Don't leave a NULL in the notional value
 			$this->params['data']['Trade']['notional_value'] = str_replace(',','',$this->params['data']['Trade']['notional_value']);
 			$this->params['data']['Trade']['accrued'] = str_replace(',','',$this->params['data']['Trade']['accrued']);
 		
+			//put in trade date and settlement date
+			$this->params['data']['Trade']['trade_date'] = $this->params['data']['Trade']['trade_date_input'];
+			$this->params['data']['Trade']['settlement_date'] = $this->params['data']['Trade']['settlement_date_input'];
+			
 			unset($this->params['data']['Trade']['id']);	//remove id so that Cake will create a new model record
 			$this->params['data']['Trade']['act'] = 1;
 			$this->params['data']['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
