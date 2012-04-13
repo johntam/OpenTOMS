@@ -175,7 +175,7 @@
 			<td style="text-align: right;" colspan="5">
 				Fund Currency
 			</td>
-			<td>
+			<td style="text-align: right;" colspan="5">
 				<input type="text" maxLength="10" id="fx_'.$fundccysecid.'" value="enter fx" class="missingprices" name="data[Balance][Pricebox][fx_'.$fundccysecid.']" />					
 			</td>
 			<td>

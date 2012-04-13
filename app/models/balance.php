@@ -65,7 +65,8 @@ class Balance extends AppModel {
 		
 		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
 		$cash_acc_id = $this->Account->getNamed('Cash');
-		//$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
+		$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
+		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		//we have a three-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $cust=>&$n0) {
@@ -116,7 +117,7 @@ class Balance extends AppModel {
 						
 						
 						//only work out realised P&L for securities, not cash
-						if ($acc == 1) {
+						if ($acc == $stocks_acc_id) {
 							$result = $this->fifo($trinv, $tri);
 							$pnl = $result[0];
 							$trinv = $result[1];
@@ -200,7 +201,7 @@ class Balance extends AppModel {
 					}
 					
 					//write this result line to the database, only if the position is non-zero though
-					if (!(($acc == 1) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
+					if (!(($acc == $stocks_acc_id) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
 						$data['Balance'] = array('act' => 1,
 												 'locked' => 0,
 												 'crd'=>DboSource::expression('NOW()'),
@@ -222,35 +223,54 @@ class Balance extends AppModel {
 					}
 					
 					
-					/*
 					//if this is a bond, add in accrued interest which should be calculated from the last
 					//balance calculation date to the journal posting date
-					App::import('model','Sec');
-					$sec = new Sec();
-					$result = $sec->ledger_accrued($secid, $prevdate, $date);
-					if (isset($result['accrued'])) {
-						
-					
-					
-						$data = array(	'act' => 1,
-										'crd' => DboSource::expression('NOW()'),
-										'fund_id' => $fund,
-										'account_id' => $accrued_acc_id,
-										'ledger_date' => $date,
-										'trade_date' => $date,
-										'trade_id' => $tid,
-										'trade_crd' => $tcrd,
-										'ledger_debit' => $cons2,
-										'ledger_credit' => 0,
-										'ledger_cfd' => $cfd2,
-										'currency_id' => $ccy2,
-										'ledger_quantity' => $qty2,
-										'sec_id' => $secid2,
-										'trinv' => $tr2);
-						$this->create($data);
-						$this->save();
-					} */
-					
+					//do a double-entry, one for stocks account and one for accrued interest account
+					if (($acc == $stocks_acc_id) && ($totqty <> 0)) {
+						$result = $this->Sec->accrued($sec, $date);
+						if (($result['code'] == 0) && (!empty($result['accrued']))) {
+							$data['Balance'] = array('act' => 1,
+													 'locked' => 0,
+													 'crd'=>DboSource::expression('NOW()'),
+													 'fund_id' => $fund,
+													 'custodian_id'=>$cust,
+													 'balance_date'=>$date,
+													 'balance_cfd'=>0,
+													 'currency_id'=>$ccy,
+													 'sec_id'=>$sec);
+							
+							//test to see if need to debit or credit depending if long or short
+							if ($totqty < 0) {
+								$db = 0;
+								$cr = $result['accrued'];
+								$qy = -$result['accrued'];
+							}
+							else {
+								$db = $result['accrued'];
+								$cr = 0;
+								$qy = $result['accrued'];
+							}
+							
+							//the stocks account
+							$data['Balance']['account_id'] = $stocks_acc_id;
+							$data['Balance']['balance_debit'] = $db;
+							$data['Balance']['balance_credit'] = $cr;
+							$data['Balance']['balance_quantity'] = $qy;
+							
+							
+							
+							$this->create($data);
+							$this->save();
+							
+							//the accrued interest account
+							$data['Balance']['account_id'] = $accrued_acc_id;
+							$data['Balance']['balance_debit'] = $cr;
+							$data['Balance']['balance_credit'] = $db;
+							$data['Balance']['balance_quantity'] = 0;
+							$this->create($data);
+							$this->save();
+						}
+					}
 				}
 			}
 		}
