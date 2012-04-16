@@ -243,22 +243,17 @@ class Balance extends AppModel {
 							if ($totqty < 0) {
 								$db = 0;
 								$cr = $result['accrued'];
-								$qy = -$result['accrued'];
 							}
 							else {
 								$db = $result['accrued'];
 								$cr = 0;
-								$qy = $result['accrued'];
 							}
 							
 							//the stocks account
 							$data['Balance']['account_id'] = $stocks_acc_id;
 							$data['Balance']['balance_debit'] = $db;
 							$data['Balance']['balance_credit'] = $cr;
-							$data['Balance']['balance_quantity'] = $qy;
-							
-							
-							
+							$data['Balance']['balance_quantity'] = 0;
 							$this->create($data);
 							$this->save();
 							

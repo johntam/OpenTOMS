@@ -52,8 +52,10 @@ class ValuationReport extends AppModel {
 		$timenow = date('Y-m-d H:i:s');
 		foreach ($temp as $secid=>$s) {
 			$totqty = 0;
+			$notional = 0;
 			$mvlocal = 0;
 			$mvfund = 0;
+			$accrued = 0;
 			foreach ($s as $c) {
 				$secid = $c['Sec']['id'];
 				$sectype = $c['Sec']['sec_type_id'];
@@ -63,6 +65,16 @@ class ValuationReport extends AppModel {
 				$valpoint = $c['Sec']['valpoint'];
 				$cfd = $c['SecType']['cfd'];
 				$trinv = $c['Balance']['trinv'];
+				//accrued interest
+				if ($c['Account']['id'] == 14) {
+					if ($c['Balance']['balance_credit'] > 0) {
+						$acc = $c['Balance']['balance_credit'];
+					}
+					else {
+						$acc = -$c['Balance']['balance_debit'];
+					}	
+				}
+				
 				if (empty($c['Price']['fx_rate'])) {
 					//normal security
 					$fxrate = $c['PriceFX']['fx_rate'] / $fundfx;
@@ -76,8 +88,10 @@ class ValuationReport extends AppModel {
 				//now calculate totals
 				$totqty += $qty;
 				if ($cfd == 0) {
-					$mvlocal += ($qty * $price * $valpoint);
-					$mvfund += ($qty * $price * $valpoint * $fxrate);
+					$notional += ($qty * $price * $valpoint);
+					$accrued += $acc;
+					$mvlocal += ($qty * $price * $valpoint + $acc);
+					$mvfund += (($qty * $price * $valpoint + $acc) * $fxrate);
 				}
 				else {
 					$closeout = strtotime('now').':'.(-$qty).':'.$price.':'.$valpoint.';';
@@ -85,8 +99,10 @@ class ValuationReport extends AppModel {
 					if (!empty($trinv_out)) {
 						return (array(false, 'Problem with FIFO calculation, operation aborted '));
 					}
+					$notional += $pnl;
+					$accrued = 0;
 					$mvlocal += $pnl;
-					$mvfund += ($pnl * $fxrate);	
+					$mvfund += ($pnl * $fxrate);
 				}
 			}
 			
@@ -102,6 +118,8 @@ class ValuationReport extends AppModel {
 											'price'=>$price,
 											'currency_id'=>$ccy,
 											'fx_rate'=>$fxrate,
+											'accrued'=>$accrued,
+											'notion_val_local'=>$notional,
 											'mkt_val_local'=>$mvlocal,
 											'mkt_val_fund'=>$mvfund);
 			$this->create();

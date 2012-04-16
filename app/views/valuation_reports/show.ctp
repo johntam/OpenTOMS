@@ -22,6 +22,8 @@
 		<th>Quantity</th>
 		<th>Price</th>
 		<th>Market Val (Local)</th>
+		<th>Accrued</th>
+		<th>Market Val Inc Acc (Local)</th>
 		<th>Currency</th>
 		<th>FX Rate</th>
 		<th>Market Val (<?php echo $fundccyname; ?>)</th>
@@ -43,6 +45,12 @@
 				}?>
 			</td>
 			<td style="text-align: right;">
+				<?php echo number_format($valuation['ValuationReport']['notion_val_local'],2); ?>
+			</td>
+			<td style="text-align: right;">
+				<?php echo number_format($valuation['ValuationReport']['accrued'],2); ?>
+			</td>
+			<td style="text-align: right;">
 				<?php echo number_format($valuation['ValuationReport']['mkt_val_local'],2); ?>
 			</td>
 			<td style="text-align: right;">
@@ -58,7 +66,7 @@
 		</tr>
 	<?php endforeach; ?>
 		<tr class="total">
-			<td colspan="6"></td>
+			<td colspan="8"></td>
 			<td style="text-align: right;"><?php echo number_format($totmvfund,2); ?></td>
 		</tr>
 	<?php }; ?>
