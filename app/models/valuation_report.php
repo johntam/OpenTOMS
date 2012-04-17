@@ -66,6 +66,7 @@ class ValuationReport extends AppModel {
 				$cfd = $c['SecType']['cfd'];
 				$trinv = $c['Balance']['trinv'];
 				//accrued interest
+				$acc = 0;
 				if ($c['Account']['id'] == 14) {
 					if ($c['Balance']['balance_credit'] > 0) {
 						$acc = $c['Balance']['balance_credit'];
