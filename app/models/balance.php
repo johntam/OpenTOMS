@@ -242,10 +242,10 @@ class Balance extends AppModel {
 							//test to see if need to debit or credit depending if long or short
 							if ($totqty < 0) {
 								$db = 0;
-								$cr = $result['accrued'];
+								$cr = $result['accrued'] * abs($totqty) / 100;
 							}
 							else {
-								$db = $result['accrued'];
+								$db = $result['accrued'] * abs($totqty) / 100;
 								$cr = 0;
 							}
 							
