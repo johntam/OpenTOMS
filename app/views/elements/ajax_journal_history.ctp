@@ -4,6 +4,7 @@
 		<th>Custodian</th>
 		<th>Amount</th>
 		<th>Currency</th>
+		<th>Notes</th>
 		<th>Action</th>
 	</tr>
 <?php if (!empty($journals)) { ?>	
@@ -27,6 +28,10 @@
 			<td>
 				<?php echo $journal['Currency']['currency_iso_code']; ?>
 			</td>
+			<td>
+				<div id="dispnotes"><?php echo $journal['Journal']['notes']; ?></div>
+				<input type="text" class="editnotes" value="<?php echo $journal['Journal']['notes']; ?>" />
+			</td>
 			<td style="text-align: center;">
 				<?php 
 				if (strtotime($journal['Journal']['trade_date']) > strtotime($lockeddate)) { 
@@ -48,6 +53,7 @@
 		$('.editdate').datepicker({ dateFormat: 'yy-mm-dd' });
 		$('.editdate').hide();
 		$('.editquantity').hide();
+		$('.editnotes').hide();
 		$('.savebutton').hide();
 		$('.cancelbutton').hide();
 		
@@ -55,38 +61,44 @@
 			var top = $(this).closest('tr');
 			$(top).find('.editdate').show();
 			$(top).find('.editquantity').show();
+			$(top).find('.editnotes').show();
 			$(top).find('.savebutton').show();
 			$(top).find('.cancelbutton').show();
 			$(top).find('.editbutton').hide();
 			$(top).find('.deletebutton').hide();
 			$(top).find('#dispdate').hide();
-			$(top).find('#dispqty').hide();	
+			$(top).find('#dispqty').hide();
+			$(top).find('#dispnotes').hide();
 		});
 		
 		$('.savebutton').click(function() {
 			var top = $(this).closest('tr');
 			var dt = $(top).find('.editdate').val();
 			var qty = $(top).find('.editquantity').val();
+			var notes = $(top).find('.editnotes').val();
 			var tradeid = $(top).find('.tradeid').val();
 			$(top).addClass('highred');
 			
 			//send this to database
 			$.post("/journals/edit?" + (new Date()).getTime(),
-			{ date : dt , quantity : qty , id : tradeid },
+			{ date : dt , quantity : qty , id : tradeid , notes : notes},
 			function(data) {
 				if (data.length > 0) {					
 					if (data == "Y") {
 						//saved ok
 						$(top).find('#dispdate').html(dt);
 						$(top).find('#dispqty').html(qty);
+						$(top).find('#dispnotes').html(notes);
 						$(top).find('.editdate').hide();
 						$(top).find('.editquantity').hide();
+						$(top).find('.editnotes').hide();
 						$(top).find('.savebutton').hide();
 						$(top).find('.cancelbutton').hide();
 						$(top).find('.editbutton').show();
 						$(top).find('.deletebutton').show();
 						$(top).find('#dispdate').show();
 						$(top).find('#dispqty').show();
+						$(top).find('#dispnotes').show();
 					}
 					else {
 						alert(data);

@@ -32,6 +32,7 @@ class JournalsController extends AppController {
 		$date = $this->params['form']['date'];
 		$qty = $this->params['form']['quantity'];
 		$id = $this->params['form']['id'];
+		$notes = $this->params['form']['notes'];
 		
 		$this->data = $this->Journal->read(null, $id);
 		$this->data['Journal']['crd'] = DboSource::expression('NOW()');
@@ -40,6 +41,7 @@ class JournalsController extends AppController {
 		$sign = $this->getConsSign($this->data['Journal']['trade_type_id']);
 		$this->data['Journal']['consideration'] = $sign * abs($qty);
 		$this->data['Journal']['quantity'] = $sign * abs($qty);
+		$this->data['Journal']['notes'] = $notes;
 		
 		list($done, $msg) = $this->saveJournal($this->data);
 		if ($done) {

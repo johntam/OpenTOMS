@@ -4,7 +4,7 @@
 <?php echo $html->css('ui-lightness/jquery-ui-1.8.18.custom.css'); ?>
 <?php echo $this->Html->script('journal_ajax.js',array('inline' => false)); ?>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;">
+<table style="width: 80%;margin-left:10%;margin-right:10%;">
 	<tr>
 		<td colspan="6"><h1>Journal Entry</h1></td>
 	</tr>
@@ -30,10 +30,13 @@
 			<?php echo $this->Form->input('currency_id', array('options'=>$currencies, 'id'=>'currencypicker')); ?>
 		</td>
 		<td>
+			<?php echo $this->Form->input('notes'); ?>
+		</td>
+		<td>
 			<?php echo $this->Form->end('Post'); ?>
 		</td>
 	</tr>
 </table>
 
-<table style="width: 60%;margin-left:20%;margin-right:20%;" id='journal_history'>
+<table style="width: 80%;margin-left:10%;margin-right:10%;" id='journal_history'>
 </table>
