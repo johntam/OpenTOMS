@@ -6,6 +6,11 @@ class Balance extends AppModel {
 	
 	//calculate the month end balances, using the last month end balances and this month's general ledger
 	function calc($fund, $date) {
+		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
+		$cash_acc_id = $this->Account->getNamed('Cash');
+		$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
+		$stocks_acc_id = $this->Account->getNamed('Stocks');
+		
 		//first get the date when the last balance was calculated.
 		$prevdate = $this->getPrevBalanceDate($fund, $date);
 				
@@ -16,7 +21,8 @@ class Balance extends AppModel {
 		else {
 			$baldata = $this->find('all', array('conditions'=>array('Balance.act =' => 1, 
 																	'Balance.balance_date =' => $prevdate, 
-																	'Balance.fund_id =' => $fund)));
+																	'Balance.fund_id =' => $fund,
+																	'Balance.balance_accrued =' => 0)));
 		}
 				
 		//get this month's ledger entries
@@ -62,11 +68,6 @@ class Balance extends AppModel {
 												'Balance.act =' => 1));
 		
 		if (!$result) { return false; }
-		
-		$pnl_acc__id = $this->Account->getNamed('Profit And Loss');
-		$cash_acc_id = $this->Account->getNamed('Cash');
-		$accrued_acc_id = $this->Account->getNamed('Accrued Interest');
-		$stocks_acc_id = $this->Account->getNamed('Stocks');
 		
 		//we have a three-dimensional array of aggregated data, save it to the table now
 		foreach ($newbal as $cust=>&$n0) {
@@ -212,6 +213,7 @@ class Balance extends AppModel {
 												 'balance_debit'=>$totdeb,
 												 'balance_credit'=>$totcred,
 												 'balance_cfd'=>$cfd,
+												 'balance_accrued'=>0,
 												 'currency_id'=>$ccy,
 												 'balance_quantity'=>$totqty,
 												 'sec_id'=>$sec,
@@ -236,6 +238,7 @@ class Balance extends AppModel {
 													 'custodian_id'=>$cust,
 													 'balance_date'=>$date,
 													 'balance_cfd'=>0,
+													 'balance_accrued'=>1,
 													 'currency_id'=>$ccy,
 													 'sec_id'=>$sec);
 							

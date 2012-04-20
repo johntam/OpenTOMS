@@ -158,7 +158,7 @@ $(document).ready(function() {
 				$("#head5").hide();
 				$("#head6").hide();
 				$("#head7").hide();
-				$("#TradeExecutionPrice").val('');
+				$("#TradeExecutionPrice").val("");
 			}
 			else {
 				$("#TradeExecutionPrice").show();
@@ -255,40 +255,53 @@ $(document).ready(function() {
 	
 	
 	function recalculate_consideration() {
-		var checked = $("#TradeExecuted:checked").val() != undefined;
+		var tt = $("#TradeTradeTypeId option:selected").text();
+		if ((tt == "Coupon Income") || (tt == "Dividend Income")) {
+			$("#TradeConsideration").val($("#TradeQuantity").val());
+			$("#TradeExecutionPrice").val("1");
+			$("#TradeExecuted").val("1");
+		}
+		else if ((tt == "Coupon Expense") || (tt == "Dividend Expense")) {
+			$("#TradeConsideration").val("-" + $("#TradeQuantity").val());
+			$("#TradeExecutionPrice").val("1");
+			$("#TradeExecuted").val("1");
+		}
+		else {
+			var checked = $("#TradeExecuted:checked").val() != undefined;
+			checked = checked && ($("#TradeSecId option:selected").text() != 'Select Security');
+			checked = checked && ($("#TradeQuantity").val() != '');
+			checked = checked && ($("#TradeExecutionPrice").val() != '');
 		
-		checked = checked && ($("#TradeSecId option:selected").text() != 'Select Security');
-		checked = checked && ($("#TradeQuantity").val() != '');
-		checked = checked && ($("#TradeExecutionPrice").val() != '');
-	
-		if (checked) {
-			$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
-			calc_quantity();
-			calc_commission();
-			calc_tax();
-			calc_othercosts();
-			calc_accrued();
-			
-			$.when( calc_quantity(), calc_commission(), calc_tax(), calc_othercosts(), calc_accrued() )
-			   .then(function(){
-			   
-				  calc_consideration();
-				  $.when( calc_consideration() )
-					.then(function() {
-						//activate submit button
-						$('input[type="submit"]').removeAttr('disabled');
-					})
-					.fail(function() {
+			if (checked) {
+				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
+				calc_quantity();
+				calc_commission();
+				calc_tax();
+				calc_othercosts();
+				calc_accrued();
+				
+				$.when( calc_quantity(), calc_commission(), calc_tax(), calc_othercosts(), calc_accrued() )
+				   .then(function(){
+				   
+					  calc_consideration();
+					  $.when( calc_consideration() )
+						.then(function() {
+							//activate submit button
+							$('input[type="submit"]').removeAttr('disabled');
+						})
+						.fail(function() {
+						  // AJAX request failed
+						  alert("Connection to database failed.");
+						});
+				   })
+				   .fail(function() {
 					  // AJAX request failed
 					  alert("Connection to database failed.");
-					});
-			   })
-			   .fail(function() {
-				  // AJAX request failed
-				  alert("Connection to database failed.");
-			   });
+				   });
+			}
 		}
 	}
+	
 	
 	function calc_quantity() {
 		return $.Deferred(function( deferred_obj ){

@@ -272,6 +272,10 @@ class TradesController extends AppController {
 			$this->data['Trade']['notional_value'] = str_replace(',','',$this->data['Trade']['notional_value']);
 			$this->data['Trade']['accrued'] = str_replace(',','',$this->data['Trade']['accrued']);
 		
+			//put in trade date and settlement date
+			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
+			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
+			
 			//first try to deactive this current trades, if it doesn't succeed, then don't create a new trade, this has been a persistent bug
 			$oid = $this->data['Trade']['oid'];
 			$result = $this->Trade->updateAll(array('Trade.act' => 0,
