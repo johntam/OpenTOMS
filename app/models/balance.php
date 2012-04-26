@@ -32,7 +32,7 @@ class Balance extends AppModel {
 																   'Ledger.ledger_date =' => $date, 
 																   'Ledger.fund_id =' => $fund,
 																   'Ledger.sec_id >' => 0), 
-											   'order'=>array('Ledger.trade_crd ASC')));
+											   'order'=>array('Ledger.trade_date ASC', 'Ledger.trade_crd ASC')));
 		
 		//Aggregate these two sets together, GROUP BY (custodian_id, account_id, sec_id)
 		$newbal = array();
