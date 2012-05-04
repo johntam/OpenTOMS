@@ -91,7 +91,7 @@
 
 		<tr class="altrow">
 			<td><?php echo $sec['Sec']['prev_coupon_date']; ?></td>
-			<td></td>
+			<td><?php echo $sec['Sec']['maturity']; ?></td>
 			<td><?php echo $sec['Sec']['coupon_frequency']; ?></td>
 			<td><?php echo $sec['Sec']['coupon']; ?></td>
 			<td><?php echo $sec['Sec']['calc_type']; ?></td>
@@ -101,7 +101,7 @@
 	
 	<tr class="highlight">
 		<td></td>
-		<td><?php echo $sec['Sec']['maturity']; ?></td>
+		<td></td>
 		<td>Currency</td>
 		<td></td>
 		<td>Price Source</td>
