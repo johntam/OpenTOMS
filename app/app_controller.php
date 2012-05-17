@@ -13,5 +13,36 @@ class AppController extends Controller {
 		
 		$this->Auth->allowedActions = array('display');
     }
+	
+	function beforeRender() {
+		parent::beforeRender();
+
+		//App::import('Model','ValuationReport');
+		//echo debug($this->Session->read("Auth.User"));
+		//echo debug($this->viewVars);
+		
+		
+		
+		$userdata = $this->Session->read("Auth.User");
+		if (isset($this->viewVars['funds'])) {
+			$funds = $this->viewVars['funds'];
+			
+			//check permissions for the group the user is a member of
+			App::import('model','GroupPermission');
+			$gp = new GroupPermission();
+			$allowed = $gp->getAllowedFunds($userdata['group_id']);
+			echo debug($allowed);
+			
+			foreach ($funds as $key=>$fund) {
+				echo debug(array('key='=>$key, 'fund='=>$fund, 'in_array='=>!in_array($key, $allowed)));
+				if (!in_array($key, $allowed)) {
+					unset($funds[$key]);
+				}
+			}
+			
+		}
+		
+		echo debug($this->viewVars['funds']);
+	}
 }
 ?>

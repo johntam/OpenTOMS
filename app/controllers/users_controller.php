@@ -49,6 +49,14 @@ class UsersController extends AppController {
 		$group->id = 5;
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Trades/add');
+		
+		//no access to admin pages for RGL
+		$group->id = 7;
+		$this->Acl->allow($group, 'controllers');
+		$this->Acl->deny($group, 'controllers/Users');
+		$this->Acl->deny($group, 'controllers/Groups');
+		$this->Acl->deny($group, 'controllers/Prices');
+		
 	 
 		//allow users to only add and edit on posts and widgets
 		//$group->id = 3;

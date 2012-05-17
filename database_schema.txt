@@ -272,3 +272,9 @@ CREATE TABLE custodians (
 	custodian_name VARCHAR(50) NOT NULL,
 	custodian_long_name VARCHAR(255) NULL
 );
+
+CREATE TABLE group_permissions (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	group_id INT NOT NULL,
+	fund_id INT NOT NULL
+);
