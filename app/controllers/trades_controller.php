@@ -122,6 +122,17 @@ class TradesController extends AppController {
 			}
 		}
 		
+		///////////////////
+		//! N.B. VERY IMPORTANT
+		//restrict trades to the funds that the user is allowed to see
+		$userdata = $this->Session->read("Auth.User");
+		App::import('model','GroupPermission');
+		$gp = new GroupPermission();
+		$allowed = $gp->getAllowedFunds($userdata['group_id']);
+		foreach ($allowed as $al) {
+			$conditions['OR']['Trade.fund_id ='] = $al;
+		}
+		/////////////////////
 		
 		//get data from the model		
 		$data = $this->paginate('Trade', $conditions);

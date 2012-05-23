@@ -4,7 +4,7 @@ class IndustriesController extends AppController {
 	var $name = 'Industries';
 
 	function index() {
-		$this->set('industries', $this->Industry->find('all'));
+		$this->set('industries', $this->Industry->find('all', array('order'=> array('Industry.industry_code'))));
 	}
 	
 	function add() {

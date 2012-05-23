@@ -11,9 +11,10 @@ class UsersController extends AppController {
 	}  
  
 	function logout() {
-		$this->Session->setFlash('Good-Bye');
+		$this->Session->setFlash('You have logged out');
 		//$this->redirect($this->Auth->logout());
 		$this->Auth->logout();
+		$this->redirect(array('action' => 'login'));
 	}
 
 	function beforeFilter() {
@@ -56,6 +57,14 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers/Users');
 		$this->Acl->deny($group, 'controllers/Groups');
 		$this->Acl->deny($group, 'controllers/Prices');
+		
+		//no access to admin pages for Kestrel
+		$group->id = 6;
+		$this->Acl->allow($group, 'controllers');
+		$this->Acl->deny($group, 'controllers/Users');
+		$this->Acl->deny($group, 'controllers/Groups');
+		$this->Acl->deny($group, 'controllers/Prices');
+		$this->Acl->deny($group, 'controllers/Traders');
 		
 	 
 		//allow users to only add and edit on posts and widgets

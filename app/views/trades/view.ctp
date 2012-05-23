@@ -101,7 +101,7 @@
 			<td><?php echo number_format($trade['Trade']['commission'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['tax'],2); ?></td>
 			<td><?php echo number_format($trade['Trade']['other_costs'],2); ?></td>
-			<td><?php echo $trade['Trade']['consideration']; ?></td>
+			<td><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
 		</tr>
 
 	<tr class="highlight" id="head6">
@@ -115,7 +115,7 @@
 			<td><?php echo $trade['Trade']['decision_time']; ?></td>
 			<td><?php echo $trade['Trade']['order_time']; ?></td>
 			<td><?php echo number_format($trade['Trade']['accrued'],2); ?></td>
-			<td><?php echo $trade['Trade']['notional_value']; ?></td>
+			<td><?php echo number_format($trade['Trade']['notional_value'],2); ?></td>
 		</tr>
 		
 	<tr class="highlight" id="head7">

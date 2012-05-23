@@ -40,11 +40,13 @@ show up on all of your views, include it here -->
 <div id="header">
     <div id="menu">
 		<ul id="navbar">
+		
 			<li><a href="#">Trades</a><ul>
 				<li><a href="/trades/add">New</a></li>
 				<li><a href="/trades/index">Blotter</a></li>
 				<li><a href="/Holdings/index">Holdings</a></li></ul>
 			</li>
+			
 			<li><a href="#">Standing Data</a><ul>
 				<li><a href="/funds">Funds</a></li>
 				<li><a href="/secs/index/A">Securities</a></li>
@@ -52,7 +54,9 @@ show up on all of your views, include it here -->
 				<li><a href="/reasons">Reasons</a></li>
 				<li><a href="/brokers">Brokers</a></li>
 				<li><a href="/custodians">Custodians</a></li>
-				<li><a href="/traders">Traders</a></li>
+				<?php if (!isset($hide_traders)) { echo '
+					<li><a href="/traders">Traders</a></li>
+				';} ?>
 				<li><a href="/countries">Countries</a></li>
 				<li><a href="/exchanges">Exchanges</a></li>
 				<li><a href="/industries">Industries</a></li>
@@ -61,31 +65,50 @@ show up on all of your views, include it here -->
 				<li><a href="/settlements">Settlement Rules</a></li>
 				</ul>
 			</li>
-			<li><a href="#">Pricing</a><ul>
-				<li><a href="/prices/index/0/1/0/0">Securities</a></li>
-				<li><a href="/prices/fxrates">FX Rates</a></li>
-				</ul>
-			</li>
+			
+			<?php if (!isset($hide_pricing)) { echo '
+				<li><a href="#">Pricing</a><ul>
+					<li><a href="/prices/index/0/1/0/0">Securities</a></li>
+					<li><a href="/prices/fxrates">FX Rates</a></li>
+					</ul>
+				</li>
+			';} ?>
+
 			<li>
 				<a href="#">Accounting</a>
 				<ul>
 					<li><a href="/accounts">Accounting Books</a></li>
-					<li><a href="/TradeTypes">Trade Types</a></li>
+					<?php if (!isset($hide_tradetypes)) { echo '
+						<li><a href="/TradeTypes">Trade Types</a></li>
+					';} ?>
 					<li><a href="/journals">Journal Entry</a></li>
 					<li><a href="/ledgers">Journal Posting</a></li>
 					<li><a href="/balances">Lock Balances</a></li>
 					<li><a href="/CashLedgers">Cash Ledgers</a></li>
 				</ul>
 			</li>
+			
 			<li><a href="#">Reports</a><ul>
 				<li><a href="/ValuationReports">Valuation</a></li></ul>
 			</li>
-			<li><a href="#">Admin</a><ul>
-				<li><a href="/users">Users</a></li>
-				<li><a href="/groups">Groups</a></li></ul>
-			</li>
-			<li><a href="/users/logout">Logout</a></li>
-			<li><a href="/miscpages/worklist">Worklist</a></li>
+			
+			<?php if (!isset($hide_admin)) { echo '
+				<li><a href="#">Admin</a><ul>
+					<li><a href="/users">Users</a></li>
+					<li><a href="/groups">Groups</a></li></ul>
+				</li>
+			';} ?>
+			
+			<?php if (!isset($show_login)) { echo '
+				<li><a href="/users/logout">Logout</a></li>
+			';} else { echo '
+				<li><a href="/users/login">Login</a></li>
+			';} ?>
+			
+			<?php if (!isset($hide_worklist)) { echo '
+				<li><a href="/miscpages/worklist">Worklist</a></li>
+			';} ?>
+			
 			<!-- ... and so on ... -->
 		</ul>
 	</div>
