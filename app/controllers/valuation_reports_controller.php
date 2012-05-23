@@ -58,6 +58,8 @@ class ValuationReportsController extends AppController {
 		}
 		$this->set('run_dates', $run_dates);
 		
+		echo debug($run_dates);
+		
 		//get list of reports for this fund
 		$this->set('reports', $this->ValuationReport->find('all', array('limit'=>10,
 																	   'conditions'=>array('ValuationReport.fund_id ='=>$fund),
