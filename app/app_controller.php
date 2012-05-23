@@ -46,6 +46,10 @@ class AppController extends Controller {
 					}
 				}
 				
+				//if a fund hasn't been chosen yet, then choose the first one
+				if (!$this->Session->check('fund_chosen')) {
+					$this->Session->write('fund_chosen', reset($funds));
+				}
 			}
 			
 			//hide some menu items
