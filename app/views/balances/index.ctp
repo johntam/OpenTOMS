@@ -43,7 +43,7 @@
 	<tr class="altrow">
 		<td style="width: 25%;">
 			<?php echo $this->Form->create('Balance', array('action' => 'index')); ?>
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker')); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker','empty'=>'Choose Fund')); ?>
 			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput', 'size'=>15, 'default'=>date('Y-m-d'),
 																'style'=>'float: left;')); ?>
 			<?php echo $this->Form->submit('left.png', array('id'=>'leftarrow', 'name'=>'Backdate', 'value' => 'Backdate', 'style'=>'float:left;')); ?>

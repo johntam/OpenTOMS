@@ -9,7 +9,7 @@
 	<tr class="altrow">
 		<td class="high" style="width: 40%">
 			Fund
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundinput')); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundinput','empty'=>'Choose Fund')); ?>
 		</td>
 		<td>
 			Holdings Date

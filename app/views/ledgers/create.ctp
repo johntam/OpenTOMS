@@ -17,7 +17,7 @@
 	<tr class="altrow">
 		<td>
 			<?php echo $this->Form->create('Ledger', array('action' => 'create')); ?>
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds)); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds,'empty'=>'Choose Fund')); ?>
 			<?php echo $this->Form->input('account_date', array('label'=>false,'id'=>'dateinput')); ?>
 		</td>
 	</tr>

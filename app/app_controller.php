@@ -10,8 +10,8 @@ class AppController extends Controller {
         $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'logout');
         //$this->Auth->loginRedirect = array('controller' => 'trades', 'action' => 'add');
-		
 		$this->Auth->allowedActions = array('display');
+		
     }
 	
 	function beforeRender() {
@@ -44,11 +44,6 @@ class AppController extends Controller {
 						//make sure the user doesn't see funds he isn't supposed to see
 						unset($funds[$key]);
 					}
-				}
-				
-				//if a fund hasn't been chosen yet, then choose the first one
-				if (!$this->Session->check('fund_chosen')) {
-					$this->Session->write('fund_chosen', reset($funds));
 				}
 			}
 			

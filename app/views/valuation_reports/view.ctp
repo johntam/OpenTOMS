@@ -17,7 +17,7 @@
 	<tr class="altrow">
 		<td width="30%">
 			<?php echo $this->Form->create('ValuationReport', array('action' => 'index')); ?>
-			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker')); ?>
+			<?php echo $this->Form->input('fund_id', array('label'=>false, 'options'=>$funds, 'id'=>'fundpicker','empty'=>'Choose Fund')); ?>
 		</td>
 		<td width="30%">
 			<div class="high">
