@@ -361,6 +361,34 @@ class TradesController extends AppController {
 	}
 	
 	
+	function order() {
+		$this->setchoices();
+		$this->set('tradeTypes', array(1=>'Buy Long', 2=>'Buy Short', 3=>'Sell Long', 4=>'Sell Short'));
+	
+		if (!empty($this->data)) {	
+			//remove any commas from quantity, consideration and notional value
+			$this->data['Trade']['order_quantity'] = str_replace(',','',$this->data['Trade']['order_qty']);
+			$this->data['Trade']['price'] = str_replace(',','',$this->data['Trade']['order_price']);
+			$this->data['Trade']['quantity'] = 0;	//non null field
+			
+			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
+			$this->data['Trade']['decision_time'] = $this->data['Trade']['decision_time_date'].' '.$this->data['Trade']['decision_time_time'];
+			$this->data['Trade']['order_time'] = $this->data['Trade']['order_time_date'].' '.$this->data['Trade']['order_time_time'];			
+			
+			if ($this->Trade->save($this->data)) {
+				//Do a second update to the same record to set the oid and act fields
+				$id = $this->Trade->id;
+				if ($this->Trade->saveField('act',1) && $this->Trade->saveField('oid',$id)) {
+					$this->update_report_table();
+					$this->Session->setFlash('Your order has been saved.');
+					$this->redirect(array('action' => 'order'));
+				}
+			}
+			
+		}
+	}
+	
+	
 	function setchoices() {
 		//Could be a lot of securities so cache this list
 		if (($secsCACHE = Cache::read('secs')) === false) {
