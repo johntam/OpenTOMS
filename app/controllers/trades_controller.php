@@ -276,6 +276,14 @@ class TradesController extends AppController {
 		
 		if (empty($this->data)) {
 			$this->data = $this->Trade->read();
+			
+			//replace execution quantity and price with order quantity and price if zero
+			if ($this->data['Trade']['quantity'] == 0) {
+				$this->data['Trade']['quantity'] = $this->data['Trade']['order_quantity'];
+			}
+			if ($this->data['Trade']['execution_price'] == 0) {
+				$this->data['Trade']['execution_price'] = $this->data['Trade']['price'];
+			}
 		} else {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
@@ -286,6 +294,18 @@ class TradesController extends AppController {
 			//put in trade date and settlement date
 			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
 			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
+			
+			//is this an ammendment to an order or execution of this order
+			if ($this->params['form']['Submit'] == 'Update') {
+				//write order and price back to the order fields and reset the execution fields back to zero
+				$this->data['Trade']['order_quantity'] = $this->data['Trade']['quantity'];
+				$this->data['Trade']['price'] = $this->data['Trade']['execution_price'];
+				$this->data['Trade']['quantity'] = 0;
+				$this->data['Trade']['execution_price'] = 0;
+			}
+			else {
+				$this->data['Trade']['executed'] = 1;
+			}
 			
 			//first try to deactive this current trades, if it doesn't succeed, then don't create a new trade, this has been a persistent bug
 			$oid = $this->data['Trade']['oid'];
@@ -302,7 +322,42 @@ class TradesController extends AppController {
 			
 				if ($this->Trade->save($this->data)) {
 					$this->update_report_table();
-					$this->Session->setFlash('Your trade has been updated');
+					
+					//need to create a balance order?
+					if ($this->data['Trade']['create_balance'] == 1) {
+						$balance_quantity = $this->data['Trade']['order_quantity'] - $this->data['Trade']['quantity'];
+					
+						unset($this->data['Trade']['id']);
+						$this->Trade->create();
+						$this->data['Trade']['order_quantity'] = $balance_quantity;
+						$this->data['Trade']['price'] = $this->data['Trade']['execution_price'];
+						$this->data['Trade']['quantity'] = 0;
+						$this->data['Trade']['execution_price'] = 0;
+						$this->data['Trade']['commission'] = 0;
+						$this->data['Trade']['tax'] = 0;
+						$this->data['Trade']['other_costs'] = 0;
+						$this->data['Trade']['consideration'] = 0;
+						$this->data['Trade']['notional_value'] = 0;
+						$this->data['Trade']['act'] = 1;
+						$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
+						
+						if ($this->Trade->save($this->data) {
+							//Do a second update to the same record to set the oid field
+							$thisid = $this->Trade->id;
+							$this->Trade->create();
+							$this->Trade->read(null,$thisid);
+							$this->Trade->set(array(
+								'oid' => $thisid
+							));
+							
+							if ($this->Trade->save()) {
+								$this->Session->setFlash('Partial fill has been execute and new balance order created');
+								$this->redirect(array('action' => 'index'));
+							}
+						}
+					}
+					
+					$this->Session->setFlash('Your order has been updated');
 					$this->redirect(array('action' => 'index'));
 				}
 				else {
@@ -503,8 +558,12 @@ class TradesController extends AppController {
 	function ajax_quantity() {
 		$ttid = $this->params['form']['tradetype'];
 		$qty = str_replace(',','',$this->params['form']['quantity']);
-		$is_sell = ($ttid == 3) || ($ttid == 4);	//trade type id 3 or 4 are the trading Sells. The line below fails for coupons and dividends.
+		$tt = $this->Trade->TradeType->find('all', array('fields'=>array('TradeType.trade_type'), 'conditions'=>array('TradeType.id ='=>$ttid)));		
+		$tt = $tt['0']['TradeType']['trade_type'];
+		
+		//$is_sell = ($ttid == 3) || ($ttid == 4);	//trade type id 3 or 4 are the trading Sells. The line below fails for coupons and dividends.
 		//$is_sell = ($this->Trade->TradeType->find('count', array('conditions'=>array('TradeType.id =' => $ttid, 'TradeType.trade_type LIKE' => 'sell%'))) > 0);
+		$is_sell = ($tt == 'Sell Long') || ($tt == 'Sell Short') || ($tt == 'Coupon Expense') || ($tt == 'Dividend Expense');
 	
 		if ($is_sell) {
 			$quantity = -abs($qty);

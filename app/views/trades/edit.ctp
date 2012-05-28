@@ -25,15 +25,22 @@
 	<tr class="highlight">
 		<td>Trade Type</td>
 		<td>Quantity</td>
-		<td>Order Price</td>
 		<td>Execution Price</td>
+		<td>Executed</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('trade_type_id',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('quantity',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('price',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('execution_price',array('label'=>false)); ?></td>
+			<td>
+				<?php echo $this->Form->input('quantity',array('label'=>false)); ?>
+				<div id="create_balance_checkbox"><?php echo $this->Form->input('create_balance',array('type'=>'checkbox', 'label'=>'create balance order')); ?></div>
+				<div id="stored_quantity" style="display: none;"><?php echo $this->data['Trade']['quantity']; ?></div>
+				<div id="quantity_message" style="color: red; display:block"></div>
+			</td>
+			<td>
+				<?php echo $this->Form->input('execution_price',array('label'=>false)); ?>
+			</td>
+			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -94,15 +101,15 @@
 		</tr>
 	
 	<tr class="highlight" id="head7">
-		<td>Executed</td>
 		<td>Cancelled</td>
+		<td></td>
 		<td></td>
 		<td></td>
 	</tr>
 
 		<tr class="altrow" id="row7">
-			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
+			<td></td>
 			<td></td>
 			<td></td>
 		</tr>
@@ -111,8 +118,11 @@
 		<td colspan="4" style="text-align: center;">
 			<?php
 				echo $this->Form->input('oid', array('type' => 'hidden')); 
-				echo $this->Form->input('id', array('type' => 'hidden')); 
-				echo $this->Form->end('Update Trade');
+				echo $this->Form->input('id', array('type' => 'hidden'));
+				echo $this->Form->input('order_quantity', array('type' => 'hidden'));
+				echo $this->Form->submit('Update', array('name'=>'Submit', 'value' => 'Update', 'style'=>'float:left;'));
+				echo $this->Form->submit('Execute', array('name'=>'Submit', 'value' => 'Execute', 'style'=>'float:left;'));
+				echo $this->Form->end();
 			?>
 		</td>
 	</tr>

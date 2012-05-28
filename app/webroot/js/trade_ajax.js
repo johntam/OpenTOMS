@@ -1,8 +1,7 @@
 $(document).ready(function() {
 		alter_form_coupon();
-		$("#TradePrice").val($("#TradePrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
 		$("#TradeExecutionPrice").val($("#TradeExecutionPrice").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
-		handle_execute_checkbox();		
+		$("#TradeQuantity").val($("#TradeQuantity").val().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
 		$("#commission_busy").hide();
 		$("#tax_busy").hide();
 		$("#othercosts_busy").hide();
@@ -10,6 +9,7 @@ $(document).ready(function() {
 		$("#accrued_busy").hide();
 		$("#settdate_busy").hide();
 		$("#notional_busy").hide();
+		if ($("#create_balance_checkbox").length) {$("#create_balance_checkbox").hide()};
 		put_seclink();
 		$('#tradedatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 		$('#settlementdatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
@@ -26,7 +26,30 @@ $(document).ready(function() {
 		
 		
 		$("#TradeQuantity").focusout(function() {
-			recalculate_consideration();
+			if ($("#TradeOrderQuantity").length) { 
+				var newqty = $("#TradeQuantity").val();
+				var oldqty = $("#TradeOrderQuantity").val();
+				if (Math.abs(newqty) > Math.abs(oldqty)) {
+					$("#quantity_message").html("Can't execute more than original quantity");
+					$("#TradeQuantity").val(oldqty.replace(/(\.)(\d*?)(0+)$/, '$1$20'));
+					$("#create_balance_checkbox").hide();
+					return;
+				}
+				else if (Math.abs(newqty) < Math.abs(oldqty)) {
+					$("#quantity_message").html("");
+					$("#create_balance_checkbox").show();
+				}
+			}
+			
+			calc_quantity();
+			$.when( calc_quantity() )
+			   .then(function(){
+					recalculate_consideration();
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
 		});
 		
 		$("#TradeExecutionPrice").focusout(function() {
@@ -34,7 +57,19 @@ $(document).ready(function() {
 		});
 		
 		$("#TradeExecuted").click(function() {
-			handle_execute_checkbox();
+			if ($("#TradeExecuted:checked").val() != undefined) {
+				$.when( calc_quantity() )
+			   .then(function(){
+					recalculate_consideration();
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
+			}
+			else {
+				clearcosts();
+			}
 		});
 		
 		$("#TradeBrokerId").change(function() {
@@ -47,7 +82,16 @@ $(document).ready(function() {
 		
 		$("#TradeTradeTypeId").change(function() {
 			alter_form_coupon();
-			recalculate_consideration();
+			calc_quantity();
+			
+			$.when( calc_quantity() )
+			   .then(function(){
+					recalculate_consideration();
+				})
+			   .fail(function() {
+				  // AJAX request failed
+				  alert("Connection to database failed.");
+			   });
 		});
 		
 		$("#TradeCommission").change(function() {
@@ -148,8 +192,9 @@ $(document).ready(function() {
 	function alter_form_coupon() {
 		var tt = $("#TradeTradeTypeId option:selected").text();
 			if ((tt.substr(0,6) == "Coupon") || (tt.substr(0,8) == "Dividend")) {
-				$("#TradeExecutionPrice").hide();
-				$("#TradePrice").hide();
+				if( $('#TradeExecutionPrice').is(':visible') ) {
+					$("#TradeExecutionPrice").hide();
+				}
 				$("#row4").hide();
 				$("#row5").hide();
 				$("#row6").hide();
@@ -161,8 +206,10 @@ $(document).ready(function() {
 				$("#TradeExecutionPrice").val("");
 			}
 			else {
-				$("#TradeExecutionPrice").show();
-				$("#TradePrice").show();
+				if( $('#TradeExecutionPrice').is(':hidden') ) {
+					$("#TradeExecutionPrice").show();
+					$("#TradeExecutionPrice").val($("#stored_price").html().replace(/(\.)(\d*?)(0+)$/, '$1$20'));
+				}
 				$("#row4").show();
 				$("#row5").show();
 				$("#row6").show();
@@ -172,21 +219,6 @@ $(document).ready(function() {
 				$("#head6").show();
 				$("#head7").show();
 			}
-	}
-	
-	
-	function handle_execute_checkbox() {
-		var checked = $("#TradeExecuted:checked").val() != undefined;
-		if (!checked) {
-			$("#TradeExecutionPrice").val("");
-			$("#TradeExecutionPrice").attr("readonly", "readonly");
-			$("#TradeExecutionPrice").css("background-color","silver");
-			clearcosts();
-		}
-		else {
-			$("#TradeExecutionPrice").removeAttr("readonly");
-			$("#TradeExecutionPrice").css("background-color","white");
-		}
 	}
 	
 	
@@ -274,7 +306,6 @@ $(document).ready(function() {
 		
 			if (checked) {
 				$('input[type="submit"]').attr('disabled','disabled'); //disable submit button
-				calc_quantity();
 				calc_commission();
 				calc_tax();
 				calc_othercosts();
