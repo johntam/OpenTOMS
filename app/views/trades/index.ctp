@@ -65,11 +65,11 @@
 		<th><?php echo $this->Paginator->sort('Fund', 'Fund.fund_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Security', 'Sec.sec_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Trade Type', 'TradeType.trade_type'); ?></th>
-		<th><?php echo $this->Paginator->sort('Reason', 'Reason.reason_desc'); ?></th>
 		<th><?php echo $this->Paginator->sort('Broker', 'Broker.broker_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Trader', 'Trader.trader_name'); ?></th>
 		<th><?php echo $this->Paginator->sort('Currency', 'Currency.currency_iso_code'); ?></th>
-		<th><?php echo $this->Paginator->sort('Quantity', 'Trade.quantity'); ?></th>
+		<th><?php echo $this->Paginator->sort('Order Quantity', 'Trade.order_quantity'); ?></th>
+		<th><?php echo $this->Paginator->sort('Filled Quantity', 'Trade.quantity'); ?></th>
 		<th><?php echo $this->Paginator->sort('Consideration', 'Trade.consideration'); ?></th>
 		<th><?php echo $this->Paginator->sort('Trade Date', 'Trade.trade_date'); ?></th>
 		<th><?php echo $this->Paginator->sort('Settlement Date', 'Trade.settlement_date'); ?></th>
@@ -90,10 +90,10 @@
 		<td><?php echo $trade['Fund']['fund_name']; ?></td>
 		<td><?php echo $trade['Sec']['sec_name']; ?></td>
 		<td><?php echo $trade['TradeType']['trade_type']; ?></td>
-		<td><?php echo $trade['Reason']['reason_desc']; ?></td>
 		<td><?php echo $trade['Broker']['broker_name']; ?></td>
 		<td><?php echo $trade['Trader']['trader_name']; ?></td>
 		<td><?php echo $trade['Currency']['currency_iso_code']; ?></td>
+		<td><?php echo number_format($trade['Trade']['order_quantity']); ?></td>
 		<td><?php echo number_format($trade['Trade']['quantity']); ?></td>
 		<td style="text-align: right;"><?php echo number_format($trade['Trade']['consideration'],2); ?></td>
 		<td style="width: 8%;"><?php echo $trade['Trade']['trade_date']; ?></td>

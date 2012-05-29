@@ -3,7 +3,7 @@
 <table>
 	<tr>
 		<td colspan="4">
-			<h1>Edit Trade</h1>
+			<h1>Edit/Execute Trade</h1>
 			<?php echo $this->Form->create('Trade', array('id' => 'TradeInputForm')); ?>
 		</td>
 	</tr>
@@ -94,8 +94,10 @@
 	</tr>
 
 		<tr class="altrow" id="row6">
-			<td><?php echo $this->Form->input('decision_time',array('label'=>false,'empty'=>' ')); ?></td>
-			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('decision_time_date',array('type'=>'text', 'label'=>false, 'id'=>'decisiondatepicker', 'size'=>12, 'default'=>date('Y-m-d'), 'style'=>'float:left;'));
+					  echo $this->Form->input('decision_time_time',array('type'=>'text', 'label'=>false, 'default'=>'00:00', 'size'=>5, 'style'=>'float:left;')); ?></td>
+			<td><?php echo $this->Form->input('order_time_date',array('type'=>'text', 'label'=>false, 'id'=>'orderdatepicker', 'size'=>12, 'default'=>date('Y-m-d'), 'style'=>'float:left;'));
+					  echo $this->Form->input('order_time_time',array('type'=>'text', 'label'=>false, 'default'=>'00:00', 'size'=>5, 'style'=>'float:left;')); ?></td>
 			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?><div class="error-message" id="accrued_error"></div></td>
 			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
@@ -120,8 +122,8 @@
 				echo $this->Form->input('oid', array('type' => 'hidden')); 
 				echo $this->Form->input('id', array('type' => 'hidden'));
 				echo $this->Form->input('order_quantity', array('type' => 'hidden'));
-				echo $this->Form->submit('Update', array('name'=>'Submit', 'value' => 'Update', 'style'=>'float:left;'));
-				echo $this->Form->submit('Execute', array('name'=>'Submit', 'value' => 'Execute', 'style'=>'float:left;'));
+				echo $this->Form->submit('Update', array('id'=>'update_button','name'=>'Submit', 'value' => 'Update', 'style'=>'float:left;'));
+				echo $this->Form->submit('Execute', array('id'=>'execute_button','name'=>'Submit', 'value' => 'Execute', 'style'=>'float:left;'));
 				echo $this->Form->end();
 			?>
 		</td>

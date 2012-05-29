@@ -43,7 +43,7 @@ show up on all of your views, include it here -->
 		
 			<li><a href="#">Trades</a><ul>
 				<li><a href="/trades/order">Add Order</a></li>
-				<li><a href="/trades/add">New Trade</a></li>
+				<li><a href="/trades/add">Add Trade</a></li>
 				<li><a href="/trades/index">Blotter</a></li>
 				<li><a href="/Holdings/index">Holdings</a></li></ul>
 			</li>

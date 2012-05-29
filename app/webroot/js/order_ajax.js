@@ -43,7 +43,7 @@ $(document).ready(function() {
 			calc_notional_value();
 		});
 		
-		$("#tradedatepicker").change(function() {
+		$("#TradeSecId").change(function() {
 			if ($("#TradeSecId option:selected").text() != 'Select Security') {
 				$('input[type="submit"]').removeAttr('disabled');
 			}

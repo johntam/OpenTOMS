@@ -29,15 +29,15 @@
 	<tr class="highlight">
 		<td>Trade Type</td>
 		<td>Quantity</td>
-		<td>Order Price</td>
 		<td>Execution Price</td>
+		<td>Executed</td>
 	</tr>
 	
 		<tr class="altrow">
 			<td><?php echo $this->Form->input('trade_type_id',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('quantity',array('label'=>false)); ?></td>
-			<td><?php echo $this->Form->input('price',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('execution_price',array('label'=>false)); ?></td>
+			<td><?php echo $this->Form->input('executed',array('label'=>false, 'checked'=>true)); ?></td>
 		</tr>
 	
 	<tr class="highlight">
@@ -92,22 +92,24 @@
 	</tr>
 
 		<tr class="altrow" id="row6">
-			<td><?php echo $this->Form->input('decision_time',array('label'=>false,'empty'=>' ')); ?>
-			<td><?php echo $this->Form->input('order_time',array('label'=>false,'empty'=>' ')); ?></td>
+			<td><?php echo $this->Form->input('decision_time_date',array('type'=>'text', 'label'=>false, 'id'=>'decisiondatepicker', 'size'=>12, 'default'=>date('Y-m-d'), 'style'=>'float:left;'));
+					  echo $this->Form->input('decision_time_time',array('type'=>'text', 'label'=>false, 'default'=>'00:00', 'size'=>5, 'style'=>'float:left;')); ?></td>
+			<td><?php echo $this->Form->input('order_time_date',array('type'=>'text', 'label'=>false, 'id'=>'orderdatepicker', 'size'=>12, 'default'=>date('Y-m-d'), 'style'=>'float:left;'));
+					  echo $this->Form->input('order_time_time',array('type'=>'text', 'label'=>false, 'default'=>'00:00', 'size'=>5, 'style'=>'float:left;')); ?></td>
 			<td><?php echo $this->Form->input('accrued',array('label'=>false)); ?><div class="error-message" id="accrued_error"></div></td>
 			<td><?php echo $this->Form->input('notional_value',array('label'=>false)); ?></td>
 		</tr>
 		
 	<tr class="highlight" id="head7">
-		<td>Executed</td>
 		<td>Cancelled</td>
+		<td></td>
 		<td></td>
 		<td></td>
 	</tr>
 
 		<tr class="altrow" id="row7">
-			<td><?php echo $this->Form->input('executed',array('label'=>false)); ?></td>
 			<td><?php echo $this->Form->input('cancelled',array('label'=>false)); ?></td>
+			<td></td>
 			<td></td>
 			<td></td>
 		</tr>

@@ -7,7 +7,7 @@ class TradesController extends AppController {
 		$this->paginate = array('conditions' => array('TradeType.category =' => 'Trading'),
 								'fields' => array('Trade.id','Trade.oid','Fund.fund_name','Sec.sec_name','TradeType.trade_type','Reason.reason_desc','Broker.broker_name',
 														'Trader.trader_name','Currency.currency_iso_code','Trade.quantity','Trade.consideration','Trade.trade_date','Trade.settlement_date',
-														'Trade.execution_price','Trade.cancelled','Trade.executed'),
+														'Trade.execution_price','Trade.cancelled','Trade.executed','Trade.order_quantity'),
 								'limit' => 1000,
 								'order' => 	array('Trade.id' => 'desc')
 		);
@@ -208,6 +208,8 @@ class TradesController extends AppController {
 			//put in trade date and settlement date
 			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
 			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
+			$this->data['Trade']['decision_time'] = $this->data['Trade']['decision_time_date'].' '.$this->data['Trade']['decision_time_time'];
+			$this->data['Trade']['order_time'] = $this->data['Trade']['order_time_date'].' '.$this->data['Trade']['order_time_time'];
 		
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
@@ -284,6 +286,15 @@ class TradesController extends AppController {
 			if ($this->data['Trade']['execution_price'] == 0) {
 				$this->data['Trade']['execution_price'] = $this->data['Trade']['price'];
 			}
+			
+			//populate trade date and settlement date
+			$this->data['Trade']['trade_date_input'] = $this->data['Trade']['trade_date'];
+			$this->data['Trade']['settlement_date_input'] = $this->data['Trade']['settlement_date'];
+			$this->data['Trade']['decision_time_date'] = date('Y-m-d', strtotime($this->data['Trade']['decision_time']));
+			$this->data['Trade']['decision_time_time'] = date('H:i', strtotime($this->data['Trade']['decision_time']));
+			$this->data['Trade']['order_time_date'] = date('Y-m-d', strtotime($this->data['Trade']['order_time']));
+			$this->data['Trade']['order_time_time'] = date('H:i', strtotime($this->data['Trade']['order_time']));
+			
 		} else {
 			//remove any commas from quantity, consideration and notional value
 			$this->data['Trade']['quantity'] = str_replace(',','',$this->data['Trade']['quantity']);
@@ -294,6 +305,8 @@ class TradesController extends AppController {
 			//put in trade date and settlement date
 			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
 			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
+			$this->data['Trade']['decision_time'] = $this->data['Trade']['decision_time_date'].' '.$this->data['Trade']['decision_time_time'];
+			$this->data['Trade']['order_time'] = $this->data['Trade']['order_time_date'].' '.$this->data['Trade']['order_time_time'];
 			
 			//is this an ammendment to an order or execution of this order
 			if ($this->params['form']['Submit'] == 'Update') {
@@ -305,6 +318,7 @@ class TradesController extends AppController {
 			}
 			else {
 				$this->data['Trade']['executed'] = 1;
+				$executed = true;
 			}
 			
 			//first try to deactive this current trades, if it doesn't succeed, then don't create a new trade, this has been a persistent bug
@@ -316,6 +330,7 @@ class TradesController extends AppController {
 			//if successful, then go on to create a new trade with these details, else report an error
 			if ($result) {
 				unset($this->data['Trade']['id']);	//remove id so that Cake will create a new model record
+				
 				$this->Trade->create();
 				$this->data['Trade']['act'] = 1;
 				$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
@@ -324,8 +339,9 @@ class TradesController extends AppController {
 					$this->update_report_table();
 					
 					//need to create a balance order?
-					if ($this->data['Trade']['create_balance'] == 1) {
+					if (($this->data['Trade']['create_balance'] == 1) && isset($executed)) {
 						$balance_quantity = $this->data['Trade']['order_quantity'] - $this->data['Trade']['quantity'];
+						$orig_id = $this->data['Trade']['oid'];
 					
 						unset($this->data['Trade']['id']);
 						$this->Trade->create();
@@ -333,6 +349,7 @@ class TradesController extends AppController {
 						$this->data['Trade']['price'] = $this->data['Trade']['execution_price'];
 						$this->data['Trade']['quantity'] = 0;
 						$this->data['Trade']['execution_price'] = 0;
+						$this->data['Trade']['executed'] = 0;
 						$this->data['Trade']['commission'] = 0;
 						$this->data['Trade']['tax'] = 0;
 						$this->data['Trade']['other_costs'] = 0;
@@ -340,8 +357,9 @@ class TradesController extends AppController {
 						$this->data['Trade']['notional_value'] = 0;
 						$this->data['Trade']['act'] = 1;
 						$this->data['Trade']['crd'] = DboSource::expression('NOW()');	//weird DEFAULT TIMESTAMP not working
+						$this->data['Trade']['notes'] = "Linked trade:".$orig_id;
 						
-						if ($this->Trade->save($this->data) {
+						if ($this->Trade->save($this->data)) {
 							//Do a second update to the same record to set the oid field
 							$thisid = $this->Trade->id;
 							$this->Trade->create();
@@ -351,7 +369,7 @@ class TradesController extends AppController {
 							));
 							
 							if ($this->Trade->save()) {
-								$this->Session->setFlash('Partial fill has been execute and new balance order created');
+								$this->Session->setFlash('Partial fill has been executed and new balance order created');
 								$this->redirect(array('action' => 'index'));
 							}
 						}
@@ -500,7 +518,7 @@ class TradesController extends AppController {
 			$this->set('commission', '0.00');
 		}
 		else {
-			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],4));
+			$this->set('commission', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * $brokercomm['Broker']['commission_rate'],2));
 		}
 		$this->render('/elements/ajax_commission', 'ajax');
 	}
@@ -521,7 +539,7 @@ class TradesController extends AppController {
 			(!$this->Trade->Sec->is_deriv($secid)) && 
 			($this->Trade->Sec->is_equity($secid))
 			) {
-				$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,4));
+				$this->set('tax', round(abs($qty) * $price * $valpoint['Sec']['valpoint'] * 0.005,2));
 		}
 		else {
 			$this->set('tax', '0.00');

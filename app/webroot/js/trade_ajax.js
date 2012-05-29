@@ -9,10 +9,26 @@ $(document).ready(function() {
 		$("#accrued_busy").hide();
 		$("#settdate_busy").hide();
 		$("#notional_busy").hide();
-		if ($("#create_balance_checkbox").length) {$("#create_balance_checkbox").hide()};
+		if ($("#create_balance_checkbox").length) {$("#create_balance_checkbox").hide()}
+		
+		if ($("#execute_button").length) {
+			if ($("#TradeExecuted:checked").val() != undefined) {
+				if ($("#execute_button").length) {$("#execute_button").show()};
+				if ($("#update_button").length) {$("#update_button").hide()};
+				
+			}
+			else {
+				if ($("#execute_button").length) {$("#execute_button").hide()};
+				if ($("#update_button").length) {$("#update_button").show()};
+				clearcosts();
+			}
+		}
+		
 		put_seclink();
 		$('#tradedatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 		$('#settlementdatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+		$('#decisiondatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+		$('#orderdatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	
 		$("#TradeSecId").change(function() {
 			$("#sec_link").html("");
@@ -58,6 +74,8 @@ $(document).ready(function() {
 		
 		$("#TradeExecuted").click(function() {
 			if ($("#TradeExecuted:checked").val() != undefined) {
+				if ($("#execute_button").length) {$("#execute_button").show()};
+				if ($("#update_button").length) {$("#update_button").hide()};
 				$.when( calc_quantity() )
 			   .then(function(){
 					recalculate_consideration();
@@ -68,6 +86,8 @@ $(document).ready(function() {
 			   });
 			}
 			else {
+				if ($("#execute_button").length) {$("#execute_button").hide()};
+				if ($("#update_button").length) {$("#update_button").show()};
 				clearcosts();
 			}
 		});
