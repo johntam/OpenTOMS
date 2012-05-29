@@ -35,7 +35,6 @@
 				<?php echo $this->Form->input('quantity',array('label'=>false)); ?>
 				<div id="create_balance_checkbox"><?php echo $this->Form->input('create_balance',array('type'=>'checkbox', 'label'=>'create balance order')); ?></div>
 				<div id="stored_quantity" style="display: none;"><?php echo $this->data['Trade']['quantity']; ?></div>
-				<div id="quantity_message" style="color: red; display:block"></div>
 			</td>
 			<td>
 				<?php echo $this->Form->input('execution_price',array('label'=>false)); ?>

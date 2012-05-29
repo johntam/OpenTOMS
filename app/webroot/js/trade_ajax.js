@@ -45,15 +45,11 @@ $(document).ready(function() {
 			if ($("#TradeOrderQuantity").length) { 
 				var newqty = $("#TradeQuantity").val();
 				var oldqty = $("#TradeOrderQuantity").val();
-				if (Math.abs(newqty) > Math.abs(oldqty)) {
-					$("#quantity_message").html("Can't execute more than original quantity");
-					$("#TradeQuantity").val(oldqty.replace(/(\.)(\d*?)(0+)$/, '$1$20'));
-					$("#create_balance_checkbox").hide();
-					return;
-				}
-				else if (Math.abs(newqty) < Math.abs(oldqty)) {
-					$("#quantity_message").html("");
+				if (Math.abs(newqty) < Math.abs(oldqty)) {
 					$("#create_balance_checkbox").show();
+				}
+				else {
+					$("#create_balance_checkbox").hide();
 				}
 			}
 			
