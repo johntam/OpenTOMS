@@ -71,6 +71,7 @@ show up on all of your views, include it here -->
 				<li><a href="#">Pricing</a><ul>
 					<li><a href="/prices/index/0/1/0/0">Securities</a></li>
 					<li><a href="/prices/fxrates">FX Rates</a></li>
+					<li><a href="/prices/fundprices">Funds</a></li>
 					</ul>
 				</li>
 			';} ?>

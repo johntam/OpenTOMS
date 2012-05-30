@@ -153,5 +153,21 @@ class PricesController extends AppController {
 		$report->run_date = $date;
 		$report->deactivateDate();
 	}
+	
+	////////////////////////////
+	//Pricing of funds
+	function fundprices() {
+		App::import('Core', 'ConnectionManager');
+		$dataSource = ConnectionManager::getDataSource('default');
+		$host = $dataSource->config['host'];
+		$username = $dataSource->config['login'];
+		$password = $dataSource->config['password'];
+		$database = $dataSource->config['database'];
+		
+		$this->set('host', $host);
+		$this->set('username', $username);
+		$this->set('password', $password);
+		$this->set('database', $database);
+	}
 }
 ?>

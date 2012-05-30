@@ -278,3 +278,8 @@ CREATE TABLE group_permissions (
 	group_id INT NOT NULL,
 	fund_id INT NOT NULL
 );
+
+CREATE TABLE attachments (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	file MEDIUMBLOB NULL
+);
