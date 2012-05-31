@@ -144,11 +144,11 @@ class qqFileUploader {
 			
 			//return array('error'=> $content);
 			
-			//if ($this->saveToDatabase('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01',
-			//					$filename.'.'.$ext, 100000, $_GET['database'])) {
+			if ($this->saveToDatabase('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01',
+								$filename.'.'.$ext, $size, $_GET['database'])) {
 			
-			if ($this->saveToDatabase($_GET['host'], $_GET['username'], $_GET['password'], $_GET['database'],
-								$filename.'.'.$ext, $size, $content)) {
+			//if ($this->saveToDatabase($_GET['host'], $_GET['username'], $_GET['password'], $_GET['database'],
+			//					$filename.'.'.$ext, $size, $content) {
 				return array('success'=>true);
 			}
 			else {

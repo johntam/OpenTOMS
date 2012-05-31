@@ -24,7 +24,7 @@ class PricesController extends AppController {
 		
 		$this->set('fromdate',$from);
 		$this->set('todate',$to);
-		$this->set('prices', $this->Price->get_securities($to, $from, $secfilter, $datefilter, $this->data['Price']));
+		$this->set('prices', $this->Price->get_securities($to, $from, $secfilter, $datefilter));
 		
 		//Get list of security names
 		App::import('model','Sec');
@@ -145,6 +145,7 @@ class PricesController extends AppController {
 		$this->set('prices', $this->Price->get_fxrates($datefilter));
 	}
 	
+	
 	//If a price has been edited, then deactivate any reports which have a run_date on this price date.
 	//This is to make sure that any future run reports do not depend on these saved reports which could now be invalid.
 	function update_report_table($date) {
@@ -154,9 +155,41 @@ class PricesController extends AppController {
 		$report->deactivateDate();
 	}
 	
-	////////////////////////////
-	//Pricing of funds
+	
+	/**
+	 *	Pricing of funds
+	 **/
 	function fundprices() {
+		if (!empty($this->data)) {
+			$result = $this->Price->put_price($this->data['Price']['sec_id'], 
+											  $this->data['Price']['price_date_input'], 
+											  $this->data['Price']['price'], 0,
+											  $this->data['Price']['final']);
+			
+			if (!is_numeric($result)) {
+				if ($result == 'Locked') {
+					$this->Session->setFlash('This fund price has been locked as of this date');
+				}
+				else if ($result == 'Exists') {
+					$this->Session->setFlash('There is already a price for this security for this date');
+				}
+				else {
+					$this->Session->setFlash('Problem saving fund price to the database');
+				}
+			}
+			else {
+				$this->data = array();
+			}
+		}
+		
+		//Get list of fund names
+		App::import('model','Sec');
+		$sec = new Sec();
+		$this->set('secs', $sec->find('list', array('conditions'=>array('Sec.act =' => 1, 
+																		'Sec.sec_type_id =' => 10000), //funds
+																		'fields'=>array('Sec.sec_name'),
+																		'order'=>array('Sec.sec_name'))));
+		//file upload parameters
 		App::import('Core', 'ConnectionManager');
 		$dataSource = ConnectionManager::getDataSource('default');
 		$host = $dataSource->config['host'];
@@ -168,6 +201,42 @@ class PricesController extends AppController {
 		$this->set('username', $username);
 		$this->set('password', $password);
 		$this->set('database', $database);
+	}
+	
+	
+	/**
+	 *	Get fund prices to display in the ajax element
+	 **/
+	function ajax_fundprices() {
+		$sec_filter = $this->params['form']['sec_filter'];
+		if ($sec_filter) { $sec_filter = '%'.$sec_filter.'%'; }
+		$date_filter = $this->params['form']['date_filter'];
+		//$date_filter = array('day'=>date('j',$date_filter), 'month'=>date('n',$date_filter), 'year'=>date('Y',$date_filter));
+		
+		$this->set('fundprices', $this->Price->get_securities(0, 4, $sec_filter, $date_filter, true));
+		$this->render('/elements/ajax_fundprices', 'ajax');
+	}
+	
+	
+	/**
+	 *	Write fund price edits back to the database
+	 **/
+	function ajax_edit() {
+		$secid = $this->params['form']['secid'];
+		$pricedate = $this->params['form']['pricedate'];
+		$price = $this->params['form']['price'];
+		$final = $this->params['form']['final'];
+		$id = $this->params['form']['id'];
+		
+		$result = $this->Price->update_price($secid, $pricedate, $id, $price, $final);
+		
+		if (is_numeric($result)) {
+			$this->set('data','Y');
+		}
+		else {
+			$this->set('data',$msg);
+		}
+		$this->render('/elements/ajax_common', 'ajax');
 	}
 }
 ?>

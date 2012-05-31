@@ -8,7 +8,7 @@ class Price extends AppModel {
 	);
 	
 	
-	function get_securities($to, $from, $secfilter, $datefilter, $data) {
+	function get_securities($to, $from, $secfilter, $datefilter, $onlyfunds = false) {
 	
 		if ($datefilter) {
 			$conditions=array(
@@ -27,11 +27,18 @@ class Price extends AppModel {
 			);
 		}
 		
-		//exclude cash from this securities list
-		$conditions = array_merge($conditions, array('SecType.sec_type >' => 1));
+		//do we need to return a list of funds
+		if ($onlyfunds) {
+			// sectype 10000 is funds
+			$conditions = array_merge($conditions, array('SecType.sec_type =' => 10000));
+		}
+		else {
+			$conditions = array_merge($conditions, array('AND' => array('SecType.sec_type >' => 1, 'SecType.sec_type <>' => 10000)));
+		}
 		
 		$params=array(
-			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 'Price.id', 'SecType.sec_type'),
+			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 
+							  'Price.id', 'SecType.sec_type', 'Price.final', 'Sec.id'),
 			'joins' => array(
 							array('table'=>'secs',
 								  'alias'=>'Sec',
@@ -212,15 +219,15 @@ class Price extends AppModel {
 	}
 	
 	
-	//write a price to the database. used by the ajax routines on the balance view page.
-	function put_price($sec_id, $date, $price, $fx_rate) {		
+	//write a price to the database. used by the ajax routines on the balance view page and also the fund pricing screen.
+	function put_price($sec_id, $date, $price, $fx_rate, $final=1) {		
 		if ($this->islocked($sec_id, $date)) {
 			return 'Locked';	//locked error code
 		}
 		else {
 			if ($this->check_unique($sec_id, $date)) {
 				if (!$fx_rate) {
-					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>$price));
+					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>$price, 'final'=>$final));
 				}
 				else {
 					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>1, 'fx_rate'=>$fx_rate));
@@ -244,6 +251,29 @@ class Price extends AppModel {
 			}
 		}
 	}
+	
+	
+	/**
+	 *	update a price row in the database, used by the fund pricing screen.
+	 **/
+	function update_price($sec_id, $date, $id, $price, $final) {		
+		if ($this->islocked($sec_id, $date)) {
+			return 'Locked';	//locked error code
+		}
+		else {
+				$data = array('Price' => array('id'=>$id, 'price'=>$price, 'final'=>$final));
+				
+				if ($this->save($data)) {
+					//success
+					return(number_format($price,2));
+				}
+				else {
+					return 'Error';	//database write error code
+				}
+				
+		}
+	}
+	
 	
 	
 	//Check to see if a price to be added doesn't break the unique constraint on table prices.

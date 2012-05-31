@@ -129,9 +129,11 @@ class TradesController extends AppController {
 		App::import('model','GroupPermission');
 		$gp = new GroupPermission();
 		$allowed = $gp->getAllowedFunds($userdata['group_id']);
+		$f = array();
 		foreach ($allowed as $al) {
-			$conditions['OR']['Trade.fund_id ='] = $al;
+			array_push($f, array('Trade.fund_id =' => $al));
 		}
+		$conditions['OR'] = $f;		
 		/////////////////////
 		
 		//get data from the model		
