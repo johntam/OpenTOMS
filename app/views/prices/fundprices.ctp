@@ -24,11 +24,6 @@
 	</form>
 
 	<td colspan="2">
-		<div id="host" style="display: none;"><?php echo $host; ?></div>
-		<div id="username" style="display: none;"><?php echo $username; ?></div>
-		<div id="password" style="display: none;"><?php echo $password; ?></div>
-		<div id="database" style="display: none;"><?php echo $database; ?></div>
-		
 		<div id="file-uploader">		
 		<noscript>			
 			<p>Please enable JavaScript to use file uploader.</p>
@@ -59,3 +54,19 @@
 
 <table style="width: 70%;margin-left:15%;margin-right:15%;" id="fund_price_table">
 </table>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		var uploader = new qq.FileUploader({
+			element: document.getElementById('file-uploader'),
+			action: '/fileuploader.php',
+			params: {
+				host:		'<?php echo $host; ?>',
+				username:	'<?php echo $username; ?>',
+				password:	'<?php echo $password; ?>',
+				database:	'<?php echo $database; ?>'
+			},
+			debug: true
+		});
+	});
+</script>

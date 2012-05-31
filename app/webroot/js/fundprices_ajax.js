@@ -1,16 +1,4 @@
-$(document).ready(function() {
-	var uploader = new qq.FileUploader({
-			element: document.getElementById('file-uploader'),
-			action: '/fileuploader.php',
-			params: {
-				host:		$("#host").html(),
-				username:	$("#username").html(),
-				password:	$("#password").html(),
-				database:	$("#database").html()
-			},
-			debug: true
-		});
-		
+$(document).ready(function() {	
 	$('#datefilter').datepicker({ dateFormat: 'yy-mm-dd' });
 	$('#pricedatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 	
