@@ -178,6 +178,7 @@ class PricesController extends AppController {
 				}
 			}
 			else {
+				$this->Session->setFlash('The fund price has been saved');
 				$this->data = array();
 			}
 		}
@@ -211,9 +212,7 @@ class PricesController extends AppController {
 		$sec_filter = $this->params['form']['sec_filter'];
 		if ($sec_filter) { $sec_filter = '%'.$sec_filter.'%'; }
 		$date_filter = $this->params['form']['date_filter'];
-		//$date_filter = array('day'=>date('j',$date_filter), 'month'=>date('n',$date_filter), 'year'=>date('Y',$date_filter));
-		
-		$this->set('fundprices', $this->Price->get_securities(0, 4, $sec_filter, $date_filter, true));
+		$this->set('fundprices', $this->Price->get_securities(0, 500, $sec_filter, $date_filter, true));
 		$this->render('/elements/ajax_fundprices', 'ajax');
 	}
 	

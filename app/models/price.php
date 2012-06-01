@@ -56,6 +56,7 @@ class Price extends AppModel {
 								  )
 							),
 			'conditions' => $conditions, //array of conditions
+			'limit' => 100,
 			'order' => array('Price.price_date DESC') //string or array defining order
 		);
 		

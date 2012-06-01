@@ -36,7 +36,7 @@
 <table style="width: 70%;margin-left:15%;margin-right:15%;">	
 	<tr>
 		<th>Date</th>
-		<th>Security</th>
+		<th>Fund</th>
 		<th>Price</th>
 		<th>Final</th>
 		<th>Edit</th>
@@ -45,28 +45,12 @@
 	<tr class="high2">
 		<?php echo $this->Form->create(null, array('url' => array('controller' => 'prices', 'action' => 'fundprices')));?>
 		<td style="width: 15%;"><?php echo $this->Form->input('price_date_input',array('label'=>false, 'id'=>'pricedatepicker', 'size'=>15, 'default'=>date('Y-m-d'))); ?></td>
-		<td style="width: 45%;"><?php echo $this->Form->input('sec_id',array('label'=>false, 'style'=>'width: 80%')); ?></td>
+		<td style="width: 45%;"><?php echo $this->Form->input('sec_id',array('label'=>false, 'id'=>'secidpicker', 'style'=>'width: 80%', 'empty'=>'Choose Fund')); ?></td>
 		<td style="width: 15%;text-align: right;"><?php echo $this->Form->input('price',array('type'=>'text','label'=>false,'size'=>15)); ?></td>
 		<td style="width: 10%;text-align: center;"><?php echo $this->Form->input('final',array('label'=>false, 'options' => array('1'=>'Yes','0'=>'No'))); ?></td>
-		<td style="text-align: center;"><?php echo $this->Form->end('Add'); ?></td>
+		<td style="text-align: center;"><div id="AddFundPriceButton"><?php echo $this->Form->end('Add'); ?></div></td>
 	</tr>
 </table>
 
 <table style="width: 70%;margin-left:15%;margin-right:15%;" id="fund_price_table">
 </table>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		var uploader = new qq.FileUploader({
-			element: document.getElementById('file-uploader'),
-			action: '/fileuploader.php',
-			params: {
-				host:		'<?php echo $host; ?>',
-				username:	'<?php echo $username; ?>',
-				password:	'<?php echo $password; ?>',
-				database:	'<?php echo $database; ?>'
-			},
-			debug: true
-		});
-	});
-</script>

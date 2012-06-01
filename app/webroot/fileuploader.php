@@ -1,4 +1,79 @@
 <?php
+if(!function_exists('mime_content_type')) {
+
+    function mime_content_type($filename) {
+
+        $mime_types = array(
+
+            'txt' => 'text/plain',
+            'htm' => 'text/html',
+            'html' => 'text/html',
+            'php' => 'text/html',
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+            'xml' => 'application/xml',
+            'swf' => 'application/x-shockwave-flash',
+            'flv' => 'video/x-flv',
+
+            // images
+            'png' => 'image/png',
+            'jpe' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'ico' => 'image/vnd.microsoft.icon',
+            'tiff' => 'image/tiff',
+            'tif' => 'image/tiff',
+            'svg' => 'image/svg+xml',
+            'svgz' => 'image/svg+xml',
+
+            // archives
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            'exe' => 'application/x-msdownload',
+            'msi' => 'application/x-msdownload',
+            'cab' => 'application/vnd.ms-cab-compressed',
+
+            // audio/video
+            'mp3' => 'audio/mpeg',
+            'qt' => 'video/quicktime',
+            'mov' => 'video/quicktime',
+
+            // adobe
+            'pdf' => 'application/pdf',
+            'psd' => 'image/vnd.adobe.photoshop',
+            'ai' => 'application/postscript',
+            'eps' => 'application/postscript',
+            'ps' => 'application/postscript',
+
+            // ms office
+            'doc' => 'application/msword',
+            'rtf' => 'application/rtf',
+            'xls' => 'application/vnd.ms-excel',
+            'ppt' => 'application/vnd.ms-powerpoint',
+
+            // open office
+            'odt' => 'application/vnd.oasis.opendocument.text',
+            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+        );
+
+        $ext = strtolower(array_pop(explode('.',$filename)));
+        if (array_key_exists($ext, $mime_types)) {
+            return $mime_types[$ext];
+        }
+        elseif (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME);
+            $mimetype = finfo_file($finfo, $filename);
+            finfo_close($finfo);
+            return $mimetype;
+        }
+        else {
+            return 'application/octet-stream';
+        }
+    }
+}
 
 /**
  * Handle file uploads via XMLHttpRequest
@@ -145,11 +220,12 @@ class qqFileUploader {
 			//return array('error'=> $content);
 			
 			//$userdata = $this->Session->read("Auth.User");
-			//$content = $userdata['group_id'];
+			//$content = $userdata['group_id'];	
 			
+			$content_type = mime_content_type($filename.'.'.$ext);
 			
 			if ($this->saveToDatabase('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01',
-								$filename.'.'.$ext, $size, $content)) {
+								$filename.'.'.$ext, $size, $content, $content_type, $_GET['f_table'], $_GET['f_id'], $_GET['f_date'])) {
 			
 			
 			//if ($this->saveToDatabase($_GET['host'], $_GET['username'], $_GET['password'], $_GET['database'], 
@@ -168,7 +244,7 @@ class qqFileUploader {
 	/**
 	 * Save file to attachments table in database
 	 */
-	 function saveToDatabase($host,$username,$password,$database,$name, $size, &$content) {
+	 function saveToDatabase($host,$username,$password,$database,$name, $size, &$content, $content_type, $f_table, $f_id, $f_date) {
 		$con = mysql_connect($host,$username,$password);
 		if (!$con) {
 		  return false;
@@ -176,7 +252,7 @@ class qqFileUploader {
 		else {
 			mysql_select_db($database, $con);
 
-			$sql = "INSERT INTO attachments (name, size, content) VALUES ('$name', $size, '$content')";
+			$sql = "INSERT INTO attachments (name, size, content, type, f_table, f_id, f_date) VALUES ('$name', $size, '$content', '$content_type', '$f_table', '$f_id', '$f_date')";
 			
 			if (!mysql_query($sql, $con)) {
 				return false;
