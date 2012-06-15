@@ -85,6 +85,7 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers/Currencies');
 		$this->Acl->deny($group, 'controllers/Holidays');
 		$this->Acl->deny($group, 'controllers/Settlements');
+		$this->Acl->deny($group, 'controllers/Accounts');
 		
 	 
 		//allow users to only add and edit on posts and widgets
