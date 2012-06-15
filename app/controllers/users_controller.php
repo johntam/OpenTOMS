@@ -73,6 +73,18 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers/Groups');
 		$this->Acl->deny($group, 'controllers/Prices');
 		$this->Acl->deny($group, 'controllers/Traders');
+		$this->Acl->deny($group, 'controllers/Funds');
+		$this->Acl->deny($group, 'controllers/Secs');
+		$this->Acl->deny($group, 'controllers/SecTypes');
+		$this->Acl->deny($group, 'controllers/Reasons');
+		$this->Acl->deny($group, 'controllers/Brokers');
+		$this->Acl->deny($group, 'controllers/Custodians');
+		$this->Acl->deny($group, 'controllers/Countries');
+		$this->Acl->deny($group, 'controllers/Exchanges');
+		$this->Acl->deny($group, 'controllers/Industries');
+		$this->Acl->deny($group, 'controllers/Currencies');
+		$this->Acl->deny($group, 'controllers/Holidays');
+		$this->Acl->deny($group, 'controllers/Settlements');
 		
 	 
 		//allow users to only add and edit on posts and widgets
