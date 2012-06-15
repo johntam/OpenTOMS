@@ -66,6 +66,14 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers/Prices');
 		$this->Acl->deny($group, 'controllers/Traders');
 		
+		//no access to admin pages for Guest accounts
+		$group->id = 8;
+		$this->Acl->allow($group, 'controllers');
+		$this->Acl->deny($group, 'controllers/Users');
+		$this->Acl->deny($group, 'controllers/Groups');
+		$this->Acl->deny($group, 'controllers/Prices');
+		$this->Acl->deny($group, 'controllers/Traders');
+		
 	 
 		//allow users to only add and edit on posts and widgets
 		//$group->id = 3;
