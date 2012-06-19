@@ -129,9 +129,16 @@
 							//No pricing for zero holdings
 						}
 						else if (empty($balance['PriceFX']['fx_rate'])) {
-									echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
-										"' value='enter fx' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
-									$missingprices = true;
+							if ($balance['SecType']['exchrate'] == 1) {
+								echo "<input type='text' maxLength='10' id='fx_".$balance['Sec']['id'].
+									"' value='enter fx' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Sec']['id']."]' />";
+							}
+							else {
+								echo "<input type='text' maxLength='10' id='fx_".$balance['Currency']['sec_id'].
+									"' value='enter fx' class='missingprices' name='data[Balance][Pricebox][fx_".$balance['Currency']['sec_id']."]' />";
+							}
+									
+							$missingprices = true;
 						}
 						else {
 							echo number_format($balance['PriceFX']['fx_rate'],4);

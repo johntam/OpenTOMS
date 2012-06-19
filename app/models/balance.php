@@ -300,6 +300,7 @@ class Balance extends AppModel {
 											'Balance.currency_id',
 											'Sec.valpoint',
 											'SecType.cfd',
+											'SecType.exchrate',
 											'Balance.trinv'),
 						'joins' => array(
 										array('table'=>'currencies',

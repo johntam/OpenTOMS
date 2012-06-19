@@ -114,7 +114,7 @@ class BalancesController extends AppController {
 		}
 		
 		$this->dropdownchoices();
-		$this->render('index');
+		$this->render('index');				
 	}
 	
 	
