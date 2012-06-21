@@ -6,7 +6,7 @@
 					<?php echo $price['Price']['price_date']; ?>
 				</div>
 			</td>
-			<td style="width: 45%;">
+			<td style="width: 30%;">
 				<?php echo $price['Sec']['sec_name']; ?>
 			</td>
 			<td style="width: 15%;text-align: right;">
@@ -21,6 +21,9 @@
 				</select>
 			</td>
 			<td style="text-align: center;">
+				<?php echo $price['Price']['NumAttachments']; ?>
+			</td>
+			<td style="width: 10%;text-align: center;">
 				<?php 
 					echo $this->Html->image('edit.png', array('class'=>'editbutton', 'id' => 'edit_'.$price['Price']['id']));
 					echo $this->Html->image('save.png', array('class'=>'savebutton', 'type'=>'hidden', 'id' => 'save_'.$price['Price']['id']));
@@ -32,7 +35,6 @@
 		</tr>
 <?php endforeach;} ?>
 	
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.editprice').hide();

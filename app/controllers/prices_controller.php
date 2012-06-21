@@ -212,6 +212,9 @@ class PricesController extends AppController {
 		$sec_filter = $this->params['form']['sec_filter'];
 		if ($sec_filter) { $sec_filter = '%'.$sec_filter.'%'; }
 		$date_filter = $this->params['form']['date_filter'];
+		
+		//$this->set('data', debug($this->Price->get_securities(0, 500, $sec_filter, $date_filter, true)));
+		//$this->render('/elements/ajax_common', 'ajax');
 		$this->set('fundprices', $this->Price->get_securities(0, 500, $sec_filter, $date_filter, true));
 		$this->render('/elements/ajax_fundprices', 'ajax');
 	}

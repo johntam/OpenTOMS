@@ -36,9 +36,15 @@ class Price extends AppModel {
 			$conditions = array_merge($conditions, array('AND' => array('SecType.sec_type >' => 1, 'SecType.sec_type <>' => 10000)));
 		}
 		
+		//create virtual field to take the count of attachments column
+		//http://stackoverflow.com/questions/8015845/cakephp-2-0-naming-mysql-aggregate-functions-in-query
+		$this->virtualFields += array(
+			'NumAttachments' => 0
+		);
+		
 		$params=array(
 			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 
-							  'Price.id', 'SecType.sec_type', 'Price.final', 'Sec.id'),
+							  'Price.id', 'SecType.sec_type', 'Price.final', 'Sec.id', 'COUNT(Attach.id) AS Price__NumAttachments'),
 			'joins' => array(
 							array('table'=>'secs',
 								  'alias'=>'Sec',
@@ -53,9 +59,19 @@ class Price extends AppModel {
 								  'foreignKey'=>false,
 								  'conditions'=>
 										array('SecType.id=Sec.sec_type_id ')
-								  )
+								  ),
+							 array('table'=>'attachments',
+							  'alias'=>'Attach',
+							  'type'=>'left',
+							  'foreignKey'=>false,
+							  'conditions'=>
+									array(	'Price.sec_id=Attach.f_id',
+											'Price.price_date=Attach.f_date',
+											'Attach.f_table="sec"')
+							  )
 							),
 			'conditions' => $conditions, //array of conditions
+			'group' => array('Price.sec_id','Price.price_date','Attach.f_id','Attach.f_date'),
 			'limit' => 100,
 			'order' => array('Price.price_date DESC') //string or array defining order
 		);

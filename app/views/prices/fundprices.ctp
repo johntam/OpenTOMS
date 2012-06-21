@@ -11,26 +11,22 @@
 	
 	<form>
 		<tr class="altrow">
-
-		<td style="width: 30%;">
-			Enter a few characters of security name:
-			<input id="secfilter" type="text" />
-		</td>
-		<td style="width: 10%;"></td>
-		<td style="width: 30%;">
-			Enter a date to filter on:
-			<input id="datefilter" />
-		</td>
+			<td style="width: 30%;">
+				Enter a few characters of security name:
+				<input id="secfilter" type="text" />
+			</td>
+			<td style="width: 30%;">
+				Enter a date to filter on:
+				<input id="datefilter" />
+			</td>
+			<td>
+				<noscript>			
+					<p>Please enable JavaScript to use file uploader.</p>
+					<!-- or put a simple form for upload here -->
+				</noscript>
+			</td>
+		</tr>
 	</form>
-
-	<td colspan="2">
-		<div id="file-uploader">		
-		<noscript>			
-			<p>Please enable JavaScript to use file uploader.</p>
-			<!-- or put a simple form for upload here -->
-		</noscript>
-	</td>
-	</tr>
 </table>
 
 <table style="width: 70%;margin-left:15%;margin-right:15%;">	
@@ -39,16 +35,20 @@
 		<th>Fund</th>
 		<th>Price</th>
 		<th>Final</th>
+		<th>Attachments</th>
 		<th>Edit</th>
 	</tr>
 
 	<tr class="high2">
 		<?php echo $this->Form->create(null, array('url' => array('controller' => 'prices', 'action' => 'fundprices')));?>
 		<td style="width: 15%;"><?php echo $this->Form->input('price_date_input',array('label'=>false, 'id'=>'pricedatepicker', 'size'=>15, 'default'=>date('Y-m-d'))); ?></td>
-		<td style="width: 45%;"><?php echo $this->Form->input('sec_id',array('label'=>false, 'id'=>'secidpicker', 'style'=>'width: 80%', 'empty'=>'Choose Fund')); ?></td>
+		<td style="width: 30%;"><?php echo $this->Form->input('sec_id',array('label'=>false, 'id'=>'secidpicker', 'style'=>'width: 80%', 'empty'=>'Choose Fund')); ?></td>
 		<td style="width: 15%;text-align: right;"><?php echo $this->Form->input('price',array('type'=>'text','label'=>false,'size'=>15)); ?></td>
 		<td style="width: 10%;text-align: center;"><?php echo $this->Form->input('final',array('label'=>false, 'options' => array('1'=>'Yes','0'=>'No'))); ?></td>
-		<td style="text-align: center;"><div id="AddFundPriceButton"><?php echo $this->Form->end('Add'); ?></div></td>
+		<td style="text-align: center;">
+			<div id="file-uploader">	
+		</td>
+		<td style="width: 10%;text-align: center;"><div id="AddFundPriceButton"><?php echo $this->Form->end('Add'); ?></div></td>
 	</tr>
 </table>
 
