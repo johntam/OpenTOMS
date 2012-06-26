@@ -240,5 +240,22 @@ class PricesController extends AppController {
 		}
 		$this->render('/elements/ajax_common', 'ajax');
 	}
+	
+	
+	/**
+	 *	Fetch and create links to the attachments associated with a fund price and date
+	 **/
+	function ajax_getattach() {
+		$secid = $this->params['form']['secid'];
+		$pricedate = $this->params['form']['pricedate'];
+		
+		App::import('model','Attachment');
+		$attmodel = new Attachment();
+		
+		$att = $attmodel->find('all', array('fields' => array('Attachment.id','Attachment.name'),
+											'conditions'=>array('f_table =' => 'sec', 'f_id =' => $secid, 'f_date =' => $pricedate)));
+		$this->set('attachments', $att);
+		$this->render('/elements/ajax_getattach', 'ajax');
+	}
 }
 ?>

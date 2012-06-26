@@ -105,7 +105,7 @@ class JournalsController extends AppController {
 		$bal = new Balance();
 		$lockeddate = $bal->getPrevLockedDate($fund_id);
 		if (empty($lockeddate)) {
-			$lockeddate = date('Y-m-d', strtotime('-3 years'));
+			$lockeddate = date('Y-m-d', strtotime('-10 years'));
 		}
 		$this->set('lockeddate', $lockeddate);
 		return $lockeddate; 

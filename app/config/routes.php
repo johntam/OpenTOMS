@@ -34,6 +34,8 @@
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
+	Router::connect('/pages/showattach/*', array('controller' => 'pages', 'action' => 'showattach'));
+ 
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 	Router::connect('/', array('controller' => 'users', 'action' => 'welcome'));

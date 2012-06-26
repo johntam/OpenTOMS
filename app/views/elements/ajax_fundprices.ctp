@@ -21,7 +21,11 @@
 				</select>
 			</td>
 			<td style="text-align: center;">
-				<?php echo $price['Price']['NumAttachments']; ?>
+				<div class="attachlink"><u>
+					<?php if ($price['Price']['NumAttachments'] > 0) {echo $price['Price']['NumAttachments'];} ?>
+				</u></div>
+				<div class="showattach" />
+				<div class="uploadmore" />
 			</td>
 			<td style="width: 10%;text-align: center;">
 				<?php 
@@ -42,6 +46,7 @@
 		$('.savebutton').hide();
 		$('.cancelbutton').hide();
 		
+		
 		$('.editbutton').click(function() {
 			var top = $(this).closest('tr');
 			$(top).find('.editprice').show();
@@ -51,7 +56,25 @@
 			$(top).find('.editbutton').hide();
 			$(top).find('#dispprice').hide();
 			$(top).find('#dispfinal').hide();
+			
+			$(top).find('.uploadmore').html('<div id="uploadmorefiles" />');
+			
+			var uploader = new qq.FileUploader({
+				element: document.getElementById('uploadmorefiles'),
+				action: '/fileuploader.php',
+				params: {
+					host:		'asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com',
+					username:	'asapuser',
+					password:	'templ88',
+					database:	'ASAPDB01',
+					f_table:	'sec',
+					f_id:		$(top).find('.secid').val(),
+					f_date:		$(top).find('.dispdate').html()
+				},
+				debug: true
+			});
 		});
+		
 		
 		$('.savebutton').click(function() {
 			var top = $(this).closest('tr');
@@ -90,6 +113,7 @@
 			);
 		});
 		
+		
 		$('.cancelbutton').click(function() {
 			//cancel edit
 			var top = $(this).closest('tr');
@@ -100,6 +124,28 @@
 			$(top).find('.editbutton').show();
 			$(top).find('#dispprice').show();
 			$(top).find('#dispfinal').show();
+		});
+		
+		
+		$('.attachlink').click(function() {
+			var top = $(this).closest('tr');
+			var secid = $(top).find('.secid').val();
+			var pricedate = $(top).find('.dispdate').html();
+			
+			//retrieve list of attachments
+			$.post("/prices/ajax_getattach?" + (new Date()).getTime(),
+			{ secid : secid , pricedate : pricedate },
+			function(data) {
+				if (data.length > 0) {
+					//saved ok
+					$(top).find('.attachlink').hide();
+					$(top).find('.showattach').html(data);
+					$(top).find('.showattach').show();
+				}
+			},
+			"text"
+			);
+		
 		});
 	});
 </script>

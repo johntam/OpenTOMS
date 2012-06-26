@@ -14,6 +14,7 @@ function content_type($fname) {
         'xml' => 'application/xml',
         'swf' => 'application/x-shockwave-flash',
         'flv' => 'video/x-flv',
+		'eml' => 'application/eml',
 
         // images
         'png' => 'image/png',
