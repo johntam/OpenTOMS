@@ -11,7 +11,7 @@
 			</td>
 			<td style="width: 15%;text-align: right;">
 				<div id="dispprice"><?php echo preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price['Price']['price']); ?></div>
-				<input type="text" class="editprice" value="<?php echo preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price['Price']['price']); ?>" />
+				<input type="text" size="12" class="editprice" value="<?php echo preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price['Price']['price']); ?>" />
 			</td>
 			<td style="width: 10%;text-align: center;">
 				<div id="dispfinal"><?php if ($price['Price']['final'] == 1) { echo 'Yes';} else { echo 'No';} ?></div>
@@ -21,11 +21,12 @@
 				</select>
 			</td>
 			<td style="text-align: center;">
-				<div class="attachlink"><u>
+				<u><div class="attachlink">
 					<?php if ($price['Price']['NumAttachments'] > 0) {echo $price['Price']['NumAttachments'];} ?>
-				</u></div>
+				</div></u>
 				<div class="showattach" />
 				<div class="uploadmore" />
+				<img class="spinner" style="display: none;" src="/img/loading.gif" />
 			</td>
 			<td style="width: 10%;text-align: center;">
 				<?php 
@@ -57,6 +58,10 @@
 			$(top).find('#dispprice').hide();
 			$(top).find('#dispfinal').hide();
 			
+			var numatt = $(top).find('.attachlink').html();
+			$(top).find('.attachlink').html(numatt + '+');
+			$(top).find('.attachlink').hide();
+			$(top).find('.showattach').html('');
 			$(top).find('.uploadmore').html('<div id="uploadmorefiles" />');
 			
 			var uploader = new qq.FileUploader({
@@ -111,6 +116,9 @@
 			},
 			"text"
 			);
+			
+			$('#uploadmorefiles').remove();
+			refresh_attachlink(top);
 		});
 		
 		
@@ -124,6 +132,9 @@
 			$(top).find('.editbutton').show();
 			$(top).find('#dispprice').show();
 			$(top).find('#dispfinal').show();
+			
+			$('#uploadmorefiles').remove();
+			refresh_attachlink(top);
 		});
 		
 		
@@ -131,6 +142,8 @@
 			var top = $(this).closest('tr');
 			var secid = $(top).find('.secid').val();
 			var pricedate = $(top).find('.dispdate').html();
+			$(this).hide();
+			$(top).find('.spinner').show();
 			
 			//retrieve list of attachments
 			$.post("/prices/ajax_getattach?" + (new Date()).getTime(),
@@ -138,14 +151,40 @@
 			function(data) {
 				if (data.length > 0) {
 					//saved ok
-					$(top).find('.attachlink').hide();
 					$(top).find('.showattach').html(data);
 					$(top).find('.showattach').show();
+					
+					//count how many attachments there are
+					var brs = data.match(/br>/g);
+					$(top).find('.attachlink').html(brs.length);
+					$(top).find('.attachlink').hide();
 				}
+				$(top).find('.spinner').hide();
 			},
 			"text"
 			);
-		
 		});
+		
+		
+		function refresh_attachlink(top) {
+			var secid = $(top).find('.secid').val();
+			var pricedate = $(top).find('.dispdate').html();
+			$(top).find('.spinner').show();
+			
+			//retrieve list of attachments
+			$.post("/prices/ajax_getattach?" + (new Date()).getTime(),
+			{ secid : secid , pricedate : pricedate },
+			function(data) {
+				if (data.length > 0) {
+					//count how many attachments there are
+					var brs = data.match(/br>/g);
+					$(top).find('.attachlink').html(brs.length);
+					$(top).find('.attachlink').show();
+				}
+				$(top).find('.spinner').hide();
+			},
+			"text"
+			);
+		}
 	});
 </script>

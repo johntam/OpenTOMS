@@ -652,11 +652,11 @@ div.code-coverage-results span.result-good {
 .qq-upload-button-focus {outline:1px dotted black;}
 
 .qq-upload-drop-area {
-    position:absolute; top:0; left:0; width:100%; height:100%; min-height: 70px; z-index:2;
+    position:absolute; top:0; left:0; width:80%; height:80%; min-height: 70px; z-index:2;
     background:#FF9797; text-align:center; 
 }
 .qq-upload-drop-area span {
-    display:block; position:absolute; top: 50%; width:100%; margin-top:-8px; font-size:16px;
+    display:block; position:absolute; top: 50%; width:80%; margin-top:-8px; font-size:12px;
 }
 .qq-upload-drop-area-active {background:#FF7171;}
 
