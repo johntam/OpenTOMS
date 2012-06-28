@@ -100,7 +100,7 @@
 	<tr>
 	
 	<tr class="highlight">
-		<td></td>
+		<td>Strike</td>
 		<td></td>
 		<td>Currency</td>
 		<td></td>
@@ -108,7 +108,7 @@
 	</tr>
 
 		<tr class="altrow">
-			<td></td>
+			<td><?php echo $sec['Sec']['strike']; ?></td>
 			<td></td>
 			<td><?php echo $sec['Currency']['currency_iso_code']; ?></td>
 			<td></td>

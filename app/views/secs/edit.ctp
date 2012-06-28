@@ -92,7 +92,7 @@
 	<tr>
 	
 	<tr class="highlight">
-		<td></td>
+		<td>Strike</td>
 		<td></td>
 		<td>Currency</td>
 		<td></td>
@@ -100,7 +100,7 @@
 	</tr>
 
 		<tr class="altrow">
-			<td></td>
+			<td><?php echo $this->Form->input('strike',array('label'=>false)); ?></td>
 			<td></td>
 			<td><?php echo $this->Form->input('currency_id',array('label'=>false)); ?></td>
 			<td></td>
