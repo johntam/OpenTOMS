@@ -210,11 +210,16 @@ class TradesController extends AppController {
 			}
 			
 			//put in trade date and settlement date
-			$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
+			if (empty($this->data['Trade']['trade_date_input'])) {
+				$this->data['Trade']['trade_date'] = Date('Y-m-d');
+			}
+			else {
+				$this->data['Trade']['trade_date'] = $this->data['Trade']['trade_date_input'];
+			}
 			$this->data['Trade']['settlement_date'] = $this->data['Trade']['settlement_date_input'];
 			$this->data['Trade']['decision_time'] = $this->data['Trade']['decision_time_date'].' '.$this->data['Trade']['decision_time_time'];
 			$this->data['Trade']['order_time'] = $this->data['Trade']['order_time_date'].' '.$this->data['Trade']['order_time_time'];
-		
+			
 			if ($this->Trade->save($this->data)) {
 				//Do a second update to the same record to set the oid and act fields
 				$id = $this->Trade->id;

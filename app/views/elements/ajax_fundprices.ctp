@@ -14,10 +14,10 @@
 				<input type="text" size="12" class="editprice" value="<?php echo preg_replace('/(\.)(\d*?)(0+)$/', '${1}${2}0',$price['Price']['price']); ?>" />
 			</td>
 			<td style="width: 10%;text-align: center;">
-				<div id="dispfinal"><?php if ($price['Price']['final'] == 1) { echo 'Yes';} else { echo 'No';} ?></div>
+				<div id="dispfinal"><?php if ($price['Price']['final'] == 1) { echo 'Final';} else { echo 'Estimate';} ?></div>
 				<select class="editfinal">
-				  <option value="1" <?php if ($price['Price']['final']==1) { echo 'selected="selected"'; } ?>>Yes</option>
-				  <option value="0" <?php if ($price['Price']['final']==0) { echo 'selected="selected"'; } ?>>No</option>
+				  <option value="1" <?php if ($price['Price']['final']==1) { echo 'selected="selected"'; } ?>>Final</option>
+				  <option value="0" <?php if ($price['Price']['final']==0) { echo 'selected="selected"'; } ?>>Estimate</option>
 				</select>
 			</td>
 			<td style="text-align: center;">

@@ -34,7 +34,7 @@
 		<th>Date</th>
 		<th>Fund</th>
 		<th>Price</th>
-		<th>Final</th>
+		<th>Source</th>
 		<th>Attachments</th>
 		<th>Edit</th>
 	</tr>
@@ -44,9 +44,9 @@
 		<td style="width: 15%;"><?php echo $this->Form->input('price_date_input',array('label'=>false, 'id'=>'pricedatepicker', 'size'=>15, 'default'=>date('Y-m-d'))); ?></td>
 		<td style="width: 30%;"><?php echo $this->Form->input('sec_id',array('label'=>false, 'id'=>'secidpicker', 'style'=>'width: 80%', 'empty'=>'Choose Fund')); ?></td>
 		<td style="width: 15%;text-align: right;"><?php echo $this->Form->input('price',array('type'=>'text','label'=>false,'size'=>15)); ?></td>
-		<td style="width: 10%;text-align: center;"><?php echo $this->Form->input('final',array('label'=>false, 'options' => array('1'=>'Yes','0'=>'No'))); ?></td>
+		<td style="width: 10%;text-align: center;"><?php echo $this->Form->input('final',array('label'=>false, 'options' => array('1'=>'Final','0'=>'Estimate'))); ?></td>
 		<td style="text-align: center;">
-			<div id="file-uploader">	
+			<div id="file-uploader">
 		</td>
 		<td style="width: 10%;text-align: center;"><div id="AddFundPriceButton"><?php echo $this->Form->end('Add'); ?></div></td>
 	</tr>

@@ -10,7 +10,8 @@ class Trade extends AppModel {
 		'commission' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
 		'tax' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
 		'other_costs' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
-		'accrued' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number')
+		'accrued' => array('rule' => array('comparison', '>=', 0), 'message' => 'Must be a positive number'),
+		'trade_date' => array('rule' => 'notEmpty', 'message' => 'This field cannot be blank')
 	);
 }
 ?>

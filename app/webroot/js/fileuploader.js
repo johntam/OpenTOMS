@@ -251,7 +251,7 @@ var qq = qq || {};
 qq.FileUploaderBasic = function(o){
     this._options = {
         // set to true to see the server response
-        debug: true,
+        debug: false,
         action: '',
         params: {},
         button: null,
@@ -485,7 +485,7 @@ qq.FileUploader = function(o){
         listElement: null,
                 
         template: '<div class="qq-uploader">' + 
-                '<div class="qq-upload-drop-area"><span>Drop Here</span></div>' +
+                '<div class="qq-upload-drop-area"><span>Drop files here to upload</span></div>' +
                 '<div class="qq-upload-button">Upload</div>' +
                 '<ul class="qq-upload-list"></ul>' + 
              '</div>',
@@ -854,7 +854,7 @@ qq.UploadButton.prototype = {
  */
 qq.UploadHandlerAbstract = function(o){
     this._options = {
-        debug: true,
+        debug: false,
         action: '',
         // maximum number of concurrent uploads        
         maxConnections: 999,
