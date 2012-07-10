@@ -5,6 +5,8 @@ $(document).ready(function() {
 		$('#decisiondatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 		$('#orderdatepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 		$('input[type="submit"]').attr('disabled','disabled'); //disable submit button initially
+		$("#TradeDecisionTimeTime").val(get_current_time());
+		$("#TradeOrderTimeTime").val(get_current_time());
 	
 		$("#TradeSecId").change(function() {
 			$("#sec_link").html("");
@@ -103,4 +105,16 @@ $(document).ready(function() {
 			x1 = x1.replace(rgx, '$1' + ',' + '$2');
 		}
 		return x1 + x2;
+	}
+	
+	
+	function get_current_time() {
+		var currentTime = new Date()
+		var hours = currentTime.getHours()
+		var minutes = currentTime.getMinutes()
+
+		if (minutes < 10)
+			minutes = "0" + minutes
+
+		return(hours + ":" + minutes);
 	}

@@ -10,6 +10,8 @@ $(document).ready(function() {
 		$("#settdate_busy").hide();
 		$("#notional_busy").hide();
 		if ($("#create_balance_checkbox").length) {$("#create_balance_checkbox").hide()}
+		$("#TradeDecisionTimeTime").val(get_current_time());
+		$("#TradeOrderTimeTime").val(get_current_time());
 		
 		if ($("#execute_button").length) {
 			if ($("#TradeExecuted:checked").val() != undefined) {
@@ -467,4 +469,15 @@ $(document).ready(function() {
 					"text"
 				);
 		}
+	}
+	
+	function get_current_time() {
+		var currentTime = new Date()
+		var hours = currentTime.getHours()
+		var minutes = currentTime.getMinutes()
+
+		if (minutes < 10)
+			minutes = "0" + minutes
+
+		return(hours + ":" + minutes);
 	}
