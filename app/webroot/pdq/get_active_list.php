@@ -14,6 +14,15 @@ else {
 	echo "pdq_actives table cleared</BR>";
 }
 
+// clear pdq_updates table
+if (!$mysqli->query("DELETE FROM pdq_updates")) {
+	echo "Failed to clear pdq_updates table";
+	exit();
+}
+else {
+	echo "pdq_updates table cleared</BR>";
+}
+
 // get all active securities in the secs table
 $query = "SELECT id, provider_id, ticker, ric_code, isin_code FROM secs WHERE act=1";
 $result = $mysqli->query($query, MYSQLI_STORE_RESULT);
@@ -33,7 +42,7 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 	}
 }
 
-echo "pdq_actives table populated from secs table";
+echo "pdq_actives and pdq_updates tables populated from secs table";
 
 $result->free();
 $mysqli->close();

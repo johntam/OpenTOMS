@@ -284,7 +284,7 @@ CREATE TABLE attachments (
 	file MEDIUMBLOB NULL
 );
 
-CREATE TABLE live_prices (
+CREATE TABLE pdq_actives (
 	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	done bit NOT NULL,
 	crd datetime NOT NULL,
@@ -306,4 +306,14 @@ CREATE TABLE pdq_prices (
 	sec_id INT NOT NULL,
 	provider_id TINYINT(1) NOT NULL,
 	price DECIMAL(18,6) NOT NULL
+);
+
+CREATE TABLE pdq_updates (
+	id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	sec_id INT NOT NULL,
+	provider_id TINYINT(1) NOT NULL,
+	price DECIMAL(18,6) NOT NULL,
+	yahoo_price DECIMAL(18,6) NULL,
+	google_price DECIMAL(18,6) NULL,
+	update_price_table TINYINT(1) NOT NULL
 );

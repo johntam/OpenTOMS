@@ -48,19 +48,21 @@ foreach($quotes as $quoteraw) {
 	$quoteraw = str_replace(", I", " I", $quoteraw);	//", Inc" in stock name causes problems because of the comma
 	$quote = explode(",", $quoteraw);
 		
-	echo print_r($quote);
-	echo "</br>";
-		
 	if (($quote[0] != '""') && ($quote[2] != '"N/A"')) {
 		$secid = $secidLookup[str_replace('"','',$quote[0])];
 		$price = $quote[1];
 		$dateUS = str_replace('"','',$quote[2]);
 		$dateUK = preg_replace('/([0-9]+)\/([0-9]+)\/([0-9]+)/','$2-$1-$3', $dateUS);
 		$time = str_replace('"','',$quote[3]);
-		$date = date("Y-m-d H:i:s", strtotime($dateUK." ".$time));
+		//convert Yahoo times (EDT) to BST
+		$date = new DateTime($dateUK." ".$time, new DateTimeZone('America/New_York'));
+		$date->setTimezone(new DateTimeZone('Europe/London'));
+		$dateString = $date->format("Y-m-d H:i:s");
+		
+		echo $secid.": ".$price."   ".$dateString."</BR>";
 		
 		//form list of values to be used in the INSERT query below
-		$values .= "(".$secid.",2,".$price.",'".$date."'),";
+		$values .= "(".$secid.",2,".$price.",'".$dateString."'),";
 	}
 }
 $values = rtrim($values, ",");

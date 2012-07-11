@@ -33,6 +33,11 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 		
 	if ((string)$price && (string)$date && (string)$time) {
 		$datestring = substr($date, 0,4)."-".substr($date, 4,2)."-".substr($date,6,2)." ".substr($time,0,2).":".substr($time,2,2).":".substr($time,4,2);
+		//convert Google times (UTC) to BST
+		$dateT = new DateTime($datestring, new DateTimeZone('UTC'));
+		$dateT->setTimezone(new DateTimeZone('Europe/London'));
+		$datestring = $dateT->format("Y-m-d H:i:s");
+		
 		$values .= "(".$secRow['sec_id'].",3,".$price.",'".$datestring."'),";	//'3' is google provider id
 		
 		//console output
