@@ -2,7 +2,7 @@
 /**
  *	Populate the pdq_updates table with prices from the pdq_prices table (prices from providers)
  **/
-$limit = 2;	//limit to number of stocks processed at once
+$limit = 10;	//limit to number of stocks processed at once
 
 //First get list of prices from pdq_prices table
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
@@ -32,6 +32,8 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 		$upd_yahoo_date = $recrow['yahoo_date'];
 		$upd_google_price = $recrow['google_price'];
 		$upd_google_date = $recrow['google_date'];
+		$upd_bloomberg_price = $recrow['bloomberg_price'];
+		$upd_bloomberg_date = $recrow['bloomberg_date'];
 	}
 	else {
 		//create a new row, first get the provider_id from the secs table
@@ -57,6 +59,8 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 				$upd_yahoo_date = null;
 				$upd_google_price = null;
 				$upd_google_date = null;
+				$upd_bloomberg_price = null;
+				$upd_bloomberg_date = null;
 			}
 		}
 		$secquery->free();
@@ -78,6 +82,13 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 			$upd_google_date = $date;
 			$upd_price_date = $date;
 			break;
+			
+		case 4:
+			//bloomberg.com
+			$upd_bloomberg_price = $price;
+			$upd_bloomberg_date = $date;
+			$upd_price_date = $date;
+			break;
 	}
 	
 	//calculate new price, working out median/average if necessary
@@ -85,12 +96,12 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 	switch ($upd_provider) {
 		case 0:
 			//median
-			$upd_price = median($upd_yahoo_price, $upd_google_price);
+			$upd_price = median($upd_yahoo_price, $upd_google_price, $upd_bloomberg_price);
 			break;
 		
 		case 1:
 			//average
-			$upd_price = average($upd_yahoo_price, $upd_google_price);
+			$upd_price = average($upd_yahoo_price, $upd_google_price, $upd_bloomberg_price);
 			break;
 		
 		case 2:
@@ -102,6 +113,11 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 			//google
 			$upd_price = $upd_google_price;
 			break;
+			
+		case 4:
+			//bloomberg.com
+			$upd_price = $upd_bloomberg_price;
+			break;
 	}
 	
 	//write row with updated numbers back into pdq_updates
@@ -111,6 +127,9 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 	}
 	if (isset($upd_google_price) && isset($upd_google_date)) {
 		$query .= ", google_price=$upd_google_price, google_date='$upd_google_date' ";
+	}
+	if (isset($upd_bloomberg_price) && isset($upd_bloomberg_date)) {
+		$query .= ", bloomberg_price=$upd_bloomberg_price, bloomberg_date='$upd_bloomberg_date' ";
 	}
 	$query .= "WHERE id=$upd_id";
 	$mysqli->query($query);

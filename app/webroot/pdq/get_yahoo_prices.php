@@ -2,7 +2,7 @@
 /**
  *	Scrape prices from Yahoo Financial
  **/
-$limit = 2;	//limit to number of stocks processed at once 
+$limit = 100;	//limit to number of stocks processed at once 
  
 //First get stock list from pdq_actives
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
