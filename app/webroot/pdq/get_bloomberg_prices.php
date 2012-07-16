@@ -7,7 +7,7 @@ $limit = 10;	//limit to number of stocks processed at once
 //First get stock list from pdq_actives
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
 $query = "SELECT id, sec_id, sec_name, sec_type, ticker FROM pdq_actives 
-			WHERE bloomberg_done=0 AND ((ticker<>'' AND sec_type=50) OR (sec_type=1))
+			WHERE bloomberg_done=0 AND ((ticker<>'' AND sec_type=50) OR sec_type=1)
 			ORDER BY id DESC LIMIT $limit";
 $result = $mysqli->query($query, MYSQLI_STORE_RESULT);
 

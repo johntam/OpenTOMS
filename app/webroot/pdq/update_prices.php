@@ -2,7 +2,7 @@
 /**
  *	Populate the pdq_updates table with prices from the pdq_prices table (prices from providers)
  **/
-$limit = 10;	//limit to number of stocks processed at once
+$limit = 50;	//limit to number of stocks processed at once
 
 //First get list of prices from pdq_prices table
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
