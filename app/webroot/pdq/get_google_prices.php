@@ -28,7 +28,8 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 		$fxdata = file_get_contents($url);
 		preg_match('/currency_converter_result.*?bld>(([0-9]|\.)*)/s', $fxdata, $match);
 		$price = trim($match[1]);
-		$datestring = Date('Y-m-d H:i:s');
+		$dateT = new DateTime("now", new DateTimeZone('Europe/London'));
+		$datestring = $dateT->format("Y-m-d H:i:s");
 		
 		$values .= "(".$secRow['sec_id'].",3,".$price.",'".$datestring."'),";	//'3' is google provider id
 		//console output

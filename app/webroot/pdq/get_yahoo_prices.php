@@ -6,7 +6,9 @@ $limit = 100;	//limit to number of stocks processed at once
  
 //First get stock list from pdq_actives
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
-$query = "SELECT id, sec_id, ric_code FROM pdq_actives WHERE yahoo_done=0 AND ric_code<>'' ORDER BY id DESC LIMIT $limit";
+$query = "SELECT id, sec_id, sec_type, ric_code FROM pdq_actives 
+			WHERE yahoo_done=0 AND (ric_code<>'' AND sec_type=50) 
+			ORDER BY id DESC LIMIT $limit";
 $result = $mysqli->query($query, MYSQLI_STORE_RESULT);
 
 //Check to see if there are any undone rows for this results cycle. If not then reset yahoo_done flag to 0

@@ -3,10 +3,12 @@
  *	Populate the pdq_updates table with prices from the pdq_prices table (prices from providers)
  **/
 $limit = 50;	//limit to number of stocks processed at once
+date_default_timezone_set('Europe/London');
 
 //First get list of prices from pdq_prices table
 $mysqli = new mysqli('asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com', 'asapuser', 'templ88', 'ASAPDB01');
-$query = "SELECT sec_id, provider_id, price, price_date FROM pdq_prices ORDER BY CRD ASC LIMIT $limit";
+$query = "SELECT P.sec_id, P.provider_id, P.price, P.price_date, C.currency_iso_code FROM pdq_prices P 
+			LEFT JOIN currencies C ON P.sec_id=C.sec_id ORDER BY P.CRD ASC LIMIT $limit";
 $result = $mysqli->query($query);
 
 //Check to see if there are any rows to process, if not exit
@@ -132,6 +134,42 @@ while($secRow = $result->fetch_array(MYSQLI_ASSOC)) {
 		$query .= ", bloomberg_price=$upd_bloomberg_price, bloomberg_date='$upd_bloomberg_date' ";
 	}
 	$query .= "WHERE id=$upd_id";
+	$mysqli->query($query);
+	
+	//update the prices table, first check to see if a row exists or not for this security
+	$dateT = strtotime($upd_price_date);
+	$pdate = Date('Y-m-d', $dateT);
+	$pricerow = $mysqli->query("SELECT * FROM prices WHERE sec_id=$sec AND price_source='PDQ' AND price_date='$pdate'");
+	
+	if ($pricerow->num_rows > 0) {
+		//row exists so update it
+		$prow = $pricerow->fetch_array(MYSQLI_ASSOC);
+		$price_id = $prow['id'];
+		
+		if (isset($secRow['currency_iso_code'])) {
+			$query ="UPDATE prices SET crd='$upd_price_date', price=1, sec_id=$sec, price_source='PDQ', price_date='$pdate', fx_rate=$upd_price 
+						WHERE id=$price_id";
+			echo "updating currency $sec, price=$upd_price, $query</BR>";
+		}
+		else {
+			$query ="UPDATE prices SET crd='$upd_price_date', price=$upd_price, sec_id=$sec, price_source='PDQ', price_date='$pdate' 
+						WHERE id=$price_id";
+			echo "updating $sec, price=$upd_price, $query</BR>";
+		}
+	}
+	else {
+		//row does not exist so insert it
+		if (isset($secRow['currency_iso_code'])) {
+			$query ="INSERT INTO prices (crd, price, sec_id, price_source, price_date, fx_rate) 
+						VALUES ('$upd_price_date', 1, $sec, 'PDQ', '$pdate', $upd_price)";
+			echo "inserting new row currency $sec, price=$upd_price, $query</BR>";
+		}
+		else {
+			$query ="INSERT INTO prices (crd, price, sec_id, price_source, price_date) 
+						VALUES ('$upd_price_date', $upd_price, $sec, 'PDQ', '$pdate')";
+			echo "inserting new row $sec, price=$upd_price, $query</BR>";
+		}
+	}
 	$mysqli->query($query);
 	
 	//delete the price row from pdq_prices so that it won't be processed again
