@@ -44,7 +44,8 @@ class Price extends AppModel {
 		
 		$params=array(
 			'fields' => array('Price.price_date', 'Price.price_source', 'Sec.sec_name', 'Price.price', 
-							  'Price.id', 'SecType.sec_type', 'Price.final', 'Sec.id', 'COUNT(Attach.id) AS Price__NumAttachments'),
+							  'Price.id', 'SecType.sec_type', 'Price.final', 'Sec.id', 'COUNT(Attach.id) AS Price__NumAttachments',
+							  'PDQ.yahoo_price','PDQ.yahoo_date','PDQ.google_price','PDQ.google_date','PDQ.bloomberg_price','PDQ.bloomberg_date'),
 			'joins' => array(
 							array('table'=>'secs',
 								  'alias'=>'Sec',
@@ -68,7 +69,15 @@ class Price extends AppModel {
 									array(	'Price.sec_id=Attach.f_id',
 											'Price.price_date=Attach.f_date',
 											'Attach.f_table="sec"')
-							  )
+							  ),
+							  array('table'=>'pdq_updates',
+								  'alias'=>'PDQ',
+								  'type'=>'left',
+								  'foreignKey'=>false,
+								  'conditions'=>
+										array('Price.price_date=DATE(PDQ.price_date)',
+											  'Price.sec_id=PDQ.sec_id')
+								)
 							),
 			'conditions' => $conditions, //array of conditions
 			'group' => array('Price.sec_id','Price.price_date','Attach.f_id','Attach.f_date'),
@@ -226,7 +235,7 @@ class Price extends AppModel {
 		$currency = new Currency();
 		$ccysecid = $currency->getsecid($ccyid);
 		
-		$fx = $this->find('all', array('conditions'=>array('Price.price_date ='=>$date, 'Price.sec_id ='=>$ccysecid, 'Price.price_source ='=>'DFLT')));
+		$fx = $this->find('all', array('conditions'=>array('Price.price_date ='=>$date, 'Price.sec_id ='=>$ccysecid)));
 		if (!empty($fx)) {
 			return($fx[0]['Price']['fx_rate']);
 		}
@@ -244,10 +253,10 @@ class Price extends AppModel {
 		else {
 			if ($this->check_unique($sec_id, $date)) {
 				if (!$fx_rate) {
-					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>$price, 'final'=>$final));
+					$data = array('Price' => array('sec_id'=>$sec_id, 'price_date'=>$date, 'price'=>$price, 'final'=>$final));
 				}
 				else {
-					$data = array('Price' => array('sec_id'=>$sec_id, 'price_source'=>'DFLT', 'price_date'=>$date, 'price'=>1, 'fx_rate'=>$fx_rate));
+					$data = array('Price' => array('sec_id'=>$sec_id, 'price_date'=>$date, 'price'=>1, 'fx_rate'=>$fx_rate));
 				}
 				
 				if ($this->save($data)) {
@@ -294,7 +303,7 @@ class Price extends AppModel {
 	
 	
 	//Check to see if a price to be added doesn't break the unique constraint on table prices.
-	function check_unique($sec_id, $price_date, $price_source='DFLT') {	
+	function check_unique($sec_id, $price_date, $price_source='PDQ') {	
 		$conditions=array(
 			'Price.price_date =' => $price_date,
 			'Price.price_source =' => $price_source,

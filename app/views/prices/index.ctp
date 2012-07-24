@@ -79,5 +79,54 @@
 		<td><?php echo $price['Price']['price']; ?></td>
 		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $price['Price']['id']));?></td>
 	</tr>
+	<tr id="<?php echo $price['Price']['id'];?>">
+		<td colspan="5">
+			<table>
+				<tr>
+					<th>
+						Provider
+					</th>
+					<th>
+						Yahoo
+					</th>
+					<th>
+						Google
+					</th>
+					<th>
+						Bloomberg.com
+					</th>
+					<th>
+						Manual Override
+					</th>
+					<th>
+						Save
+					</th>
+				</tr>
+				<tr>	
+					<td>
+						cell 1
+					</td>
+					<td>
+						<?php echo $price['PDQ']['yahoo_price']; ?></br>
+						<div style="font-size: 12px"><?php echo $price['PDQ']['yahoo_date']; ?></div>
+					</td>
+					<td>
+						<?php echo $price['PDQ']['google_price']; ?></br>
+						<div style="font-size: 12px"><?php echo $price['PDQ']['google_date']; ?></div>
+					</td>
+					<td>
+						<?php echo $price['PDQ']['bloomberg_price']; ?></br>
+						<div style="font-size: 12px"><?php echo $price['PDQ']['bloomberg_date']; ?></div>
+					</td>
+					<td>
+						cell 5
+					</td>
+					<td>
+						cell 6
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<?php endforeach; ?>
 </table>
