@@ -77,9 +77,9 @@
 		<td><?php echo $price['Price']['price_source']; ?></td>
 		<td><?php echo $price['Sec']['sec_name']; ?></td>
 		<td><?php echo $price['Price']['price']; ?></td>
-		<td><?php echo $this->Html->link('Edit', array('action' => 'edit', $price['Price']['id']));?></td>
+		<td><?php echo $this->Html->image('edit.png', array('class'=>'editbutton', 'id' => 'edit_'.$price['Price']['id'])); ?></td>
 	</tr>
-	<tr id="<?php echo $price['Price']['id'];?>">
+	<tr id="<?php echo $price['Price']['id'];?>" style="display: none;">
 		<td colspan="5">
 			<table>
 				<tr>
@@ -130,3 +130,72 @@
 	</tr>
 	<?php endforeach; ?>
 </table>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('.editbutton').click(function() {
+			var rowid = event.target.id;
+			//rowid = rowid.substr(5);
+			alert(rowid);
+			
+		});
+		
+		
+		$('.savebutton').click(function() {
+			var top = $(this).closest('tr');
+			var price = $(top).find('.editprice').val();
+			var final = $(top).find('.editfinal').val();
+			var finaltext = $(top).find('.editfinal option:selected').text();
+			var priceid = $(top).find('.priceid').val();
+			var secid = $(top).find('.secid').val();
+			var pricedate = $(top).find('.dispdate').html();
+			$(top).addClass('highred');
+			
+			//send this to database
+			$.post("/prices/ajax_edit?" + (new Date()).getTime(),
+			{ secid : secid , pricedate : pricedate , price : price , final : final , id : priceid },
+			function(data) {
+				if (data.length > 0) {					
+					if (data == "Y") {
+						//saved ok
+						$(top).find('#dispprice').html(price);
+						$(top).find('#dispfinal').html(finaltext);
+						$(top).find('.editprice').hide();
+						$(top).find('.editfinal').hide();
+						$(top).find('.savebutton').hide();
+						$(top).find('.cancelbutton').hide();
+						$(top).find('.editbutton').show();
+						$(top).find('#dispprice').show();
+						$(top).find('#dispfinal').show();
+					}
+					else {
+						alert(data);
+					}
+				}
+				$(top).removeClass('highred');
+			},
+			"text"
+			);
+			
+			$('#uploadmorefiles').remove();
+			refresh_attachlink(top);
+		});
+		
+		
+		$('.cancelbutton').click(function() {
+			//cancel edit
+			var top = $(this).closest('tr');
+			$(top).find('.editprice').hide();
+			$(top).find('.editfinal').hide();
+			$(top).find('.savebutton').hide();
+			$(top).find('.cancelbutton').hide();
+			$(top).find('.editbutton').show();
+			$(top).find('#dispprice').show();
+			$(top).find('#dispfinal').show();
+			
+			$('#uploadmorefiles').remove();
+			refresh_attachlink(top);
+		});
+	});
+</script>
