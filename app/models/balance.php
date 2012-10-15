@@ -201,6 +201,39 @@ class Balance extends AppModel {
 						}
 					}
 					
+					
+					//if this is a bond, add in accrued interest 
+					//do a double-entry, one for stocks account and one for accrued interest account
+					if (($acc == $stocks_acc_id) && ($totqty <> 0)) {
+						$result = $this->Sec->accrued($sec, $date);
+						if (($result['code'] == 0) && (!empty($result['accrued']))) {
+							$accr_val = $result['accrued'] * abs($totqty) / 100;
+							
+							//see if we are long or short the bond, to determine sign of the accrued interest
+							if ($totqty > 0) {
+								$totdeb += $accr_val;
+								$newbal[$cust][$accrued_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>0,
+																								 'ledger_credit'=>$accr_val,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.'0'.':'.$accr_val.':'.$accr_val.':'.$sd.':'.$cust.';');
+							}
+							else {
+								$totcred += $accr_val;
+								$newbal[$cust][$accrued_acc_id][$this->Currency->getsecid($ccy)][]=array('ledger_debit'=>abs($accr_val),
+																								 'ledger_credit'=>0,
+																								 'quantity'=>0,
+																								 'currency_id'=>$ccy,
+																								 'cfd'=>$cfd,
+																								 'trinv'=>'',
+																								 'ref_id'=> $sec.':'.$cfd.':'.$tid.':'.$td.':'.abs($accr_val).':'.'0'.':'.$accr_val.':'.$sd.':'.$cust.';');
+							}
+						}
+					}
+					
+					
 					//write this result line to the database, only if the position is non-zero though
 					if (!(($acc == $stocks_acc_id) && ($totqty == 0) && (abs($totdeb - $totcred) < 0.01))) {		
 						$data['Balance'] = array('act' => 1,
@@ -222,52 +255,6 @@ class Balance extends AppModel {
 												 'unsettled'=>$still_unsettled);
 						$this->create($data);
 						$this->save();
-					}
-					
-					
-					//if this is a bond, add in accrued interest which should be calculated from the last
-					//balance calculation date to the journal posting date
-					//do a double-entry, one for stocks account and one for accrued interest account
-					if (($acc == $stocks_acc_id) && ($totqty <> 0)) {
-						$result = $this->Sec->accrued($sec, $date);
-						if (($result['code'] == 0) && (!empty($result['accrued']))) {
-							$data['Balance'] = array('act' => 1,
-													 'locked' => 0,
-													 'crd'=>DboSource::expression('NOW()'),
-													 'fund_id' => $fund,
-													 'custodian_id'=>$cust,
-													 'balance_date'=>$date,
-													 'balance_cfd'=>0,
-													 'balance_accrued'=>1,
-													 'currency_id'=>$ccy,
-													 'sec_id'=>$sec);
-							
-							//test to see if need to debit or credit depending if long or short
-							if ($totqty < 0) {
-								$db = 0;
-								$cr = $result['accrued'] * abs($totqty) / 100;
-							}
-							else {
-								$db = $result['accrued'] * abs($totqty) / 100;
-								$cr = 0;
-							}
-							
-							//the stocks account
-							$data['Balance']['account_id'] = $stocks_acc_id;
-							$data['Balance']['balance_debit'] = $db;
-							$data['Balance']['balance_credit'] = $cr;
-							$data['Balance']['balance_quantity'] = 0;
-							$this->create($data);
-							$this->save();
-							
-							//the accrued interest account
-							$data['Balance']['account_id'] = $accrued_acc_id;
-							$data['Balance']['balance_debit'] = $cr;
-							$data['Balance']['balance_credit'] = $db;
-							$data['Balance']['balance_quantity'] = 0;
-							$this->create($data);
-							$this->save();
-						}
 					}
 				}
 			}
