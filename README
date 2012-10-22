@@ -1,0 +1,30 @@
+OpenTOMS - Open Trade Order Management System
+Copyright (C) 2012  JOHN TAM, LPR CONSULTING LLP
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+/////////////////////////////////////////////////////////////////////
+
+In the current financial software sector, there is a distinct lack
+of open source offerings. The trade order management software sector
+is currently dominated by the likes of Tradar, LineData, Charles River,
+etc. I wanted to create an open source alternative to these systems. One
+that would match the aspirations of the vast majority of young investment
+start-ups.
+
+The OpenTOMS system is written in PHP and uses the CakePHP MVC framework.
+This will hopefully allow for a broad spectrum of contributors to the project.
+
+We encourage you to participate in this project and to help make it the first
+and best open source tool for trade and order management.
