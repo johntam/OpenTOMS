@@ -1,4 +1,4 @@
-OpenTOMS - Open Trade Order Management System
+# OpenTOMS - Open Trade Order Management System
 
 In the current financial software sector, there is a distinct lack
 of open source offerings. The trade order management software sector
@@ -13,7 +13,7 @@ This will hopefully allow for a broad spectrum of contributors to the project.
 We encourage you to participate in this project and to help make it the first
 and best open source tool for trade and order management.
 
-<u>Setting Up OpenTOMS on your computer</u>
+## Setting Up OpenTOMS on your computer
 1. Get the clone from here onto your target system.
 
 2. Install a web server, e.g. Apache.
