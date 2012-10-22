@@ -76,11 +76,11 @@ class DATABASE_CONFIG {
 	var $default = array(
 		'driver' => 'mysql',
 		'persistent' => false,
-		'host' => 'asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com',
+		'host' => 'db URL here',
 		'port' => 3306,
-		'login' => 'asapuser',
-		'password' => 'templ88',
-		'database' => 'ASAPDB01',
+		'login' => 'db username',
+		'password' => 'db password',
+		'database' => 'db name',
 		'prefix' => '',
 		'encoding' => 'utf8'
 	);
