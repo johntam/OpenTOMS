@@ -60,32 +60,26 @@ class UsersController extends AppController {
 	
 	function initDB() {
 		$group =& $this->User->Group;
+
+		//create initial groups
 		//Allow admins to everything
-		$group->id = 4;     
+		$data['Group'] = array('name' => 'Administrators');
+		$group->create($data);
+		$group->save();
+		$admin_group_id = $group->id;
 		$this->Acl->allow($group, 'controllers');
 	 
-		//allow clients to enter new trades only
-		$group->id = 5;
+		//allow traders to enter new trades only
+		$data['Group'] = array('name' => 'Traders');
+		$group->create($data);
+		$group->save();
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Trades/add');
 		
-		//no access to admin pages for RGL
-		$group->id = 7;
-		$this->Acl->allow($group, 'controllers');
-		$this->Acl->deny($group, 'controllers/Users');
-		$this->Acl->deny($group, 'controllers/Groups');
-		$this->Acl->deny($group, 'controllers/Prices');
-		
-		//no access to admin pages for Kestrel
-		$group->id = 6;
-		$this->Acl->allow($group, 'controllers');
-		$this->Acl->deny($group, 'controllers/Users');
-		$this->Acl->deny($group, 'controllers/Groups');
-		$this->Acl->deny($group, 'controllers/Prices');
-		$this->Acl->deny($group, 'controllers/Traders');
-		
 		//no access to admin pages for Guest accounts
-		$group->id = 8;
+		$data['Group'] = array('name' => 'Guests');
+		$group->create($data);
+		$group->save();
 		$this->Acl->allow($group, 'controllers');
 		$this->Acl->deny($group, 'controllers/Users');
 		$this->Acl->deny($group, 'controllers/Groups');
@@ -104,17 +98,13 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers/Holidays');
 		$this->Acl->deny($group, 'controllers/Settlements');
 		$this->Acl->deny($group, 'controllers/Accounts');
-		
-	 
-		//allow users to only add and edit on posts and widgets
-		//$group->id = 3;
-		//$this->Acl->deny($group, 'controllers');        
-		//$this->Acl->allow($group, 'controllers/Posts/add');
-		//$this->Acl->allow($group, 'controllers/Posts/edit');        
-		//$this->Acl->allow($group, 'controllers/Widgets/add');
-		//$this->Acl->allow($group, 'controllers/Widgets/edit');
-		//we add an exit to avoid an ugly "missing views" error message
-		echo "all done";
+		echo "aros and aros_acos tables populated</br>";
+
+		//create default Admin user
+		$data['User'] = array('username' => 'admin', 'password' => $this->Auth->password(''), 'group_id' => $admin_group_id);
+		$this->User->save($data);
+		echo "user admin created with blank password</br>";		
+
 		exit;
 	}
 

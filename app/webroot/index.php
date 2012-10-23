@@ -52,7 +52,6 @@
 	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 		define('CAKE_CORE_INCLUDE_PATH', ROOT);
 	}
-
 /**
  * Editing below this line should NOT be necessary.
  * Change at your own risk.

@@ -76,11 +76,11 @@ class DATABASE_CONFIG {
 	var $default = array(
 		'driver' => 'mysql',
 		'persistent' => false,
-		'host' => 'db URL here',
+		'host' => 'localhost',
 		'port' => 3306,
-		'login' => 'db username',
-		'password' => 'db password',
-		'database' => 'db name',
+		'login' => 'root',
+		'password' => '',
+		'database' => 'opentomsdb',
 		'prefix' => '',
 		'encoding' => 'utf8'
 	);

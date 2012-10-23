@@ -23,12 +23,12 @@ class AppController extends Controller {
 
     function beforeFilter() {	
         //Configure AuthComponent
-		//$this->Auth->actionPath = 'controllers/';
+	//$this->Auth->actionPath = 'controllers/';
         $this->Auth->authorize = 'actions';
         $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'logout');
         //$this->Auth->loginRedirect = array('controller' => 'trades', 'action' => 'add');
-		$this->Auth->allowedActions = array('display');
+	$this->Auth->allowedActions = array('display');
 		
     }
 	
@@ -47,8 +47,13 @@ class AppController extends Controller {
 			return;
 		}
 		
-		//administrators' group id = 4
-		if ($userdata['group_id'] > 4) {
+
+		//ensure that the user doesn't see any fund data that he/she isn't supposed to see
+		//this is controlled by the user's group being associated with fund id's in the
+		//group_permissions table
+		//The next line ensures that administrator logins have no restrictions (administrator
+		//group id is usually = 1 
+		if ($userdata['group_id'] > 1) {
 			if (isset($this->viewVars['funds'])) {
 				$funds = &$this->viewVars['funds'];
 				
