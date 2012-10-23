@@ -22,7 +22,20 @@ and best open source tool for trade and order management.
 say "opentomsdb" and create the database from the database script file "opentomsdb.sql":
 
 mysql -u [username] -p [password] < opentomsdb.sql
+mysql -u [username] -p [password] < add_currencies.sql
 
 This should create the database structure with no data.
 
+CakePHP
+AllowOverride ALL
+Mod_Rewrite
+check permissions on directories
 
+php5-mysql
+
+4. run groups/build_acl
+
+run users/initDB
+
+5. Create a fund
+Create a Trader
