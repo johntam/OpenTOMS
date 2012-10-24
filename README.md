@@ -57,8 +57,10 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 
 6.	Things to make sure that it will all work.
 
-	* Ensure that you set AllowOverride All for the DocumentRoot 
+	* Ensure that you set AllowOverride All for the DocumentRoot
+
 	* Ensure that Mod_Rewrite is enabled in Apache2. This will require an Apache restart.
+
 	* Ensure that the directories have the proper permissions so that the www-data (default
 	Apache user) can read the files. Also important that www-data can browse all folders (set the
 	x on the folders)
@@ -69,11 +71,10 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 	steps so that http://localhost is pointing to the root of the project source folder.
 
 	> http://localhost/groups/build_acl
-
 	> http://localhost/users/initDB
 
-	*The first of the two pages above must be run again every time you add a new page or element 
-	to the project!*
+	The first of the two pages above must be run again every time you add a new page or element 
+	to the project!
 
 8. 	Login in the system using the admin user (no password) set up in step 7 above and go to the
 	Fund page (under Standing Data menu). Add a new fund and call it whatever you like. Then go the
