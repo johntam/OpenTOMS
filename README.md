@@ -24,11 +24,11 @@ will also need libapache2-mod-php5 and php5-mysql.
 
 For Windows users you can download WAMP from <http://www.wampserver.com/>
 
-1. Put the OpenTOMS source somewhere onto your target system.
+1.	Put the OpenTOMS source somewhere onto your target system.
 
-2. In MySQL create a database, call it anything you want, e.g. opentomsdb.
+2.	In MySQL create a database, call it anything you want, e.g. opentomsdb.
 
-3. Set up the database schema by using the scripts in the database_setup folder as follows:
+3.	Set up the database schema by using the scripts in the database_setup folder as follows:
 
 	> mysql -u [username] -p [password] [database-name] < database_schema
 
@@ -36,7 +36,7 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 
 	> mysql -u [username] -p [password] [database-name] < database_data
 
-4. Set Apache to point to the app/webroot folder.
+4.	Set Apache to point to the app/webroot folder.
 	
 	Below is a cut out from the /etc/apache2/sites-available/default file.
 
@@ -52,18 +52,18 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
                 	allow from all
         	</Directory>
 
-5. In the /app/config/database.php file, put in the details for the database that you
-created in step 2 above so that the system can locate its database.
+5.	In the /app/config/database.php file, put in the details for the database that you
+	created in step 2 above so that the system can locate its database.
 
-6. Things to make sure that it will all work.
+6.	Things to make sure that it will all work.
 
 	* Ensure that you set AllowOverride All for the DocumentRoot 
 	* Ensure that Mod_Rewrite is enabled in Apache2. This will require an Apache restart.
 	* Ensure that the directories have the proper permissions so that the www-data (default
-	Apache user) can read the files. Also important that www-data can browse all folders (set the
-	x on the folders)
+		Apache user) can read the files. Also important that www-data can browse all folders (set the
+		x on the folders)
 
-7. CakePHP uses an ACL system to control access to pages. The ACL parameters are stored in the
+7. 	CakePHP uses an ACL system to control access to pages. The ACL parameters are stored in the
 	aros, acos and aros_acos tables in the database. These tables can be initialised by running the
 	following two pages from your browser. I'm assuming you have set up Apache according to the above
 	steps so that http://localhost is pointing to the root of the project source folder.
@@ -75,7 +75,7 @@ created in step 2 above so that the system can locate its database.
 	*The first of the two pages above must be run again every time you add a new page or element 
 	to the project!*
 
-8. Login in the system using the admin user (no password) set up in step 7 above and go to the
+8. 	Login in the system using the admin user (no password) set up in step 7 above and go to the
 	Fund page (under Standing Data menu). Add a new fund and call it whatever you like. Then go the
 	Trader page also under Standing menu and add a new trader calling him/her whatever you like.
 	You are now ready to start adding trades and running valuation reports.
