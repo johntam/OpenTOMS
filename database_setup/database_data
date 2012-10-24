@@ -1,0 +1,673 @@
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `accounts`
+--
+
+DROP TABLE IF EXISTS `accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accounts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `account_name` varchar(50) NOT NULL,
+  `account_type` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accounts`
+--
+
+LOCK TABLES `accounts` WRITE;
+/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+INSERT INTO `accounts` VALUES (1,'2012-01-25 10:41:00','Stocks','Assets'),(2,'2012-01-25 10:47:40','Cash','Assets'),(3,'2012-01-25 10:48:24','Contributed Capital','Owners Equity'),(4,'2012-01-25 10:48:42','Management Fees','Expenses'),(5,'2012-01-25 10:48:55','Performance Fees','Expenses'),(6,'2012-01-25 14:36:38','Admin Fee','Expenses'),(7,'2012-01-25 14:36:54','Interest Earned','Income'),(8,'2012-01-25 14:37:08','Interest Expense','Expenses'),(9,'2012-01-25 14:37:30','Custody Fee','Expenses'),(10,'2012-01-25 14:37:49','Directors Fees','Expenses'),(11,'2012-01-25 14:38:11','Misc Cost','Expenses'),(12,'2012-03-08 16:58:13','Trading Costs','Expenses'),(13,'2012-03-12 09:32:46','Profit And Loss','Owners Equity'),(14,'2012-03-13 16:34:01','Accrued Interest','Owners Equity'),(15,'2012-03-20 12:51:21','Coupon Income','Income'),(16,'2012-03-20 12:51:49','Coupon Expense','Expenses'),(17,'2012-03-20 12:53:11','Dividend Income','Income'),(18,'2012-03-20 12:53:35','Dividend Expense','Expenses');
+/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:51:47
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `brokers`
+--
+
+DROP TABLE IF EXISTS `brokers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `brokers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `act` bit(1) NOT NULL DEFAULT b'1',
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oid` int(11) DEFAULT NULL,
+  `broker_name` varchar(50) NOT NULL,
+  `broker_long_name` varchar(255) DEFAULT NULL,
+  `commission_rate` decimal(6,4) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `brokers`
+--
+
+LOCK TABLES `brokers` WRITE;
+/*!40000 ALTER TABLE `brokers` DISABLE KEYS */;
+INSERT INTO `brokers` VALUES (1,'','2011-12-01 09:43:34',NULL,'Renaissance','Renaissance',0.0200),(2,'','2011-12-01 09:43:50',NULL,'Citigroup','Citigroup',0.0010),(3,'','2011-12-01 09:44:00',NULL,'Collins Stewart','Collins Stewart London',NULL),(4,'','2011-12-01 09:44:10',NULL,'Concorde Capital','Concorde Capital - Also Known as Torbock',NULL),(5,'','2011-12-01 09:44:19',NULL,'Credit Anstalt','Credit Anstalt',NULL),(6,'','2011-12-01 09:44:28',NULL,'CSFB London','CSFB London',NULL),(7,'','2011-12-01 09:44:38',NULL,'Deutsche Bank','Deutsche Bank AG - London',NULL),(8,'','2011-12-01 09:44:47',NULL,'EFG Hermes (FBG)','EFG Hermes (FBG)',NULL),(9,'','2011-12-01 09:44:56',NULL,'Erste Bank','Erste Bank',NULL),(10,'','2011-12-01 09:45:04',NULL,'Global Securities Inc','Global Securities Inc',NULL),(11,'','2011-12-01 09:45:19',NULL,'Goldman Sachs','Goldman Sachs International Limited - London',NULL),(12,'','2011-12-01 09:45:33',NULL,'HSBC','HSBC',0.0100),(13,'','2011-12-01 09:45:44',NULL,'ING London','ING London',NULL),(14,'','2011-12-01 09:45:53',NULL,'Investec','Investec (London)',0.0020),(15,'','2011-12-01 09:45:53',NULL,'J P Morgan','J P Morgan Securities Ltd - London',NULL),(16,'','2011-12-01 09:45:53',NULL,'KBC Securities','KBC Securities',NULL),(17,'','2011-12-01 09:46:45',NULL,'Merrill Lynch','Merrill Lynch International London',NULL),(18,'','2011-12-01 09:46:55',NULL,'Mirabaud','Mirabaud Limited',NULL),(19,'','2011-12-01 09:47:03',NULL,'Morgan Stanley - Emerging Europe','Morgan Stanley - Emerging Europe',NULL),(20,'','2011-12-01 09:47:11',NULL,'Oscar Gruss','Oscar Gruss',NULL),(21,'','2011-12-01 09:47:23',NULL,'UBS','UBS London',NULL),(22,'','2011-12-01 09:47:30',NULL,'United Financial Group','United Financial Group',NULL),(31,'','2011-12-01 09:48:10',NULL,'Instinet','Instinet',NULL),(32,'','2011-12-01 09:48:19',NULL,'Peel Hunt','Peel Hunt LLP',0.0020),(33,'','2011-12-01 09:48:28',NULL,'Newedge','Newedge',NULL),(34,'','2011-12-01 09:48:42',NULL,'Off Market','Off Market',NULL),(35,'','2011-12-01 16:09:18',NULL,'UND','Undefined',NULL),(36,'','2012-05-08 08:51:36',NULL,'CBH','Compagnie Bancaire Helvetique',NULL),(37,'','2012-05-22 08:15:09',NULL,'N+1 Singer','N+1 Singer',0.0020),(38,'','2012-05-22 08:15:47',NULL,'finnCap','finnCap',0.0020),(39,'','2012-05-22 08:16:34',NULL,'Canaccord','Canacord',0.0020),(40,'','2012-05-22 08:17:13',NULL,'Westhouse','Westhouse',0.0020),(41,'','2012-05-22 08:17:45',NULL,'Numis','Numis',0.0020),(42,'','2012-05-22 08:18:21',NULL,'Seymour Pierce','Seymour Pierce',0.0020),(43,'','2012-05-22 08:18:52',NULL,'Williams de Broe','Williams de Broe',0.0050),(44,'','2012-05-22 08:19:52',NULL,'Liberum','Liberum',0.0020),(45,'','2012-05-22 08:20:26',NULL,'Cenkos','Cenkos',0.0020),(46,'','2012-05-22 08:20:57',NULL,'Winterflood','Winterflood',0.0020),(47,'','2012-05-22 08:21:32',NULL,'Charles Stanley','Charles Stanley',0.0020),(48,'','2012-05-22 08:22:07',NULL,'Corporate Action','Corporate Action',NULL),(49,'','2012-05-22 08:22:24',NULL,'In Specie Transfer','In Specie Transfer',NULL),(50,'','2012-06-19 08:51:53',NULL,'Fairfax','Fairfax IS',0.0020),(51,'','2012-07-27 12:14:56',NULL,'WH Ireland','WH Ireland',0.0020),(52,'','2012-10-11 09:33:56',NULL,'Shore Capital','Shore Capital Stockbrokers',0.0020);
+/*!40000 ALTER TABLE `brokers` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:52:26
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `countries`
+--
+
+DROP TABLE IF EXISTS `countries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `countries` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `country_code` varchar(3) NOT NULL,
+  `country_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `countries`
+--
+
+LOCK TABLES `countries` WRITE;
+/*!40000 ALTER TABLE `countries` DISABLE KEYS */;
+INSERT INTO `countries` VALUES (1,'2011-12-01 12:48:04','UND','Undefined'),(2,'2011-12-01 12:48:23','AUS','Australia'),(3,'2011-12-01 12:48:49','BEL','Belgium'),(4,'2011-12-01 12:48:57','BER','Bermuda'),(5,'2011-12-01 12:49:06','BRA','Brazil'),(6,'2011-12-01 12:49:17','GBR','Great Britain'),(7,'2011-12-01 12:49:29','BVI','British Virgin Islands'),(8,'2011-12-01 12:49:37','BUL','Bulgaria'),(9,'2011-12-01 12:49:46','CAD','Canada'),(10,'2011-12-01 12:49:54','DAN','Denmark'),(11,'2011-12-01 12:50:02','EU','European Union'),(12,'2011-12-01 12:50:10','FRA','France'),(13,'2011-12-01 12:50:17','IRE','Ireland'),(14,'2011-12-01 12:50:25','JAP','Japan'),(15,'2011-12-01 12:50:35','NOR','Norway'),(16,'2011-12-01 12:50:44','KOR','South Korea'),(17,'2011-12-01 12:50:52','SWE','Sweden'),(18,'2011-12-01 12:51:03','SWI','Switzerland'),(19,'2011-12-01 12:51:14','UK','United Kingdom'),(20,'2011-12-01 12:51:22','USA','United States'),(21,'2011-12-13 10:35:51','ZIM','Zimbabwe'),(22,'2011-12-15 12:07:32','GER','Germany'),(23,'2012-01-11 10:55:35','NET','Netherlands'),(24,'2012-01-12 10:57:14','SP','Spain'),(25,'2012-04-19 13:50:21','PL','Portugal'),(26,'2012-05-28 09:19:27','LUX','Luxembourg'),(27,'2012-05-28 09:19:47','CI','Caymen Islands '),(28,'2012-05-28 09:32:17','IT','Italy'),(29,'2012-05-28 09:48:04','PE','Peru'),(30,'2012-05-28 10:13:12','HK','Hong Kong'),(31,'2012-05-28 10:45:22','SA ','South Africa'),(32,'2012-05-28 13:48:53','RUS','Russia'),(33,'2012-05-29 09:53:47','GBL','Global');
+/*!40000 ALTER TABLE `countries` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:52:44
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `currencies`
+--
+
+DROP TABLE IF EXISTS `currencies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `currencies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `currency_iso_code` varchar(3) NOT NULL,
+  `currency_name` varchar(100) NOT NULL,
+  `sec_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `currencies`
+--
+
+LOCK TABLES `currencies` WRITE;
+/*!40000 ALTER TABLE `currencies` DISABLE KEYS */;
+INSERT INTO `currencies` VALUES (1,'2011-12-01 13:01:02','UND','Undefined',0),(2,'2011-12-01 13:01:02','AUD','Australian Dollar',5),(3,'2011-12-01 13:01:02','BGL','Bulgarian Lev',12),(4,'2011-12-01 13:01:02','BRL','Brazilian Real',13),(5,'2011-12-01 13:01:02','CAD','Canadian Dollar',4),(6,'2011-12-01 13:01:02','CHF','Swiss Franc',7),(7,'2011-12-01 13:01:02','DKK','Danish Krona',14),(8,'2011-12-01 13:01:02','EUR','Euro',2),(9,'2011-12-01 13:01:02','GBP','Pound Sterling',3),(10,'2011-12-01 13:01:02','JPY','Japanese Yen',6),(11,'2011-12-01 13:01:02','KRW','Korean Won',11),(12,'2011-12-01 13:01:02','NOK','Norwegian Krona',8),(13,'2011-12-01 13:01:02','SEK','Swedish Krona',9),(14,'2011-12-01 13:01:02','USD','US Dollar',1),(15,'2011-12-01 13:06:07','ZWB','Zimbabwe Dollar',15),(16,'2012-02-08 11:00:24','MXN','Mexican Peso',16),(18,'2012-02-08 14:35:44','ILS','Israeli Shekel',17),(19,'2012-02-08 14:47:04','ZAR','South African Rand',18);
+/*!40000 ALTER TABLE `currencies` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-23 16:53:05
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `exchanges`
+--
+
+DROP TABLE IF EXISTS `exchanges`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `exchanges` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `exchange_code` varchar(20) NOT NULL,
+  `exchange_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `exchanges`
+--
+
+LOCK TABLES `exchanges` WRITE;
+/*!40000 ALTER TABLE `exchanges` DISABLE KEYS */;
+INSERT INTO `exchanges` VALUES (1,'2011-12-01 12:18:47','UND','Undefined'),(2,'2011-12-01 12:19:04','ASX','Asx Operations Pty Ltd'),(3,'2011-12-01 12:19:20','Brussels','Brussels'),(4,'2011-12-01 12:19:31','Bulgarian','Bulgarian'),(5,'2011-12-01 12:19:45','CME','Chicago Mercantile Exchange'),(6,'2011-12-01 12:19:53','CMX','CMX'),(7,'2011-12-01 12:20:00','Copenhagen','Copenhagen'),(8,'2011-12-01 12:20:11','Euronext','Euronext Brussels'),(9,'2011-12-01 12:20:19','Exchange Test','Exchange Test'),(10,'2011-12-01 12:20:28','FP','FP'),(11,'2011-12-01 12:20:35','FTX','FTX'),(12,'2011-12-01 12:20:43','GY','GY'),(13,'2011-12-01 12:20:50','IM','IM'),(14,'2011-12-01 12:20:58','LME','LME'),(15,'2011-12-01 12:21:05','LN','LN'),(16,'2011-12-01 12:21:13','LON','LON'),(17,'2011-12-01 12:21:21','London','London'),(18,'2011-12-01 12:21:30','LSE','LSE'),(19,'2011-12-01 12:21:51','NASDAQ','Nasdaq (Global Market)'),(20,'2011-12-01 12:22:04','NYSE','New York Stock Exc Inc'),(21,'2011-12-01 12:22:11','NOT LI','NOT LI'),(22,'2011-12-01 12:22:18','NYB','NYB'),(23,'2011-12-01 12:22:26','NYM','NYM'),(24,'2011-12-01 12:22:35','Paris','Paris'),(25,'2011-12-01 12:22:42','SAO PAULO','SAO PAULO'),(26,'2011-12-01 12:22:49','SM','SM'),(27,'2011-12-01 12:22:58','SQ','SQ'),(28,'2011-12-01 12:23:06','SS','SS'),(29,'2011-12-01 12:23:15','Toronto','Toronto'),(30,'2011-12-01 12:23:22','TRACE','TRACE'),(31,'2011-12-01 12:23:34','TSX','TSX Venture Exchange'),(32,'2011-12-01 12:23:43','UN','UN'),(33,'2011-12-01 12:23:50','US','US'),(34,'2011-12-01 12:23:57','UW','UW'),(35,'2011-12-01 12:24:07','VAN','Vancouver');
+/*!40000 ALTER TABLE `exchanges` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:53:09
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `industries`
+--
+
+DROP TABLE IF EXISTS `industries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `industries` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `industry_code` varchar(100) NOT NULL,
+  `industry_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `industries`
+--
+
+LOCK TABLES `industries` WRITE;
+/*!40000 ALTER TABLE `industries` DISABLE KEYS */;
+INSERT INTO `industries` VALUES (1,'2011-12-01 12:44:05','UND','Undefined'),(2,'2011-12-01 12:44:05','Aerospace/Defense','Aerospace/Defense'),(3,'2011-12-01 12:44:05','Airlines','Airlines'),(4,'2011-12-01 12:44:05','Automobiles','Automobiles'),(5,'2011-12-01 12:44:05','Banks','Banks'),(6,'2011-12-01 12:44:05','Basic Materials','Basic Materials'),(7,'2011-12-01 12:44:05','Beverages','Beverages'),(8,'2011-12-01 12:44:05','Commercial Services','Commercial Services'),(9,'2011-12-01 12:44:05','Communications','Communications'),(10,'2011-12-01 12:44:05','Consumer Cyclical','Consumer Cyclical'),(11,'2011-12-01 12:44:05','Consumer Non-cyclical','Consumer Non-cyclical'),(12,'2011-12-01 12:44:05','Diversified','Diversified'),(13,'2011-12-01 12:44:05','Electric','Electric'),(14,'2011-12-01 12:44:05','Energy','Energy'),(15,'2011-12-01 12:44:05','Engineering & Construction','Engineering & Construction'),(16,'2011-12-01 12:44:05','Entertainment','Entertainment'),(17,'2011-12-01 12:44:05','Financial','Financial'),(18,'2011-12-01 12:44:05','Financial Services','Financial Services'),(19,'2011-12-01 12:44:05','Food','Food'),(20,'2011-12-01 12:44:05','Food Retailer','Food Retailer'),(21,'2011-12-01 12:44:05','Funds','Funds'),(22,'2011-12-01 12:44:05','Gas','Gas'),(23,'2011-12-01 12:44:05','General Retailers','General Retailers'),(24,'2011-12-01 12:44:05','Health Care','Health Care'),(25,'2011-12-01 12:44:05','Industrial','Industrial'),(26,'2011-12-01 12:44:05','Insurance','Insurance'),(27,'2011-12-01 12:44:05','Internet','Internet'),(28,'2011-12-01 12:44:05','Investment Companies','Investment Companies'),(29,'2011-12-01 12:44:05','Leisure Time','Leisure Time'),(30,'2011-12-01 12:44:05','Media','Media'),(31,'2011-12-01 12:44:05','Mining','Mining'),(32,'2011-12-01 12:44:05','Miscellaneous Manufacturing','Miscellaneous Manufacturing'),(33,'2011-12-01 12:44:05','Oil & Gas','Oil & Gas'),(34,'2011-12-01 12:44:05','Personal Goods','Personal Goods'),(35,'2011-12-01 12:44:05','Pharmaceuticals','Pharmaceuticals'),(36,'2011-12-01 12:44:05','Real Estate','Real Estate'),(37,'2011-12-01 12:44:05','Real Estate Investment Trusts','Real Estate Investment Trusts'),(38,'2011-12-01 12:44:05','Retail','Retail'),(39,'2011-12-01 12:44:05','Software','Software'),(40,'2011-12-01 12:44:05','Computers','Computers'),(41,'2011-12-01 12:44:05','Technology','Technology'),(42,'2011-12-01 12:44:05','Telecommunications','Telecommunications'),(43,'2011-12-01 12:44:05','Travel & Leisure','Travel & Leisure'),(44,'2011-12-01 12:44:05','Utilities','Utilities'),(45,'2011-12-01 12:45:41','Water','Water'),(46,'2012-05-22 10:45:37','Support Services','Support Services'),(47,'2012-05-22 10:45:51','Construction','Construction');
+/*!40000 ALTER TABLE `industries` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:53:31
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `providers`
+--
+
+DROP TABLE IF EXISTS `providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `providers` (
+  `id` tinyint(3) unsigned NOT NULL,
+  `provider_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `providers`
+--
+
+LOCK TABLES `providers` WRITE;
+/*!40000 ALTER TABLE `providers` DISABLE KEYS */;
+INSERT INTO `providers` VALUES (0,'Median'),(1,'Average'),(2,'Yahoo'),(3,'Google'),(4,'Bloomberg.com');
+/*!40000 ALTER TABLE `providers` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:54:19
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `reasons`
+--
+
+DROP TABLE IF EXISTS `reasons`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `reasons` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `act` bit(1) NOT NULL DEFAULT b'1',
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oid` int(11) DEFAULT NULL,
+  `reason_desc` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1002 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reasons`
+--
+
+LOCK TABLES `reasons` WRITE;
+/*!40000 ALTER TABLE `reasons` DISABLE KEYS */;
+INSERT INTO `reasons` VALUES (1,'','2011-12-01 09:53:09',NULL,'Broker Recommendation'),(2,'','2011-12-01 09:53:18',NULL,'Company News'),(3,'','2011-12-01 09:53:29',NULL,'Market News'),(4,'','2011-12-01 09:53:36',NULL,'Momentum'),(5,'','2011-12-01 09:53:42',NULL,'Overvalued'),(6,'','2011-12-01 09:53:51',NULL,'Profit Warning'),(7,'','2011-12-01 09:53:57',NULL,'Undervalued'),(8,'','2011-12-01 09:54:03',NULL,'Profit Taking'),(9,'','2011-12-01 09:54:17',NULL,'Model Driven'),(999,'','2011-12-01 09:56:52',NULL,'Undefined'),(1000,'','2012-06-14 11:28:19',NULL,'Redemption'),(1001,'','2012-06-14 11:28:49',NULL,'New Account Holding IHT');
+/*!40000 ALTER TABLE `reasons` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:54:33
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `sec_types`
+--
+
+DROP TABLE IF EXISTS `sec_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sec_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `act` tinyint(1) NOT NULL,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oid` int(11) DEFAULT NULL,
+  `sec_type` int(11) NOT NULL,
+  `sec_type_name` varchar(50) NOT NULL,
+  `bond` tinyint(1) DEFAULT NULL,
+  `deriv` tinyint(1) DEFAULT NULL,
+  `exchrate` tinyint(1) DEFAULT NULL,
+  `cfd` tinyint(1) DEFAULT NULL,
+  `equity` tinyint(1) DEFAULT NULL,
+  `fx` tinyint(1) DEFAULT NULL,
+  `otc` tinyint(1) DEFAULT NULL,
+  `yellow_key` varchar(50) DEFAULT NULL,
+  `supported` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sec_types`
+--
+
+LOCK TABLES `sec_types` WRITE;
+/*!40000 ALTER TABLE `sec_types` DISABLE KEYS */;
+INSERT INTO `sec_types` VALUES (2,1,'2011-12-01 10:51:50',NULL,1,'Exchrate',0,0,1,0,0,1,1,'Curncy',1),(3,1,'2011-12-01 10:51:50',NULL,10,'Exchrate Future',0,1,0,1,0,1,0,'Curncy',1),(4,0,'2011-12-01 10:51:50',NULL,15,'Exchrate FutureCall',0,1,0,0,0,1,0,'Curncy',0),(5,0,'2011-12-01 10:51:50',NULL,16,'Exchrate FuturePut',0,1,0,0,0,1,0,'Curncy',0),(6,0,'2011-12-01 10:51:50',NULL,17,'Exchrate Call Option',0,1,0,0,0,1,0,'Comdty',0),(7,0,'2011-12-01 10:51:50',NULL,18,'Exchrate Put Option',0,1,0,0,0,1,0,'Comdty',0),(8,0,'2011-12-01 10:51:50',NULL,44,'FRA',1,1,0,1,0,0,1,'',0),(9,0,'2011-12-01 10:51:50',NULL,46,'Equity Investment Trust',0,0,0,0,1,0,0,'Equity',1),(10,0,'2011-12-01 10:51:50',NULL,47,'Equity Risp Non Convertible',0,0,0,0,1,0,0,'Equity',0),(11,0,'2011-12-01 10:51:50',NULL,48,'Equity Ordinary Registered',0,0,0,0,1,0,0,'Equity',1),(12,0,'2011-12-01 10:51:50',NULL,49,'Equity Ordinary Bearer',0,0,0,0,1,0,0,'Equity',0),(13,1,'2011-12-01 10:51:50',NULL,50,'Equity',0,0,0,0,1,0,0,'Equity',1),(14,0,'2011-12-01 10:51:50',NULL,51,'Equity Unit Trust',0,0,0,0,1,0,0,'Equity',1),(15,0,'2011-12-01 10:51:50',NULL,52,'Equity ADR',0,1,0,0,1,0,0,'Equity',1),(16,0,'2011-12-01 10:51:50',NULL,53,'Equity Risp Convertible',0,0,0,0,1,0,0,'Equity',0),(17,0,'2011-12-01 10:51:50',NULL,54,'Equity Preference',0,0,0,0,1,0,0,'Pfd',1),(18,0,'2011-12-01 10:51:50',NULL,55,'Equity Rights',0,1,0,0,1,0,0,'Equity',1),(19,0,'2011-12-01 10:51:50',NULL,56,'Equity Local',0,0,0,0,1,0,0,'Equity',1),(20,0,'2011-12-01 10:51:50',NULL,57,'Equity Foreign',0,0,0,0,1,0,0,'Equity',1),(21,0,'2011-12-01 10:51:50',NULL,58,'Equity Priv',0,0,0,0,1,0,0,'Equity',1),(22,0,'2011-12-01 10:51:50',NULL,59,'Equity Index',0,0,0,0,1,0,0,'Index',1),(23,1,'2011-12-01 10:51:50',NULL,60,'Warrant',0,1,0,0,1,0,0,'Equity',0),(24,0,'2011-12-01 10:51:50',NULL,61,'Warrant 50 Block',0,1,0,0,1,0,0,'Equity',0),(25,1,'2011-12-01 10:51:50',NULL,62,'Equity Call',0,1,0,0,1,0,0,'Equity',0),(26,1,'2011-12-01 10:51:50',NULL,63,'Equity Put',0,1,0,0,1,0,0,'Equity',0),(27,0,'2011-12-01 10:51:50',NULL,64,'Warrant 10000 block',0,1,0,0,1,0,0,'Equity',0),(28,0,'2011-12-01 10:51:50',NULL,65,'Warrant  5000 Block',0,1,0,0,1,0,0,'Equity',0),(29,0,'2011-12-01 10:51:50',NULL,66,'Equity Call 50 block',0,1,0,0,1,0,0,'Equity',0),(30,0,'2011-12-01 10:51:50',NULL,67,'Equity Put 50 block',0,1,0,0,1,0,0,'Equity',0),(31,0,'2011-12-01 10:51:50',NULL,68,'Warrant Risp ',0,1,0,0,1,0,0,'Equity',0),(32,0,'2011-12-01 10:51:50',NULL,69,'Equity Preference Cumulative',0,0,0,0,1,0,0,'Pfd',0),(33,0,'2011-12-01 10:51:50',NULL,70,'Convertible Bond',1,1,0,0,1,0,0,'Corp',0),(34,1,'2011-12-01 10:51:50',NULL,72,'Equity HedgeFund',0,0,0,0,1,0,0,'Equity',1),(35,0,'2011-12-01 10:51:50',NULL,73,'MutualFund',0,0,0,0,1,0,0,'Equity',1),(36,0,'2011-12-01 10:51:50',NULL,74,'Convertible Bond',1,1,0,0,1,0,0,'Corp',0),(37,0,'2011-12-01 10:51:50',NULL,80,'Convertible Preferred',1,1,0,0,1,0,0,'Corp',0),(38,0,'2011-12-01 10:51:50',NULL,83,'Equity Call 1000 Block',0,1,0,0,1,0,0,'Equity',0),(39,0,'2011-12-01 10:51:50',NULL,84,'Equity Put 1000 Block',0,1,0,0,1,0,0,'Equity',0),(40,0,'2011-12-01 10:51:50',NULL,86,'Convertible Right',1,1,0,0,1,0,0,'Equity',0),(41,0,'2011-12-01 10:51:50',NULL,87,'Inflation',0,0,0,0,0,0,0,'',0),(42,1,'2011-12-01 10:51:50',NULL,90,'Equity Future',0,1,0,1,1,0,0,'Index',1),(43,0,'2011-12-01 10:51:50',NULL,92,'Equity FutureCall',0,1,0,0,1,0,0,'Equity',0),(44,0,'2011-12-01 10:51:50',NULL,93,'Equity FuturePut',0,1,0,0,1,0,0,'Equity',0),(45,0,'2011-12-01 10:51:50',NULL,97,'Equity P Note',0,1,0,0,1,0,0,'Equity',0),(46,1,'2011-12-01 10:51:50',NULL,100,'Government Bond',1,0,0,0,0,0,0,'Govt',0),(47,1,'2011-12-01 10:51:50',NULL,101,'Corporate Bond',1,0,0,0,0,0,0,'Corp',0),(48,0,'2011-12-01 10:51:50',NULL,102,'Euro Bond',1,0,0,0,0,0,0,'Corp',0),(49,0,'2011-12-01 10:51:50',NULL,103,'BankDebt',1,0,0,0,0,0,0,'Corp',0),(50,0,'2011-12-01 10:51:50',NULL,104,'TradePaper',1,0,0,0,0,0,0,'Corp',0),(51,0,'2011-12-01 10:51:50',NULL,105,'IndexLinked Bond Capitalising',1,0,0,0,0,0,0,'Govt',0),(52,0,'2011-12-01 10:51:50',NULL,106,'IndexLinked Gilt Capitalising',1,0,0,0,0,0,0,'Govt',0),(53,1,'2011-12-01 10:51:50',NULL,110,'Bond Future',1,1,0,1,0,0,0,'Comdty',0),(54,0,'2011-12-01 10:51:50',NULL,111,'Bond FutureCall',1,1,0,0,0,0,0,'Comdty',0),(55,0,'2011-12-01 10:51:50',NULL,112,'Bond FuturePut',1,1,0,0,0,0,0,'Comdty',0),(56,0,'2011-12-01 10:51:50',NULL,113,'Bond Call',1,1,0,0,0,0,1,'Corp',0),(57,0,'2011-12-01 10:51:50',NULL,114,'Bond Put',1,1,0,0,0,0,1,'Corp',0),(58,0,'2011-12-01 10:51:50',NULL,120,'TBill  Simple Discount',1,0,0,0,0,0,0,'Govt',0),(59,0,'2011-12-01 10:51:50',NULL,121,'Interest Future ',1,1,0,1,0,0,0,'Comdty',1),(60,0,'2011-12-01 10:51:50',NULL,122,'Deposit FutureCall',1,1,0,0,0,0,0,'Comdty',0),(61,0,'2011-12-01 10:51:50',NULL,123,'Deposit FuturePut',1,1,0,0,0,0,0,'Comdty',0),(62,0,'2011-12-01 10:51:50',NULL,169,'Warrant Put',0,1,0,0,1,0,0,'Equity',0),(63,0,'2011-12-01 10:51:50',NULL,180,'Commodity Physical',0,0,0,0,0,0,0,'Comdty',0),(64,0,'2011-12-01 10:51:50',NULL,184,'Commodity Put',0,1,0,0,0,0,0,'Comdty',0),(65,0,'2011-12-01 10:51:50',NULL,185,'Commodity Call',0,1,0,0,0,0,0,'Comdty',0),(66,1,'2011-12-01 10:51:50',NULL,186,'Commodity Future',0,1,0,1,0,0,0,'Comdty',1),(67,0,'2011-12-01 10:51:50',NULL,187,'Commodity FutureCall',0,1,0,0,0,0,0,'Comdty',0),(68,0,'2011-12-01 10:51:50',NULL,188,'Commodity FuturePut',0,1,0,0,0,0,0,'Comdty',0),(69,0,'2011-12-01 10:51:50',NULL,190,'Asset Real Estate',0,0,0,0,0,0,1,'Comdty',0),(70,0,'2011-12-01 10:51:50',NULL,200,'Equity OrdPartCert',0,0,0,0,1,0,0,'Equity',0),(71,0,'2011-12-01 10:51:50',NULL,400,'Grain Future',0,1,0,1,0,0,0,'Comdty',0),(72,0,'2011-12-01 10:51:50',NULL,401,'Equity CFD',0,1,0,1,1,0,1,'Equity',1),(73,0,'2011-12-01 10:51:50',NULL,402,'Livestock Future',0,1,0,1,0,0,0,'Comdty',0),(74,0,'2011-12-01 10:51:50',NULL,403,'FoodStuffs Future',0,1,0,1,0,0,0,'Comdty',0),(75,1,'2011-12-01 10:51:50',NULL,404,'Index Future',0,1,0,1,0,0,0,'Index',1),(76,0,'2011-12-01 10:51:50',NULL,405,'Metal Future',0,1,0,1,0,0,0,'Comdty',1),(77,0,'2011-12-01 10:51:50',NULL,406,'Energy Future',0,1,0,1,0,0,0,'Comdty',1),(78,0,'2011-12-01 10:51:50',NULL,407,'Industrials Future',0,1,0,1,0,0,0,'Comdty',1),(79,0,'2011-12-01 10:51:50',NULL,501,'Bond CFD',1,1,0,1,0,0,1,'',1),(80,0,'2011-12-01 10:51:50',NULL,502,'Equity CFD Teddy',0,1,0,1,1,0,1,'Equity',0),(81,0,'2011-12-01 10:51:50',NULL,504,'Swap Int Rate',1,1,0,0,0,0,1,'Corp',0),(82,0,'2011-12-01 10:51:50',NULL,507,'Swap Asset Bond',1,1,0,0,0,0,1,'',0),(83,0,'2011-12-01 10:51:50',NULL,508,'Swap Asset Equity',1,1,0,0,1,0,1,'',0),(84,0,'2011-12-01 10:51:50',NULL,600,'CMO Bond',1,0,0,0,0,0,0,'Mtge',0),(85,0,'2011-12-01 10:51:50',NULL,602,'Index Commodity',0,0,0,0,0,0,0,'Index',0),(86,0,'2011-12-01 10:51:50',NULL,610,'ABS Bond',1,0,0,0,0,0,0,'Mtge',0),(87,0,'2011-12-01 10:51:50',NULL,611,'CLO/CBO Bond',1,0,0,0,0,0,0,'Mtge',0),(88,0,'2011-12-01 10:51:50',NULL,612,'ABS Bond Capitalising',1,0,0,0,0,0,0,'Mtge',0),(89,0,'2011-12-01 10:51:50',NULL,620,'Loan Portfolio',1,0,0,0,0,0,0,'',0),(90,0,'2011-12-01 10:51:50',NULL,621,'CapFloor Int Rate',1,1,0,0,0,0,1,'',0),(91,0,'2011-12-01 10:51:50',NULL,622,'MTN Index Linked',1,1,0,0,0,0,0,'Corp',0),(92,0,'2011-12-01 10:51:50',NULL,623,'Metal Spot',0,0,0,0,0,0,0,'Comdty',0),(93,0,'2011-12-01 10:51:50',NULL,624,'MTN Bond',1,0,0,0,0,0,0,'Corp',0),(94,0,'2011-12-01 10:51:50',NULL,625,'Warrant Bond',1,1,0,0,1,0,0,'Corp',0),(95,0,'2011-12-01 10:51:50',NULL,626,'Municipal Bond',1,0,0,0,0,0,0,'Muni',0),(96,0,'2011-12-01 10:51:50',NULL,627,'Ex Warrant Bond',1,0,0,0,0,0,0,'Corp',0),(97,0,'2011-12-01 10:51:50',NULL,628,'IO Bond',1,0,0,0,0,0,0,'Mtge',0),(98,0,'2011-12-01 10:51:50',NULL,629,'PO Bond',1,0,0,0,0,0,0,'Mtge',0),(99,0,'2011-12-01 10:51:50',NULL,630,'Commercial Paper',1,0,0,0,0,0,0,'Mmkt',0),(100,0,'2011-12-01 10:51:50',NULL,631,'CD',1,0,0,0,0,0,0,'Mmkt',0),(101,0,'2011-12-01 10:51:50',NULL,632,'Brady Bond',1,0,0,0,0,0,0,'Corp',0),(102,0,'2011-12-01 10:51:50',NULL,633,'Bond',1,0,0,0,0,0,0,'Corp',0),(103,0,'2011-12-01 10:51:50',NULL,634,'Swaption Call',1,1,0,0,0,0,1,'Corp',0),(104,0,'2011-12-01 10:51:50',NULL,635,'Swaption Put',1,1,0,0,0,0,1,'Corp',0),(105,0,'2011-12-01 10:51:50',NULL,636,'Yield Benchmark',1,0,0,0,0,0,0,'Index',0),(106,0,'2011-12-01 10:51:50',NULL,637,'MBS',1,0,0,0,0,0,0,'Mtge',0),(107,0,'2011-12-01 10:51:50',NULL,638,'GNMA',1,0,0,0,0,0,0,'Mtge',0),(108,0,'2011-12-01 10:51:50',NULL,639,'FNMA',1,0,0,0,0,0,0,'Mtge',0),(109,0,'2011-12-01 10:51:50',NULL,640,'FHLMC',1,0,0,0,0,0,0,'Mtge',0),(110,0,'2011-12-01 10:51:50',NULL,641,'Equity GDR',0,1,0,0,1,0,0,'Equity',0),(111,0,'2011-12-01 10:51:50',NULL,642,'Equity EDR',0,1,0,0,1,0,0,'Equity',0),(112,0,'2011-12-01 10:51:50',NULL,643,'Equity Closed End Fund',0,0,0,0,1,0,0,'Equity',0),(113,0,'2011-12-01 10:51:50',NULL,644,'Equity German Cert',0,0,0,0,1,0,0,'Equity',0),(114,0,'2011-12-01 10:51:50',NULL,645,'Equity Misc.',0,0,0,0,1,0,0,'Equity',0),(115,0,'2011-12-01 10:51:50',NULL,646,'Equity Mutual Fund/Load',0,0,0,0,1,0,0,'Equity',0),(116,0,'2011-12-01 10:51:50',NULL,647,'Equity NY Reg Shares',0,0,0,0,1,0,0,'Equity',0),(117,0,'2011-12-01 10:51:50',NULL,648,'REIT',0,0,0,0,0,0,0,'Equity',0),(118,0,'2011-12-01 10:51:50',NULL,649,'Brady Bond Capitalising',1,0,0,0,0,0,0,'Corp',0),(119,0,'2011-12-01 10:51:50',NULL,650,'Basis Swap',1,1,0,1,0,0,1,'',0),(120,0,'2011-12-01 10:51:50',NULL,660,'Bond Index',0,0,0,0,0,0,0,'',0),(121,0,'2011-12-01 10:51:50',NULL,661,'Bond Total Return Swap',1,1,0,0,0,0,1,'',0),(122,0,'2011-12-01 10:51:50',NULL,662,'Exchrate CFD',0,1,0,1,0,1,1,'',1),(123,0,'2011-12-01 10:51:50',NULL,663,'Equity Put 500 Block',0,1,0,0,1,0,0,'Equity',0),(124,0,'2011-12-01 10:51:50',NULL,664,'Equity Put 25 Block',0,1,0,0,1,0,0,'Equity',0),(125,0,'2011-12-01 10:51:50',NULL,671,'Equity OTC FutureCall',0,1,0,0,1,0,1,'',0),(126,0,'2011-12-01 10:51:50',NULL,672,'Equity OTC FuturePut',0,1,0,0,1,0,1,'',0),(127,0,'2011-12-01 10:51:50',NULL,673,'Swap MUNI BMA/Libor',1,1,0,1,0,0,1,'',0),(128,0,'2011-12-01 10:51:50',NULL,674,'Swap CFD BMA/Libor',1,1,0,1,0,0,1,'Equity',0),(129,0,'2011-12-01 10:51:50',NULL,675,'Swap Foreign Volatility',0,1,0,0,0,0,1,'',0),(130,0,'2011-12-01 10:51:50',NULL,676,'Equity Preference ',0,0,0,0,1,0,0,'Pfd',0),(131,0,'2011-12-01 10:51:50',NULL,677,'Index Bond',1,0,0,0,0,0,0,'Index',0),(132,0,'2011-12-01 10:51:50',NULL,678,'Equity BDR',0,1,0,0,1,0,0,'Equity',0),(133,0,'2011-12-01 10:51:50',NULL,830,'Credit Linked Note',1,1,0,0,0,0,0,'',0),(134,0,'2011-12-01 10:51:50',NULL,831,'Default Swap',1,1,0,0,0,0,1,'',0),(135,0,'2011-12-01 10:51:50',NULL,832,'Exchrate Exotic Call Option',0,1,0,0,0,1,0,'Comdty',0),(136,0,'2011-12-01 10:51:50',NULL,833,'TIP Bond Capitalising',1,0,0,0,0,0,0,'Corp',0),(137,0,'2011-12-01 10:51:50',NULL,834,'Bond FuturePut Non Premiumable',1,1,0,1,0,0,0,'Comdty',0),(138,0,'2011-12-01 10:51:50',NULL,835,'Equity FuturePut Non Premiumable',0,1,0,1,1,0,0,'Equity',0),(139,0,'2011-12-01 10:51:50',NULL,836,'Deposit FuturePut Non Premiumable',1,1,0,1,0,0,0,'Comdty',0),(140,0,'2011-12-01 10:51:50',NULL,837,'Equity FutureCall Non Premiumable',0,1,0,1,1,0,0,'Equity',0),(141,0,'2011-12-01 10:51:50',NULL,838,'Deposit FutureCall Non Premiumable',1,1,0,1,0,0,0,'Comdty',0),(142,0,'2011-12-01 10:51:50',NULL,841,'Default Swap Index',1,1,0,0,0,0,1,'',0),(143,0,'2011-12-01 10:51:50',NULL,842,'Default Swap Index Tranche',1,1,0,0,0,0,1,'',0),(144,0,'2011-12-01 10:51:50',NULL,901,'SSB CFD',0,1,0,0,1,0,1,'Equity',0),(145,0,'2011-12-01 10:51:50',NULL,903,'Exchrate NonDelivFWD',0,1,0,1,0,1,1,'Comdty',0),(146,0,'2011-12-01 10:51:50',NULL,906,'Mezzanine Debt',1,0,0,0,0,0,0,'Corp',0),(147,0,'2011-12-01 10:51:50',NULL,909,'Private Subordinated Debt',1,0,0,0,0,0,0,'Corp',0),(148,0,'2011-12-01 10:51:50',NULL,912,'Collateral Debt',1,0,0,0,0,0,0,'Corp',0),(149,0,'2011-12-01 10:51:50',NULL,915,'Bond FutureCall Non Premiumable',1,1,0,1,0,0,0,'Comdty',0),(150,0,'2011-12-01 10:51:50',NULL,916,'Index Call',0,1,0,0,0,0,0,'Index',0),(151,0,'2011-12-01 10:51:50',NULL,917,'Index Put',0,1,0,0,0,0,0,'Index',0),(152,0,'2011-12-01 10:51:50',NULL,948,'REIT CFD',0,1,0,1,1,0,1,'Equity',0),(153,0,'2011-12-01 10:51:50',NULL,949,'Index CFD',0,1,0,1,1,0,1,'Index',1),(154,0,'2011-12-01 10:51:50',NULL,950,'Fully Funded CFD',0,1,0,0,1,0,0,'Equity',0),(155,0,'2011-12-01 10:51:50',NULL,951,'TBA',1,1,0,1,0,0,0,'Mtge',0),(156,0,'2011-12-01 10:51:50',NULL,978,'Equity Variance Swap',0,1,0,1,1,0,1,'Comdty',0),(157,0,'2011-12-01 10:51:50',NULL,999,'Deal Structure',0,0,0,0,1,0,1,'',0),(158,0,'2011-12-01 10:51:50',NULL,9050,'Cash Settled Swap',0,1,0,1,1,0,1,'Equity',0),(9999,1,'2011-12-01 10:51:50',NULL,9999,'Unclassified',0,0,0,0,0,0,0,'',0),(10000,1,'2012-05-31 07:50:36',NULL,10000,'Fund',0,0,0,0,0,0,0,'',NULL);
+/*!40000 ALTER TABLE `sec_types` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-23 17:11:57
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `trade_types`
+--
+
+DROP TABLE IF EXISTS `trade_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trade_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `act` bit(1) NOT NULL DEFAULT b'1',
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `trade_type` varchar(50) NOT NULL,
+  `category` varchar(50) DEFAULT NULL,
+  `credit_debit` varchar(6) DEFAULT NULL,
+  `debit_account_id` int(11) NOT NULL,
+  `credit_account_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `trade_types`
+--
+
+LOCK TABLES `trade_types` WRITE;
+/*!40000 ALTER TABLE `trade_types` DISABLE KEYS */;
+INSERT INTO `trade_types` VALUES (1,'','2011-12-01 10:00:51','Buy Long','Trading','debit',1,2),(2,'','2011-12-01 10:01:14','Buy Short','Trading','debit',1,2),(3,'','2011-12-01 10:02:13','Sell Long','Trading','credit',2,1),(4,'','2011-12-01 10:02:27','Sell Short','Trading','credit',2,1),(10,'','2011-12-01 10:03:09','Admin Fee','Non-trading','debit',6,2),(11,'','2011-12-01 10:03:24','Management Fee','Non-trading','debit',4,2),(12,'','2011-12-01 10:03:40','Interest Earned','Non-trading','credit',2,7),(13,'','2011-12-01 10:03:56','Interest Expense','Non-trading','debit',8,2),(14,'','2011-12-01 10:04:13','ConCapSub','Non-trading','credit',2,3),(15,'','2011-12-01 10:04:29','ConCapRed','Non-trading','debit',3,2),(19,'','2011-12-01 10:06:36','Custody Fee','Non-trading','debit',9,2),(20,'','2011-12-01 10:06:52','Director Fee','Non-trading','debit',10,2),(21,'','2011-12-01 10:07:08','Operating Cost','Non-trading','debit',11,2),(22,'','2011-12-01 10:07:22','Other Cost','Non-trading','debit',11,2),(23,'','2011-12-01 10:07:36','Performance Fee','Non-trading','debit',5,2),(24,'','2012-01-25 14:17:58','Management fees 2','Non-Trading',NULL,4,2),(25,'','2012-03-19 10:34:17','Coupon Income','Trading',NULL,2,15),(26,'','2012-03-20 12:59:34','Coupon Expense','Trading',NULL,16,2),(27,'','2012-03-20 13:00:06','Dividend Income','Trading',NULL,2,17),(28,'','2012-03-20 13:00:52','Dividend Expense','Trading',NULL,18,2);
+/*!40000 ALTER TABLE `trade_types` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:54:57
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: asapdb01.cqezga1cxvxz.us-east-1.rds.amazonaws.com    Database: ASAPDB01
+-- ------------------------------------------------------
+-- Server version	5.5.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `secs`
+--
+
+DROP TABLE IF EXISTS `secs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `secs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `act` tinyint(1) NOT NULL,
+  `crd` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `oid` int(11) DEFAULT NULL,
+  `sec_type_id` int(11) NOT NULL,
+  `sec_name` varchar(100) NOT NULL,
+  `ticker` varchar(50) DEFAULT NULL,
+  `country_id` int(11) NOT NULL,
+  `underlying_secid` varchar(50) DEFAULT NULL,
+  `tradarid` varchar(50) DEFAULT NULL,
+  `sedol` varchar(50) DEFAULT NULL,
+  `beta` decimal(18,6) DEFAULT NULL,
+  `delta` decimal(18,6) DEFAULT NULL,
+  `strike` decimal(18,6) DEFAULT NULL,
+  `prev_coupon_date` date DEFAULT NULL,
+  `valpoint` decimal(18,6) DEFAULT NULL,
+  `isin_code` varchar(50) DEFAULT NULL,
+  `industry_id` int(11) NOT NULL,
+  `first_settles_date` date DEFAULT NULL,
+  `first_accrual_date` date DEFAULT NULL,
+  `exchange_id` int(11) NOT NULL,
+  `first_coupon_date` date DEFAULT NULL,
+  `dividend_amount` decimal(18,6) DEFAULT NULL,
+  `ex_date` date DEFAULT NULL,
+  `dividend_date` date DEFAULT NULL,
+  `cusip_code` varchar(50) DEFAULT NULL,
+  `coupon_pay` decimal(18,6) DEFAULT NULL,
+  `coupon` decimal(18,6) DEFAULT NULL,
+  `ric_code` varchar(50) DEFAULT NULL,
+  `price` decimal(18,6) DEFAULT NULL,
+  `maturity` date DEFAULT NULL,
+  `currency_id` int(11) NOT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `price_source` varchar(20) DEFAULT NULL,
+  `amount_shares_out` bigint(20) DEFAULT NULL,
+  `coupon_frequency` varchar(5) DEFAULT NULL,
+  `calc_type` varchar(20) DEFAULT NULL,
+  `provider_id` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `secs`
+--
+-- WHERE:  sec_type_id<=2
+
+LOCK TABLES `secs` WRITE;
+/*!40000 ALTER TABLE `secs` DISABLE KEYS */;
+INSERT INTO `secs` VALUES (1,1,'2011-12-01 15:28:41',NULL,2,'USD','USD',20,NULL,'USD',NULL,NULL,NULL,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,14,NULL,'FX',0,NULL,NULL,0),(2,1,'2011-12-01 15:28:41',NULL,2,'EUR','EUR',11,NULL,'EUR',NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,8,NULL,'FX',0,NULL,NULL,0),(3,1,'2011-12-01 15:28:41',NULL,2,'GBP','GBP',6,NULL,'GBP',NULL,NULL,NULL,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,9,NULL,'FX',0,NULL,NULL,0),(4,1,'2011-12-01 15:28:41',NULL,2,'CAD','CAD',9,NULL,'CAD',NULL,NULL,NULL,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,NULL,'FX',0,NULL,NULL,0),(5,1,'2011-12-01 15:28:41',NULL,2,'AUD','AUD',2,NULL,'AUD',NULL,NULL,NULL,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,2,NULL,'FX',0,NULL,NULL,0),(6,1,'2011-12-01 15:28:41',NULL,2,'JPY','JPY',14,NULL,'JPY',NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,10,NULL,'FX',0,NULL,NULL,0),(7,1,'2011-12-01 15:28:41',NULL,2,'CHF','CHF',18,NULL,'CHF',NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,6,NULL,'FX',0,NULL,NULL,0),(8,1,'2011-12-01 15:28:41',NULL,2,'NOK','NOK',15,NULL,'NOK',NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,12,NULL,'FX',0,NULL,NULL,0),(9,1,'2011-12-01 15:28:41',NULL,2,'SEK','SEK',17,NULL,'SEK',NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,13,NULL,'FX',0,NULL,NULL,0),(10,1,'2011-12-01 15:28:41',NULL,2,'PLN','PLN',1,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,1,NULL,NULL,0,NULL,NULL,0),(11,1,'2011-12-01 15:28:41',NULL,2,'KRW','KRW',16,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,11,NULL,NULL,0,NULL,NULL,0),(12,1,'2011-12-13 10:32:43',NULL,2,'BGL','BGL',8,'','BGL','',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,3,NULL,'',NULL,NULL,NULL,0),(13,1,'2011-12-13 10:33:37',NULL,2,'BRL','BRL',5,'','BRL','',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,4,NULL,'',NULL,NULL,NULL,0),(14,1,'2011-12-13 10:34:31',NULL,2,'DKK','DKK',10,'','DKK','',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,7,NULL,'',NULL,NULL,NULL,0),(15,1,'2011-12-13 10:36:35',NULL,2,'ZWB','ZWB',21,'','ZWB','',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,15,NULL,'',NULL,NULL,NULL,0),(16,1,'2012-02-08 13:38:20',NULL,2,'MXN','',1,'',NULL,'',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,16,NULL,'',NULL,'','',0),(17,1,'2012-02-08 14:36:15',NULL,2,'ILS','',1,'',NULL,'',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,18,NULL,'',NULL,'','',0),(18,1,'2012-02-08 14:47:32',NULL,2,'ZAR','',1,'',NULL,'',NULL,NULL,NULL,NULL,1.000000,'',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,19,NULL,'',NULL,'','',0);
+/*!40000 ALTER TABLE `secs` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-23 15:58:55
+-- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
+--
+-- Host: localhost    Database: opentomsdb
+-- ------------------------------------------------------
+-- Server version	5.5.24-0ubuntu0.12.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `secs`
+--
+
+LOCK TABLES `secs` WRITE;
+/*!40000 ALTER TABLE `secs` DISABLE KEYS */;
+INSERT INTO `secs` VALUES (101,0,'2011-12-01 15:28:41',NULL,13,'Consolidated Minerals Limited Ordinary','CNM LN',2,NULL,'AU000000CSM6','3283358',0.610000,NULL,NULL,NULL,0.010000,'AU000000CSM6',6,NULL,NULL,17,NULL,0.030000,'0000-00-00','0000-00-00','99A97DH41',0.000000,NULL,'CSM.L',72.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(102,0,'2011-12-01 15:28:41',NULL,13,'ASIAN CITRUS HOLDINGS LTD','ACHL LN',4,NULL,'B0C8JN7','B0C8JN7',1.000000,1.000000,NULL,NULL,1.000000,'BMG0620W1029',1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'ACHL.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(103,0,'2011-12-01 15:28:41',NULL,13,'ADVFN Plc','AFN LN',6,NULL,'989953','278959',0.341000,1.000000,NULL,NULL,0.010000,'GB0002789591',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'AFN.L',2.725000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(104,0,'2011-12-01 15:28:41',NULL,13,'Aegis Group Plc Ordinary','AGS LN',6,NULL,'AEG LN','965756',0.987000,NULL,NULL,NULL,0.010000,'GB0009657569',9,NULL,NULL,17,NULL,1.000000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'AEGS.L',136.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(105,0,'2011-12-01 15:28:41',NULL,13,'AFC Energy Plc Pending Sett','AFC LN',6,NULL,'B18S7B2',NULL,1.000000,1.000000,NULL,NULL,0.010000,NULL,14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'AFEN.L',12.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(106,0,'2011-12-01 15:28:41',NULL,13,'Alexander Mining','AXM LN',6,NULL,'976203','B06K166',1.000000,1.000000,NULL,NULL,0.010000,'GB00B06K1665',6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'AXM.L',25.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(107,0,'2011-12-01 15:28:41',NULL,13,'ALPHAMERIC PLC Ordinary','ALM LN',6,NULL,'GB0000221894','22189',0.801000,NULL,NULL,NULL,0.010000,'GB0000221894',41,NULL,NULL,17,NULL,1.800000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'ALQQ.L',85.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(108,0,'2011-12-01 15:28:41',NULL,13,'Anite Group Plc Ordinary','AIE LN',6,NULL,'AIE LN','232085',0.717000,NULL,NULL,NULL,0.010000,'GB0002320850',41,NULL,NULL,17,NULL,NULL,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'AIE.L',75.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(109,1,'2011-12-01 15:28:41',NULL,13,'ANT PLC Ordinary','ANTP LN',6,NULL,'GB00B06BSD59','B06BSD5',1.000000,NULL,NULL,NULL,0.010000,'GB00B06BSD59',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'ANTP.L',79.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(110,0,'2011-12-01 15:28:41',NULL,13,'Arc International Pl Ordinary','ARK LN',6,NULL,'ARK LN','964548',0.708000,NULL,NULL,NULL,0.010000,'GB0009645481',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'ARK.L',30.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(111,0,'2011-12-01 15:28:41',NULL,13,'ASOS Plc','ASC LN',6,NULL,'3092725','3092725',0.733000,1.000000,NULL,NULL,0.010000,'GB0030927254',9,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'ASC.L',302.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(112,0,'2011-12-01 15:28:41',NULL,13,'Aurelian Oil & Gas Plc','AUL LN',6,NULL,'B15S8C3','B15S8C3',0.317000,1.000000,NULL,NULL,0.010000,'GB00B15S8C31',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'AUL.L',44.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(113,0,'2011-12-01 15:28:41',NULL,13,'Avis Europe Plc Ordinary','AVE LN',6,NULL,'AVE LN','65805',1.284000,NULL,NULL,NULL,0.010000,'GB0000658053',11,NULL,NULL,17,NULL,3.800000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'AVE.L',76.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(114,0,'2011-12-01 15:28:41',NULL,13,'Biofuels Corp Plc','BFC LN',6,NULL,'GB00B00VD693','B00VD69',2.149000,NULL,NULL,NULL,0.010000,'GB00B00VD693',6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'BFC.L',1.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(115,0,'2011-12-01 15:28:41',NULL,13,'BLINKX PLC Ordinary','BLNX LN',6,NULL,'991179','B1WBW23',1.000000,NULL,NULL,NULL,0.010000,'GB00B1WBW239',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,33.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(116,0,'2011-12-01 15:28:41',NULL,13,'Bookham Technology P Ordinary','BHM LN',6,NULL,'BHM LN','224305',1.771000,NULL,NULL,NULL,0.010000,'GB0002243052',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'BHM.L',68.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(117,0,'2011-12-01 15:28:41',NULL,13,'Borders and Southern Petroleum','BOR LN',6,NULL,'976217','B08F459',1.000000,1.000000,NULL,NULL,0.010000,'GB00B08F4599',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,44.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(118,0,'2011-12-01 15:28:41',NULL,13,'Btg Plc Ordinary','BGC LN',6,NULL,'BGC LN','100159',1.131000,NULL,NULL,NULL,0.010000,'GB0001001592',11,NULL,NULL,17,NULL,NULL,'0000-00-00','0000-00-00','369300108',0.000000,NULL,'BGC.L',105.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(119,0,'2011-12-01 15:28:41',NULL,13,'Cambrian Oil & Gas','COIL LN',6,NULL,'B01JDL7','B01JDL7',0.596000,1.000000,NULL,NULL,0.010000,'GB00B01JDL79',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'COIL.L',4.125000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(120,0,'2011-12-01 15:28:41',NULL,13,'Cape Lambert Iron Ore Ltd UK Line','CLIO LN',6,NULL,'B13V404','B13V404',1.962000,1.000000,NULL,NULL,0.010000,'AU000000CFE0',6,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CLIO.L',24.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(121,0,'2011-12-01 15:28:41',NULL,13,'CAPE PLC Ordinary','CIU LN',6,NULL,'172608','172608',0.581000,0.000000,NULL,NULL,0.010000,'GB0001726081',11,NULL,NULL,17,NULL,0.000000,'0000-00-00','0000-00-00',NULL,0.000000,0.000000,'CIU.L',289.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(122,0,'2011-12-01 15:28:41',NULL,13,'Celltech Group Plc Ordinary','CCH LN',6,NULL,'CCH LN','182276',0.795000,NULL,NULL,NULL,0.010000,'GB0001822765',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CCH.L',3.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(123,0,'2011-12-01 15:28:41',NULL,13,'Central Rand Gold Ltd','CRND LN',6,NULL,'B24HM60','B24HM60',1.000000,1.000000,NULL,NULL,0.010000,'GG00B24HM601',1,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CRND.L',125.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(124,0,'2011-12-01 15:28:41',NULL,13,'Centurion Energy (London Listing)','CUX LN',6,NULL,'182660','3316867',1.518000,1.000000,NULL,NULL,0.010000,'CA1559051026',14,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CUX.L',462.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(125,0,'2011-12-01 15:28:41',NULL,13,'Chesnara Plc Ordinary','CSN LN',6,NULL,'GB0033476960','3347696',0.705000,NULL,NULL,NULL,0.010000,'GB0033476960',17,NULL,NULL,17,NULL,4.900000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,167.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(126,0,'2011-12-01 15:28:41',NULL,13,'Cng Travel Group Plc Ordinary','CTV LN',6,NULL,'IE00B00VVP40','B00VVP4',0.870000,NULL,NULL,NULL,0.010000,'IE00B00VVP40',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CTV.L',20.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(127,0,'2011-12-01 15:28:41',NULL,13,'Coal International Plc Ordinary','CLN LN',6,NULL,'GB00B06YVB34','B06YVB3',0.375000,NULL,NULL,NULL,0.010000,'GB00B06YVB34',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'COAL.L',62.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(128,0,'2011-12-01 15:28:41',NULL,13,'Coastal Energy Co UK Line','CEO LN',6,NULL,'990306','B05NFN1',1.000000,1.000000,NULL,NULL,0.010000,'KYG224041007',17,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CEO.L',31.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(129,0,'2011-12-01 15:28:41',NULL,13,'Collins Stewart Hldg Ordinary','CSH LN',6,NULL,'CSH LN','71006',1.055000,NULL,NULL,NULL,0.010000,'GB0000710060',14,NULL,NULL,1,NULL,2.250000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'CSH.L',24.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(130,0,'2011-12-01 15:28:41',NULL,13,'Colt Telecom Group P Ordinary','CTM LN',6,NULL,'CTM LN','424699',1.468000,NULL,NULL,NULL,0.010000,'GB0004246996',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CTM.L',67.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(131,0,'2011-12-01 15:28:41',NULL,13,'Copy of Coal of Africa (formerly GVM Metals Ltd) GBP Line','CZA LN',6,NULL,'992222',NULL,0.291000,1.000000,NULL,NULL,0.010000,NULL,6,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'CZA.L',73.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(132,0,'2011-12-01 15:28:41',NULL,13,'Costain Group Plc Ordinary','COST LN',6,NULL,'COST LN','227218',0.486000,NULL,NULL,NULL,0.010000,'GB0002272184',25,NULL,NULL,17,NULL,NULL,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'COSG.L',10.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(133,0,'2011-12-01 15:28:41',NULL,13,'DERWENT LONDON PLC Ordinary','DLN LN',6,NULL,'990589','265274',1.078000,NULL,NULL,NULL,0.010000,'GB00B10QQ280',17,NULL,NULL,1,NULL,7.500000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'DLN.L',1709.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(134,0,'2011-12-01 15:28:41',NULL,13,'Ds Smith Plc Ordinary','SMDS LN',6,NULL,'SMDS LN','822011',0.995000,NULL,NULL,NULL,0.010000,'GB0008220112',6,NULL,NULL,17,NULL,2.600000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'SMDS.L',175.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(135,0,'2011-12-01 15:28:41',NULL,13,'Durlacher Corp Plc Ordinary','DUC LN',6,NULL,'DUC LN','3208793',0.684000,NULL,NULL,NULL,0.010000,'GB0032087933',17,NULL,NULL,1,NULL,NULL,NULL,NULL,'997344NA0',0.000000,NULL,'DUC.L',23.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(136,0,'2011-12-01 15:28:41',NULL,13,'Ebookers Plc Ordinary','EBR LN',6,NULL,'EBR LN','3037599',1.285000,NULL,NULL,NULL,0.010000,'GB0030375991',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'EBR.L',417.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(137,0,'2011-12-01 15:28:41',NULL,13,'Enterprise Oil Plc Ordinary','ETP LN',6,NULL,'ETP LN','318866',0.598000,NULL,NULL,NULL,0.010000,NULL,14,NULL,NULL,17,NULL,3.150000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'ETP.L',605.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(138,0,'2011-12-01 15:28:41',NULL,13,'Eo Plc Ordinary','3318Z LN',6,NULL,'20666','490924',1.000000,NULL,NULL,NULL,0.010000,'GB0004909247',9,NULL,NULL,17,NULL,NULL,NULL,NULL,'993906NZ5',0.000000,NULL,'EO.L',2.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(139,0,'2011-12-01 15:28:41',NULL,13,'Eros International','EROS LN',6,NULL,'979033','B13JS95',0.554000,1.000000,NULL,NULL,0.010000,'GB00B13JS954',10,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'EROS.L',75.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(140,0,'2011-12-01 15:28:41',NULL,13,'Eurogold','EUG LN',6,NULL,'975667','B01WGY0',0.469000,1.000000,NULL,NULL,0.010000,NULL,6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'EUG.L',1.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(141,0,'2011-12-01 15:28:41',NULL,13,'Eurotunnel Plc-uts R Ordinary','ETL LN',6,NULL,'ETL LN','316893',0.822000,NULL,NULL,NULL,0.010000,'GB0003168936',25,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'ETL.L',26.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(142,0,'2011-12-01 15:28:41',NULL,13,'Fairbar Limited Ordinary','6194Z LN',6,NULL,'6194Z LN','3034556',1.000000,NULL,NULL,NULL,0.010000,'GB0030345564',10,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,230.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(143,0,'2011-12-01 15:28:41',NULL,13,'Fitness First Plc Ordinary','FTF LN',6,NULL,'FTF LN','3003846',0.731000,NULL,NULL,NULL,0.010000,'GB0030038466',17,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'FTF.L',472.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(144,0,'2011-12-01 15:28:41',NULL,13,'Flintstone Technolog Ordinary','FLT LN',6,NULL,'6005Z LN','3174742',1.000000,NULL,NULL,NULL,0.010000,'GB0031747420',17,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'FLT.L',6.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(145,0,'2011-12-01 15:28:41',NULL,13,'FREEPORT PLC Ordinary','FPR LN',6,NULL,'GB0034340827','3434082',0.754000,NULL,NULL,NULL,1.000000,'GB0034340827',36,NULL,NULL,1,NULL,NULL,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,385.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(146,0,'2011-12-01 15:28:41',NULL,13,'Golden Prospect Plc Ordinary','GOL LN',6,NULL,'GOL LN','376314',0.222000,NULL,NULL,NULL,0.010000,'GB0003763140',28,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'GOL.L',11.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(147,0,'2011-12-01 15:28:41',NULL,13,'Gulfsands Petroleum','GPX LN',6,NULL,'976208','B06VGC0',1.000000,1.000000,NULL,NULL,0.010000,'GB00B06VGC01',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'GPX.L',138.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(148,1,'2011-12-01 15:28:41',NULL,13,'Hargreaves Services Plc','HSP LN',6,'','GB00B0MTC970','B0MTC97',0.628000,NULL,NULL,NULL,0.010000,'GB00B0MTC970',25,NULL,NULL,17,NULL,6.000000,NULL,NULL,'',0.000000,NULL,'',514.000000,NULL,9,NULL,'BBG Web',0,'','',0),(149,0,'2011-12-01 15:28:41',NULL,13,'Hereward Ventures','HEV LN',6,NULL,'853271','853271',1.000000,1.000000,NULL,NULL,0.010000,'GB0008532714',6,NULL,NULL,17,NULL,NULL,NULL,NULL,'99002U0N4',0.000000,NULL,'HEV.L',4.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(150,0,'2011-12-01 15:28:41',NULL,13,'Hertford International Group Plc','HIG LN',6,NULL,'992276','B29KF65',1.000000,1.000000,NULL,NULL,0.010000,'GB00B29KF658',17,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'HIG.L',26.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(151,0,'2011-12-01 15:28:41',NULL,13,'Homebuy Group plc','HBG LN',6,NULL,'975703','B02JJN0',0.601000,1.000000,NULL,NULL,0.010000,'GB00B02JJN05',10,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'HBGa.L',207.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(152,0,'2011-12-01 15:28:41',NULL,13,'Huveaux PLC Ordinary','HVX LN',6,NULL,'3112957','3112957',0.873000,NULL,NULL,NULL,0.010000,'GB0031129579',17,NULL,NULL,1,NULL,0.750000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,11.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(153,0,'2011-12-01 15:28:41',NULL,13,'IMAGE SCAN HOLDINGS PLC Ordinary','IGE LN',6,NULL,'GB0031410581','3141058',0.495000,NULL,NULL,NULL,0.010000,'GB0031410581',25,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,4.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(154,0,'2011-12-01 15:28:41',NULL,13,'I-Mate plc Ordinary','IMTE LN',6,NULL,'GB00B0J0C046','B0J0C04',1.000000,NULL,NULL,NULL,0.010000,'GB00B0J0C046',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'IMTE.L',231.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(155,0,'2011-12-01 15:28:41',NULL,13,'Imperial Energy','IEC LN',6,NULL,'B00HD78','B00HD78',1.006000,1.000000,NULL,NULL,0.010000,'GB00B00HD783',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'IEC.L',1015.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(156,0,'2011-12-01 15:28:41',NULL,13,'Imprint PLC Ordinary','IMP LN',6,NULL,'3041705','3041705',0.227000,0.000000,NULL,NULL,0.010000,'GB0030417058',11,NULL,NULL,1,NULL,1.500000,'0000-00-00','0000-00-00',NULL,0.000000,0.000000,NULL,113.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(157,0,'2011-12-01 15:28:41',NULL,13,'Inter-alliance Group Ordinary','IAL LN',6,NULL,'IAL LN','283113',0.744000,NULL,NULL,NULL,0.010000,'GB0002831138',17,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'IAL.L',48.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(158,0,'2011-12-01 15:28:41',NULL,13,'IQE Plc (Settlement: 5.11.03) Ordinary','IQE LN',6,NULL,'GB0009619924','961992',1.039000,NULL,NULL,NULL,0.010000,'GB0009619924',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'IQE.L',9.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(159,0,'2011-12-01 15:28:41',NULL,13,'ITV PLC Ordinary','ITV LN',6,NULL,'GB0033986497','3398649',1.047000,NULL,NULL,NULL,0.010000,'GB0033986497',9,NULL,NULL,17,NULL,0.675000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'ITV.L',39.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(160,0,'2011-12-01 15:28:41',NULL,13,'Kidde plc Ordinary','KID LN',6,NULL,'GB0000154020','15402',0.838000,NULL,NULL,NULL,0.010000,'GB0000154020',11,NULL,NULL,17,NULL,2.000000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'KID.L',103.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(161,0,'2011-12-01 15:28:41',NULL,13,'Kingfisher Plc-n/p Ordinary','KGFN LN',6,NULL,'KGFN LN','3179491',1.000000,NULL,NULL,NULL,0.010000,'GB0031794919',10,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,36.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(162,0,'2011-12-01 15:28:41',NULL,13,'Lambert Howarth Grou Ordinary','LMBT LN',6,NULL,'LMBT LN','501796',0.332000,NULL,NULL,NULL,0.010000,'GB0005017966',10,NULL,NULL,17,NULL,3.500000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'LMBT.L',190.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(163,0,'2011-12-01 15:28:41',NULL,13,'Lasmo Plc Ordinary','LSMR LN',6,NULL,'LSMR LN','531696',0.601000,NULL,NULL,NULL,0.010000,'GB0005316962',14,NULL,NULL,17,NULL,2.500000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'LSMR.L',175.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(164,0,'2011-12-01 15:28:41',NULL,13,'Lastminute.com Plc Ordinary','LMC LN',6,NULL,'LMC LN','158307',0.836000,NULL,NULL,NULL,0.010000,'GB0001583078',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'LMC.L',113.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(165,0,'2011-12-01 15:28:41',NULL,13,'Leni Gas and Oil Plc EQUITY ORDINARY ORDINARY 0.0','lgo ln',6,NULL,'88790119039','B1TWX93',0.395000,1.000000,NULL,NULL,0.010000,'GB00B1TWX932',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,4.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(166,0,'2011-12-01 15:28:41',NULL,13,'London Asia Capital Plc Ordinary','LDC LN',6,NULL,'GB0008251513','825151',0.843000,NULL,NULL,NULL,0.010000,'GB0008251513',17,NULL,NULL,1,NULL,NULL,NULL,NULL,'8576564',0.000000,NULL,'LDC.L',24.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(167,1,'2011-12-01 15:28:41',NULL,13,'Lonmin Plc Ordinary','LMI LN',6,NULL,'LMI LN','3119248',1.319000,NULL,NULL,NULL,0.010000,'GB0031192486',6,NULL,NULL,17,NULL,0.590000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'LMI.L',1681.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(168,0,'2011-12-01 15:28:41',NULL,13,'Maelor Plc Ordinary','MLR LN',6,NULL,'MLR LN','186148',0.823000,NULL,NULL,NULL,0.010000,'GB0001861482',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MLR.L',29.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(169,0,'2011-12-01 15:28:41',NULL,13,'MAMA GROUP PLC Ordinary','MAMA LN',6,NULL,'GB0031342743','3134274',1.292000,NULL,NULL,NULL,0.010000,'GB0031342743',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,3.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(170,0,'2011-12-01 15:28:41',NULL,13,'MARCH NETWORKS CORP NPV Ordinary','MNW LN',6,NULL,'CA5662191017','B07RZW0',1.000000,NULL,NULL,NULL,0.010000,'CA5662191017',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MNW.L',1662.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(171,0,'2011-12-01 15:28:41',NULL,13,'Max Petrolem Plc','MXP LN',6,NULL,'B0H1P66','B0H1P66',1.062000,1.000000,NULL,NULL,0.010000,'GB00B0H1P667',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MXP.L',51.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(172,0,'2011-12-01 15:28:41',NULL,13,'Medicsight Plc','MDST LN',6,NULL,'B1YD4B0','B1YD4B0',1.000000,1.000000,NULL,NULL,0.010000,'GB00B1YD4B09',41,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MDST.L',45.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(173,0,'2011-12-01 15:28:41',NULL,13,'Medisys Plc Ordinary','MDY LN',6,NULL,'MDY LN','97615',1.498000,NULL,NULL,NULL,0.010000,'GB0000976158',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MDY.L',4.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(174,0,'2011-12-01 15:28:41',NULL,13,'Merrill Lynch New En Ordinary','MNE LN',6,NULL,'MNE LN','973793',1.000000,NULL,NULL,NULL,0.010000,'GB0009737932',17,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MNE.L',44.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(175,0,'2011-12-01 15:28:41',NULL,13,'MICROEMISSIVE DISPLAYS GROUP Ordinary','MED LN',6,NULL,'GB00B0346S80','B0346S8',0.555000,NULL,NULL,NULL,0.010000,'GB00B0346S80',25,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'MCRM.L',1.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(176,0,'2011-12-01 15:28:41',NULL,13,'MINSTER PHARMACEUTICALS PLC Ordinary','MPM LN',6,NULL,'GB0007383234','738323',0.048000,NULL,NULL,NULL,0.010000,'GB0007383234',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,1.550000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(177,0,'2011-12-01 15:28:41',NULL,13,'N Brown Group Plc Ordinary','BWNG LN',6,NULL,'GB0001472975','147297',0.612000,NULL,NULL,NULL,0.010000,'GB0001472975',10,NULL,NULL,17,NULL,1.820000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'BWNG.L',200.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(178,0,'2011-12-01 15:28:41',NULL,13,'Namakwa Diamonds Ltd','NAD LN',6,NULL,'992432','B29QKK2',1.000000,1.000000,NULL,NULL,0.010000,'BMG638411113',6,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'NAD.L',137.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(179,0,'2011-12-01 15:28:41',NULL,13,'Natl Grid Group SHARE','NGG LN',6,NULL,'SH918',NULL,1.000000,NULL,NULL,NULL,0.010000,'GB0031223877',1,NULL,NULL,1,NULL,15.613000,NULL,NULL,NULL,0.000000,NULL,NULL,1.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(180,0,'2011-12-01 15:28:41',NULL,13,'Nautilus Minerals Inc GBP LINE','NUS LN',6,NULL,'990548','B1Q34J6',1.000000,1.000000,NULL,NULL,0.010000,'CA6390971043',6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'NUSM.L',192.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(181,0,'2011-12-01 15:28:41',NULL,13,'New Media Spark Plc','NMS LN',6,NULL,'975818','855028',0.652000,1.000000,NULL,NULL,0.010000,'GB0008550286',9,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'NMS.L',12.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(182,0,'2011-12-01 15:28:41',NULL,13,'Newport Networks Group Plc Ordinary','NNG LN',6,NULL,'GB00B00ST620','B00ST62',0.388000,NULL,NULL,NULL,0.010000,'GB00B00ST620',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'NNG.L',0.040000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(183,0,'2011-12-01 15:28:41',NULL,13,'Nighthawk Energy Plc','HAWK LN',6,NULL,'990778',NULL,1.000000,1.000000,NULL,NULL,0.010000,'GB00B156TD53',1,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'NGTE.L',42.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(184,0,'2011-12-01 15:28:41',NULL,13,'NORWOOD IMMUNOLOGY LTD Ordinary','NIM LN',6,NULL,'AU000A0CANX1','B00SHJ1',0.439000,NULL,NULL,NULL,0.010000,'AU000A0CANX1',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,17.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(185,0,'2011-12-01 15:28:41',NULL,13,'Ocean Resources Capital DELISTED Ordinary','OCE LN',6,NULL,'OCE LN','3359549',0.449000,NULL,NULL,NULL,0.010000,'GB0033595496',17,NULL,NULL,17,NULL,NULL,NULL,NULL,'7801188',0.000000,NULL,'OCE.L',14.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(186,0,'2011-12-01 15:28:41',NULL,13,'Oilexco Incorp UK aim only 02/06/05','OILA LN',6,NULL,'976040','B064H59',1.000000,1.000000,NULL,NULL,0.010000,'CA6779092023',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,125.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(187,0,'2011-12-01 15:28:41',NULL,13,'Old Mutual Plc Ordinary','OML LN',6,NULL,'OML LN','738992',1.441000,NULL,NULL,NULL,0.010000,'GB0007389926',17,NULL,NULL,17,NULL,2.300000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'OML.L',116.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(188,0,'2011-12-01 15:28:41',NULL,13,'Osmetech Plc Ordinary','OMH LN',6,NULL,'OMH LN','51213',1.852000,NULL,NULL,NULL,0.010000,'GB0000512136',25,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'OMH.L',2.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(189,0,'2011-12-01 15:28:41',NULL,13,'Oxford Biomedica Plc Ordinary','OXB LN',6,NULL,'OXB LN','664815',0.726000,NULL,NULL,NULL,0.010000,'GB0006648157',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,29.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(190,0,'2011-12-01 15:28:41',NULL,13,'Palladex UK','PLX LN',6,NULL,'965302','3382620',0.099000,1.000000,NULL,NULL,0.010000,'GB0033826206',6,NULL,NULL,17,NULL,NULL,NULL,NULL,'8983484',0.000000,NULL,'PLX.L',0.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(191,0,'2011-12-01 15:28:41',NULL,13,'PARKDEAN HOLIDAYS PLC Ordinary','PDH LN',6,NULL,'3153075','3153075',0.425000,NULL,NULL,NULL,0.010000,'GB0031530750',10,NULL,NULL,17,NULL,3.700000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,270.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(192,0,'2011-12-01 15:28:41',NULL,13,'Patientline Plc Ordinary','PTL LN',6,NULL,'PTL LN','3022108',1.000000,NULL,NULL,NULL,0.010000,'GB0030221088',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PTL.L',117.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(193,0,'2011-12-01 15:28:41',NULL,13,'Petroceltic International Plc (settling 2nd May)','PCI LN',6,NULL,'978628',NULL,1.058000,1.000000,NULL,NULL,0.010000,'IE0003186172',6,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PCI.L',17.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(194,0,'2011-12-01 15:28:41',NULL,13,'Petroworld Corp','PWC LN',6,NULL,'B05NF1','B05NF1',1.000000,1.000000,NULL,NULL,0.010000,'KYG704101081',17,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PWC.l',31.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(195,0,'2011-12-01 15:28:41',NULL,13,'Phs Group Plc Ordinary','PHY LN',6,NULL,'PHY LN','3056497',1.000000,NULL,NULL,NULL,0.010000,'GB0030564974',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PHY.L',90.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(196,0,'2011-12-01 15:28:41',NULL,13,'PHYNOVA GROUP PLC Ordinary','PYN LN',6,NULL,'989952','B0YBCM4',1.000000,NULL,NULL,NULL,0.010000,'GB00B0YBCM49',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,90.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(197,0,'2011-12-01 15:28:41',NULL,13,'Plant Impact Plc Pending Sett Pending','PIM LN',6,NULL,'B1F4K36','B1F4K36',1.000000,1.000000,NULL,NULL,0.010000,'GB00B1F4K366',6,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PIM.L',51.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(198,0,'2011-12-01 15:28:41',NULL,13,'Powderject Pharmaceu Ordinary','PJP LN',6,NULL,'PJP LN','41838',0.728000,NULL,NULL,NULL,0.010000,'GB0000418383',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PJP.L',421.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(199,0,'2011-12-01 15:28:41',NULL,13,'Ppl Therapeutics Rights Ordinary','PTHN LN',6,NULL,'PTHN LN','3089170',1.000000,NULL,NULL,NULL,0.010000,'GB0030891708',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,0.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(200,0,'2011-12-01 15:28:41',NULL,13,'PREMIER FOODS PLC Ordinary','PFD LN',6,NULL,'PFD LN','B01QLV4',0.740000,NULL,NULL,NULL,0.010000,'GB00B01QLV45',11,NULL,NULL,17,NULL,2.200000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'PFD.L',123.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(201,0,'2011-12-01 15:28:41',NULL,13,'Pri Group Plc Ordinary','PRI LN',6,NULL,'PRI LN','3171163',1.000000,NULL,NULL,NULL,0.010000,'GB0031711632',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PRI.L',109.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(202,0,'2011-12-01 15:28:41',NULL,13,'Public Recruitment Group Plc','PUG LN',6,NULL,'GB00B00LM737','B00LM73',0.125000,NULL,NULL,NULL,0.010000,'GB00B00LM737',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'PUG.L',38.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(203,0,'2011-12-01 15:28:41',NULL,13,'Qinetiq Plc Ordinary','QQ/ LN',6,NULL,'978381','B0WMWD0',1.000000,NULL,NULL,NULL,0.010000,'GB00B0WMWD03',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'QQ.L',194.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(204,0,'2011-12-01 15:28:41',NULL,13,'Rambler plc','RMM LN',6,NULL,'976230','B06Y3FI',1.000000,1.000000,NULL,NULL,0.010000,'GB00B06Y3F14',6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'RMM.L',26.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(205,0,'2011-12-01 15:28:41',NULL,13,'Ramco Energy Plc Ordinary','ROS LN',6,NULL,'GB0007219479','721947',1.339000,NULL,NULL,NULL,0.010000,'GB0007219479',14,NULL,NULL,17,NULL,NULL,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'ROS.L',25.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(206,0,'2011-12-01 15:28:41',NULL,13,'Renesola Ltd','SOLA LN',6,NULL,'979160','B14W9G7',1.000000,1.000000,NULL,NULL,0.010000,'VGG7500C1068',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SOLA.L',261.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(207,0,'2011-12-01 15:28:41',NULL,13,'RESTAURANT GROUP PLC Ordinary','RTN LN',6,NULL,'GB00B0YG1K06','B0YG1K0',0.697000,NULL,NULL,NULL,0.010000,'GB00B0YG1K06',10,NULL,NULL,1,NULL,6.300000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,133.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(208,0,'2011-12-01 15:28:41',NULL,13,'Scottish & Newcastle Ordinary','SCTN LN',6,NULL,'SCTN LN','783969',0.642000,NULL,NULL,NULL,0.010000,'GB0007839698',11,NULL,NULL,17,NULL,7.400000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'SCTN.L',784.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(209,0,'2011-12-01 15:28:41',NULL,13,'Securicor Plc Ordinary','SCR LN',6,NULL,'SCR LN','849902',1.039000,NULL,NULL,NULL,0.010000,NULL,1,NULL,NULL,1,NULL,1.000000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'SOCR.L',135.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(210,0,'2011-12-01 15:28:41',NULL,13,'Shell Transprt&tradn Ordinary','SHEL LN',6,NULL,'SHEL LN','803414',1.061000,NULL,NULL,NULL,0.010000,'GB0008034141',14,NULL,NULL,1,NULL,4.550000,'0000-00-00','0000-00-00','822703104',0.000000,NULL,'SHEL.L',528.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(211,0,'2011-12-01 15:28:41',NULL,13,'Skyepharma Plc Ordinary','SKP LN',6,NULL,'SKP LN','812357',0.701000,NULL,NULL,NULL,0.010000,'GB0008123571',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SKP.L',45.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(212,0,'2011-12-01 15:28:41',NULL,13,'Solomon Gold Plc','SOLG LN',6,NULL,'B0WD0R3','B0WD0R3',0.918000,1.000000,NULL,NULL,0.010000,'GB00B0WD0R35',6,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SOLG.L',2.375000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(213,0,'2011-12-01 15:28:41',NULL,13,'Sports & Leisure Gro Ordinary','SOP LN',6,NULL,'ONS LN','601641',0.860000,NULL,NULL,NULL,0.010000,'GB0006016413',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SOP.L',1.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(214,0,'2011-12-01 15:28:41',NULL,13,'SPORTS DIRECT INTERNATIONAL Ordinary','SPD LN',6,NULL,'GB00B1QH8P22','B1QH8P2',1.000000,NULL,NULL,NULL,0.010000,'GB00B1QH8P22',10,NULL,NULL,1,NULL,2.440000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,80.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(215,0,'2011-12-01 15:28:41',NULL,13,'St James Energy PLC','SJA LN',6,NULL,'B0R7F19','B0R7F19',1.000000,1.000000,NULL,NULL,0.010000,'GB00B0R7F192',17,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SJA.L',1.450000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(216,0,'2011-12-01 15:28:41',NULL,13,'STANDARD LIFE PLC Ordinary','SL/ LN',6,NULL,'992030',NULL,1.000000,NULL,NULL,NULL,0.010000,'GB00B16KPT44',17,NULL,NULL,1,NULL,3.800000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,198.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(217,1,'2011-12-01 15:28:41',NULL,13,'Sterling Energy Plc','SEY LN',6,NULL,'977988','529992',1.270000,1.000000,NULL,NULL,0.010000,'GB0005299929',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SEY.L',11.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(218,0,'2011-12-01 15:28:41',NULL,13,'Superscape Plc Ordinary','sps ln',6,NULL,NULL,'863612',0.608000,0.000000,NULL,NULL,0.010000,'GB0008636127',41,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'SPS.L',9.900000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(219,0,'2011-12-01 15:28:41',NULL,13,'SURFCONTROL PLC Ordinary','SRF LN',6,NULL,'990338','290179',0.658000,NULL,NULL,NULL,0.010000,'GB0002901790',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SRF.L',699.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(220,0,'2011-12-01 15:28:41',NULL,13,'SURGICAL INNOVATIONS GROUP Ordinary','SUN LN',6,NULL,'991100','401670',-0.072000,NULL,NULL,NULL,0.010000,'GB0004016704',11,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SUNU.L',2.875000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(221,0,'2011-12-01 15:28:41',NULL,13,'Telewest Communicati Ordinary','TWT LN',6,NULL,'TWT LN','654452',2.309000,NULL,NULL,NULL,0.010000,'GB0006544521',9,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'TWT.L',64.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(222,0,'2011-12-01 15:28:41',NULL,13,'Tibbet & Britten Ordinary','TBG LN',6,NULL,'TBG LN','891107',0.836000,NULL,NULL,NULL,0.010000,'GB0008911074',25,NULL,NULL,17,NULL,7.600000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'TBG.L',632.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(223,0,'2011-12-01 15:28:41',NULL,13,'Transense Technologi Ordinary','TRT LN',6,NULL,'TRT LN','936019',1.065000,NULL,NULL,NULL,0.010000,'GB0009360198',25,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'TRT.L',66.250000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(224,0,'2011-12-01 15:28:41',NULL,13,'TTP Communications P Ordinary','TTC LN',6,NULL,'TTC LN','967008',0.260000,NULL,NULL,NULL,0.010000,'GB0009670083',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'TTC.L',45.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(225,0,'2011-12-01 15:28:41',NULL,13,'Ukbetting Plc Ordinary','UKB LN',6,NULL,'UKB LN','3071661',0.470000,NULL,NULL,NULL,0.010000,'GB0030716616',10,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'UKB.L',62.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(226,0,'2011-12-01 15:28:41',NULL,13,'United Utilities Plc-A Ordinary','UU/A LN',6,NULL,'20979','3338849',1.000000,NULL,NULL,NULL,0.010000,'GB0033388496',44,NULL,NULL,17,NULL,30.629999,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'Uua.L',368.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(227,0,'2011-12-01 15:28:41',NULL,13,'VIRIDIAN GROUP PLC Ordinary','VRD LN',6,NULL,'GB00B09XD336',NULL,0.798000,NULL,NULL,NULL,0.010000,'GB00B09XD336',44,NULL,NULL,17,NULL,11.000000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,NULL,1325.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(228,0,'2011-12-01 15:28:41',NULL,13,'Visual Defence Ordinary','VDI LN',6,NULL,'CA92842R1091','B06ZNW1',1.000000,NULL,NULL,NULL,0.010000,'CA92842R1091',41,NULL,NULL,17,NULL,NULL,NULL,NULL,'92842R109',0.000000,NULL,'VDI.L',33.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(229,0,'2011-12-01 15:28:41',NULL,13,'Western Canadian Coal Aim Only 01/02/05','WTN LN',6,NULL,'975752',NULL,1.000000,1.000000,NULL,NULL,0.010000,'CA9578601093',14,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,162.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(230,0,'2011-12-01 15:28:41',NULL,13,'WH SMITH PLC Ordinary','SMWH LN',6,NULL,'GB00B17WCM17','B17WCM1',1.000000,NULL,NULL,NULL,0.010000,'GB00B17WCM17',10,NULL,NULL,17,NULL,8.100000,'0000-00-00','0000-00-00',NULL,0.000000,NULL,'SMWH.L',373.750000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(231,0,'2011-12-01 15:28:41',NULL,13,'Wiggins Group Plc (Late Settlement 9/1/04)','WGG LN',6,NULL,'965239',NULL,1.000000,1.000000,NULL,NULL,0.010000,'GB0009652396',17,NULL,NULL,1,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'WGG.L',4.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(232,1,'2011-12-01 15:28:41',NULL,13,'Yeoman Group Plc Ordinary','YGP LN',6,NULL,'YGP LN','989217',1.078000,NULL,NULL,NULL,0.010000,'GB0009892174',41,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'YGP.L',37.500000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(233,0,'2011-12-01 15:28:41',NULL,13,'Nelson Resources Limited 22/11/04 to LSE trade','NLGA LN',9,NULL,'975662',NULL,1.000000,1.000000,NULL,NULL,0.010000,'BMG641801052',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,NULL,107.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(234,0,'2011-12-01 15:28:41',NULL,13,'Solana Resources GBP Ordinary','SORL LN',9,NULL,'CA00739E1079','B049LW1',1.000000,NULL,NULL,NULL,0.010000,'CA8341281001',14,NULL,NULL,17,NULL,NULL,NULL,NULL,NULL,0.000000,NULL,'SORLq.L',120.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(235,0,'2011-12-01 15:28:41',NULL,13,'Vodafone Group Plc','VOD LN',6,NULL,'1','B16GWD5',1.000000,0.500000,NULL,NULL,0.010000,'GB00B16GWD56',1,NULL,NULL,18,NULL,0.000000,NULL,NULL,NULL,1.000000,1.000000,'VOD.L',0.000000,NULL,9,NULL,'BBG Web',53000000000,NULL,NULL,0),(236,0,'2011-12-01 15:28:41',NULL,13,'Amlin Plc','AML LN',6,NULL,NULL,'B2988H1',1.000000,0.000000,NULL,NULL,0.010000,'GB00B2988H17',26,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'AML.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(237,0,'2011-12-01 15:28:41',NULL,13,'Big Yellow Group Plc','BYG LN',6,NULL,NULL,'286941',1.000000,0.000000,NULL,NULL,0.010000,'GB0002869419',37,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'BYG.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(238,0,'2011-12-01 15:28:41',NULL,13,'Burberry Group Plc','BRBY LN',6,NULL,NULL,'3174300',0.000000,0.000000,NULL,NULL,0.010000,'GB0031743007',34,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'BRBY.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(239,0,'2011-12-01 15:28:41',NULL,13,'Dominos Pizza UK & Irl Plc','DOM LN',6,NULL,NULL,'B1S49Q9',1.000000,0.000000,NULL,NULL,0.010000,'GB00B1S49Q91',43,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'DOM.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(240,0,'2011-12-01 15:28:41',NULL,13,'Easyjet Plc','EZJ LN',6,NULL,NULL,'164199',0.000000,0.000000,NULL,NULL,0.010000,'GB0001641991',43,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'EZJ.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(241,0,'2011-12-01 15:28:41',NULL,13,'Hmv Group Plc','HMV LN',6,NULL,NULL,'3157572',1.000000,0.000000,NULL,NULL,0.010000,'GB0031575722',23,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'HMV.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(242,0,'2011-12-01 15:28:41',NULL,13,'ITV Plc','ITV LN',6,NULL,NULL,'3398649',1.000000,0.000000,NULL,NULL,0.010000,'GB0033986497',30,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'ITV.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(243,0,'2011-12-01 15:28:41',NULL,13,'Ladbrokes Plc','LAD LN',6,NULL,NULL,'B0ZSH63',1.000000,0.000000,NULL,NULL,0.010000,'GB00B0ZSH635',43,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'LAD.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(244,0,'2011-12-01 15:28:41',NULL,13,'Moneysupermarket.com Group Plc','MONY LN',6,NULL,NULL,'B1ZBKY8',1.000000,0.000000,NULL,NULL,0.010000,'GB00B1ZBKY84',30,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'MONY.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(245,0,'2011-12-01 15:28:41',NULL,13,'Rabdom','random2 ln',19,NULL,'a','a',0.000000,0.000000,NULL,NULL,0.010000,'a',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'a',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(246,0,'2011-12-01 15:28:41',NULL,13,'Baltic Oil Terminals','btc ln',1,NULL,'BTC LN','B12V308',0.000000,0.000000,NULL,NULL,0.010000,'GB00B12V3082',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'BTC.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(247,0,'2011-12-01 15:28:41',NULL,13,'Yell Group Plc','YELL LN',6,NULL,NULL,'3171806',1.000000,0.000000,NULL,NULL,0.000000,'GB0031718066',30,NULL,NULL,17,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'YELL.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(248,0,'2011-12-01 15:28:41',NULL,13,'Antrim Energy','AEY LN',6,NULL,NULL,'3339381',0.000000,0.000000,NULL,NULL,0.010000,'CA0372431027',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'AEY.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(249,0,'2011-12-01 15:28:41',NULL,13,'BAE Systems','BA/ LN',6,NULL,NULL,'263494',0.000000,0.000000,NULL,NULL,0.010000,'GB0002634946',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'BA.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(250,0,'2011-12-01 15:28:41',NULL,13,'Example LN','example ln',1,NULL,NULL,NULL,1.000000,0.500000,NULL,NULL,0.010000,'XS1234',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(251,1,'2011-12-01 15:28:41',NULL,13,'British Land','BLND LN',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,'GB0001367019',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'BLND.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(252,0,'2011-12-01 15:28:41',NULL,13,'Catlin Group','CGL LN',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,'BMG196F11004',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(253,0,'2011-12-01 15:28:41',NULL,13,'Cable & Wireless','CW/ LN',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,'GB0001625572',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(254,0,'2011-12-01 15:28:41',NULL,13,'GlaxoSmithKline','GSK LN',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,'GB0009252882',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(255,0,'2011-12-01 15:28:41',NULL,13,'Severn Trent','svt ln',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,'GB00B1FH8J72',1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(256,0,'2011-12-01 15:28:41',NULL,13,'Icap Plc','IAP LN',6,NULL,NULL,'3387216',0.000000,0.000000,NULL,NULL,0.010000,'GB0033872168',18,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'IAP.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(257,0,'2011-12-01 15:28:41',NULL,13,'Greggs Plc','GRG LN',6,NULL,NULL,'B63QSB3',0.000000,0.000000,NULL,NULL,0.010000,'GB00B63QSB39',20,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'GRG.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(258,0,'2011-12-01 15:28:41',NULL,13,'Mothercare Plc','MTC LN',6,NULL,NULL,'906744',0.000000,0.000000,NULL,NULL,0.010000,'GB0009067447',1,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'MTC.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(259,0,'2011-12-01 15:28:41',NULL,13,'Wetherspoon (J.D.) Plc','JDW LN',6,NULL,NULL,'163895',0.000000,0.000000,NULL,NULL,0.010000,'GB0001638955',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'JDW.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(260,0,'2011-12-01 15:28:41',NULL,13,'Vedanta Resources Plc','ved ln',6,NULL,NULL,'3327706',0.000000,0.000000,NULL,NULL,0.010000,'GB0033277061',31,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'VED.L',2720.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(261,0,'2011-12-01 15:28:41',NULL,13,'Kazakhmys Plc','KAZ LN',6,NULL,NULL,'B0HZPV38',0.000000,0.000000,NULL,NULL,0.010000,'GB00B0HZPV38',31,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'KAZ.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(262,0,'2011-12-01 15:28:41',NULL,13,'Hiscox','HSX LN',6,NULL,NULL,'B1G4YS8',0.000000,0.000000,NULL,NULL,0.010000,'BMG4593F1041',26,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'HSX.L',323.800000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(263,0,'2011-12-01 15:28:41',NULL,13,'Mitchells & Butlers Plc','MAB LN',6,NULL,NULL,'B1FP6H5',0.000000,0.000000,NULL,NULL,0.010000,'GB00B1FP6H53',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'MAB.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(264,0,'2011-12-01 15:28:41',NULL,13,'Sainsbury (J) Plc','SBRY LN',6,NULL,NULL,'B019KW7',0.000000,0.000000,NULL,NULL,0.010000,'GB00B019KW72',20,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'SBRY.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(265,0,'2011-12-01 15:28:41',NULL,13,'Paddy Power Plc','PAP LN',13,NULL,NULL,'258810',0.000000,0.000000,NULL,NULL,1.000000,'IE0002588105',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'PAP.L',0.000000,NULL,8,NULL,'BBG Web',0,NULL,NULL,0),(266,0,'2011-12-01 15:28:41',NULL,13,'Smith & Newphew Plc','SN/ LN',6,NULL,NULL,'922320',0.000000,0.000000,NULL,NULL,0.010000,'GB0009223206',24,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'SN.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(267,1,'2011-12-01 15:28:41',NULL,13,'GB Group Plc','GBG LN',6,NULL,NULL,'687061',0.000000,0.000000,NULL,NULL,0.010000,'GB0006870611',1,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'GBG.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(268,0,'2011-12-01 15:28:41',NULL,13,'Centrica Plc','CNA LN',6,NULL,NULL,'B033F22',0.000000,0.000000,NULL,NULL,0.010000,'GB00B033F229',22,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'CNA.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(269,0,'2011-12-01 15:28:41',NULL,13,'Xstrata Plc','XTA LN',6,NULL,NULL,'3141100',0.000000,0.000000,NULL,NULL,0.010000,'GB0031411001',31,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'XTA.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(270,0,'2011-12-01 15:28:41',NULL,13,'Compass Group Plc','CPG LN',6,NULL,NULL,'533153',0.000000,0.000000,NULL,NULL,0.010000,'GB0005331532',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'CPG.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(271,0,'2011-12-01 15:28:41',NULL,13,'Rightmove Plc','RMV LN',6,NULL,NULL,'B2987V8',0.000000,0.000000,NULL,NULL,0.010000,'GB00B2987V85',30,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'RMV.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(272,0,'2011-12-01 15:28:41',NULL,13,'Climate Exchange Plc','CLE LN',6,NULL,NULL,'3355116',0.000000,0.000000,NULL,NULL,0.010000,'GB0033551168',18,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'CLE.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(273,0,'2011-12-01 15:28:41',NULL,13,'PartyGaming Plc','PRTY LN',6,NULL,NULL,'B0B3SV4',0.000000,0.000000,NULL,NULL,0.010000,'GI000A0MV757',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'PRTY.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(274,0,'2011-12-01 15:28:41',NULL,13,'Carphone Warehouse Group Plc','CPW LN',6,NULL,NULL,'878702',0.000000,0.000000,NULL,NULL,0.010000,'GB0008787029',42,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'CPW.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(275,0,'2011-12-01 15:28:41',NULL,13,'HSBC Holdings Plc','HSBA LN',6,NULL,'537','540528',0.000000,0.000000,NULL,NULL,0.010000,'GB0005405286',17,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'HSBA.L',0.000000,NULL,9,NULL,'BBG Web',0,NULL,NULL,0),(276,0,'2011-12-01 15:28:41',NULL,13,'Falkland Oil & Gas Ltd','FOGL LN',6,NULL,NULL,'B030JM1',0.000000,0.000000,NULL,NULL,0.010000,'FK00B030JM18',33,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'FOGL.L',0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(277,0,'2011-12-01 15:28:41',NULL,13,'Goals Soccer Centres Plc','GOAL LN',6,NULL,NULL,'B0486M3',0.000000,0.000000,NULL,NULL,0.010000,'GB00B0486M37',43,NULL,NULL,16,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,'GOAL.L',0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(278,0,'2011-12-01 15:28:41',NULL,13,'Marks & Spencer Group Plc','MKS LN',6,NULL,NULL,'3127489',0.000000,0.000000,NULL,NULL,0.010000,'GB0031274896',38,NULL,NULL,15,NULL,6.111111,NULL,'0000-00-00',NULL,0.000000,0.000000,'MKS.L',0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(279,0,'2011-12-01 15:28:41',NULL,13,'AstraZeneca','AZN LN',6,NULL,NULL,'989529',0.000000,0.000000,NULL,NULL,0.010000,'GB0009895292',35,NULL,NULL,15,NULL,1.900000,NULL,'0000-00-00',NULL,0.000000,0.000000,'AZN.L',0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(280,0,'2011-12-01 15:28:41',NULL,13,'European Goldfields Ltd','EGU LN',6,NULL,NULL,'B00GQ87',0.000000,0.000000,NULL,NULL,0.010000,'CA2987741006',31,NULL,NULL,15,NULL,0.000000,NULL,NULL,'298774100',0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(281,1,'2011-12-01 15:28:41',NULL,13,'Barclays Plc','BARC LN',6,NULL,NULL,'3134865',0.000000,0.000000,NULL,NULL,0.010000,'GB0031348658',5,NULL,NULL,15,NULL,1.666667,NULL,'0000-00-00',NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(282,0,'2011-12-01 15:28:41',NULL,13,'Pearson Plc','PSON LN',6,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,0.010000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(283,0,'2011-12-01 15:28:41',NULL,13,'Playtech Ltd','PTEC LN',6,NULL,NULL,'B0ZC743',0.000000,0.000000,NULL,NULL,0.010000,'VGG7131X1078',39,NULL,NULL,15,NULL,0.089000,NULL,'0000-00-00',NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,0,NULL,NULL,0),(284,0,'2011-12-01 15:28:41',NULL,13,'Sportingbet Plc','SBT LN',6,NULL,NULL,'951625',0.000000,0.000000,NULL,NULL,0.010000,'GB0009516252',16,NULL,NULL,15,NULL,1.111111,NULL,'0000-00-00',NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,502018100,NULL,NULL,0),(285,0,'2011-12-01 15:28:41',NULL,13,'Anglo American Plc','AAL LN',6,NULL,NULL,'B1XZS82',0.000000,0.000000,NULL,NULL,0.010000,'GB00B1XZS820',31,NULL,NULL,15,NULL,0.000000,NULL,'0000-00-00',NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,1316495000,NULL,NULL,0),(286,0,'2011-12-01 15:28:41',NULL,13,'TESTING LN','TEST LN',1,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,1,NULL,NULL,0,NULL,NULL,0),(287,0,'2011-12-01 15:28:41',NULL,13,'TESTING SECURITY','TEST LN',1,NULL,NULL,NULL,0.000000,0.000000,NULL,NULL,1.000000,NULL,1,NULL,NULL,1,NULL,0.000000,NULL,NULL,NULL,0.000000,0.000000,NULL,0.000000,NULL,1,NULL,NULL,0,NULL,NULL,0),(288,1,'2011-12-01 15:28:41',NULL,13,'Next Plc','NXT LN',6,NULL,NULL,'3208986',0.000000,0.000000,NULL,NULL,0.010000,'GB0032089863',38,NULL,NULL,15,NULL,21.111110,NULL,'0000-00-00',NULL,0.000000,0.000000,'NXT.L',0.000000,NULL,9,NULL,NULL,188048600,NULL,NULL,0),(289,0,'2011-12-01 15:28:41',NULL,13,'Rolls Royce Group Plc','RR/ LN',6,NULL,NULL,'3283648',0.000000,0.000000,NULL,NULL,0.010000,'GB0032836487',2,NULL,NULL,15,NULL,9.000000,NULL,'0000-00-00',NULL,0.000000,0.000000,'RR.L',0.000000,NULL,9,NULL,NULL,1854119000,NULL,NULL,0),(290,0,'2011-12-01 15:28:41',NULL,13,'Thomas Cook Group Plc','TCG LN',6,NULL,NULL,'B1VYCH8',0.000000,0.000000,NULL,NULL,0.010000,'GB00B1VYCH82',29,NULL,NULL,15,NULL,7.777778,NULL,'0000-00-00',NULL,0.000000,0.000000,'TCG.L',0.000000,NULL,9,NULL,NULL,858292900,NULL,NULL,0),(291,0,'2011-12-01 15:28:41',NULL,13,'International Power Plc','IPR LN',6,NULL,NULL,'632016',0.000000,0.000000,NULL,NULL,0.010000,'GB0006320161',13,NULL,NULL,15,NULL,9.200000,NULL,'0000-00-00',NULL,0.000000,0.000000,NULL,0.000000,NULL,9,NULL,NULL,1522496000,NULL,NULL,0),(292,1,'2011-12-15 11:57:28',NULL,13,'Man Group Plc','EMG LN',19,'','','B28KQ18',NULL,NULL,NULL,NULL,0.010000,'GB00B28KQ186',17,NULL,NULL,16,NULL,NULL,NULL,NULL,'',NULL,NULL,'',130.500000,NULL,9,NULL,'',NULL,NULL,NULL,0),(293,1,'2012-01-17 09:11:37',NULL,13,'London Stock Exchange Group Plc','LSE LN',19,'','','B0SWJX3',NULL,NULL,NULL,NULL,0.010000,'GB00B0SWJX34',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',849.000000,NULL,9,NULL,'',NULL,NULL,NULL,0),(294,1,'2012-02-23 10:46:36',NULL,13,'Ffastfill','FFA LN',19,'',NULL,'',NULL,NULL,NULL,NULL,0.010000,'',33,NULL,NULL,17,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0),(295,1,'2012-05-04 09:52:36',NULL,13,'Eurasian Natural Resources Corp','ENRC LN',1,'',NULL,'B29BCK1',NULL,NULL,NULL,NULL,0.010000,'GB00B29BCK10',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0),(296,1,'2012-05-04 09:54:52',NULL,13,'Royal Bank of Scotland Group Plc','RBS LN',1,'',NULL,'0754783',NULL,NULL,NULL,NULL,0.010000,'GB0007547838',1,NULL,NULL,1,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0),(297,1,'2012-05-22 14:17:57',NULL,13,'Innovation Group Plc','TIG LN',19,NULL,NULL,'687209',NULL,NULL,NULL,NULL,0.010000,'GB0006872096',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(298,1,'2012-05-22 14:17:57',NULL,13,'Amino Technologies Plc','AMO LN',19,NULL,NULL,'B013SN63',NULL,NULL,NULL,NULL,0.010000,'GB00B013SN63',41,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'AMO.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(299,1,'2012-05-22 14:17:57',NULL,13,'Bowleven Plc','BLVN LN',19,NULL,NULL,'B04PYL9',NULL,NULL,NULL,NULL,0.010000,'GB00B04PYL99',33,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'BLVN.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(300,1,'2012-05-22 14:17:57',NULL,13,'Medusa Mining Plc','MML LN',19,NULL,NULL,'B1HL132',NULL,NULL,NULL,NULL,0.010000,'AU000000MML0',31,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'MML.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(301,1,'2012-05-22 14:17:57',NULL,13,'China Gold Mines','CGM LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'GB00B0T4LB03',31,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'CGM.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(302,1,'2012-05-22 14:17:57',NULL,13,'KBC Advanced Technology','KBC LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'KBC.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(303,1,'2012-05-22 14:17:57',NULL,13,'Sagentia Group PLC','SAG LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',41,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(304,1,'2012-05-22 14:17:57',NULL,13,'Telecom Plus','TEP LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',42,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'TEP.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(305,1,'2012-05-22 14:17:57',NULL,13,'Avisen PLC','AVI LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'AVI.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(306,1,'2012-05-22 14:17:57',NULL,13,'IDOX Plc','IDOX LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'IDOX.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(307,1,'2012-05-22 14:17:57',NULL,13,'Vislink','VLK LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',42,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'VLK.L',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(308,1,'2012-05-22 14:17:57',NULL,13,'Gresham Computing','ght ln',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',18,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(309,1,'2012-05-22 14:17:57',NULL,13,'FFastFill Warrants','ffw ln',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',1,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(310,1,'2012-05-22 14:17:57',NULL,13,'Harvard International','HAR LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',24,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(311,1,'2012-05-22 14:17:57',NULL,13,'Cupid plc','cup ln',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',27,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(312,1,'2012-05-22 14:17:57',NULL,13,'DO NOT USE','sam ln',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',1,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(313,1,'2012-05-22 14:17:57',NULL,13,'Ashcourt Rowan','ARP LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',18,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(314,1,'2012-05-22 14:17:57',NULL,13,'Eckoh PLC','ECK LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(315,1,'2012-05-22 14:17:57',NULL,13,'Renovo Group','rnvo ln',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'',35,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(316,1,'2012-05-22 14:17:57',NULL,13,'Parity Group','PTY LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'GB00B1235860',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(317,1,'2012-05-22 14:17:57',NULL,13,'Nasstar plc','nasa ln',19,NULL,NULL,'B0T1S09GB',NULL,NULL,NULL,NULL,0.010000,'GB00B0T1S097',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(318,1,'2012-05-22 14:17:57',NULL,13,'St Ives group','SIV LN',19,'',NULL,'',NULL,NULL,NULL,NULL,0.010000,'',46,NULL,NULL,16,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0),(319,1,'2012-05-22 14:17:57',NULL,13,'SQS Software Systems','SQS LN',19,NULL,NULL,'B0JG1N8',NULL,NULL,NULL,NULL,0.010000,'DE0005493514',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(320,1,'2012-05-22 14:17:57',NULL,13,'Belvoir Lettings Plc','BLV LN',19,NULL,NULL,'B4QY1P5',NULL,NULL,NULL,NULL,0.010000,'GB00B4QY1P51',36,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(321,1,'2012-05-22 14:17:57',NULL,13,'Journey Group plc','jny ln',19,NULL,NULL,'942209',NULL,NULL,NULL,NULL,0.010000,'GB0009422097',8,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(322,1,'2012-05-22 14:17:57',NULL,13,'Pittards','PTD LN',19,NULL,NULL,'690520',NULL,NULL,NULL,NULL,0.010000,'',34,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(323,1,'2012-05-22 14:17:57',NULL,13,'Maintel Holdings Plc','MAI LN',19,NULL,NULL,'',NULL,NULL,NULL,NULL,0.010000,'GB00B046YG73',42,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(324,0,'2012-05-22 14:17:57',NULL,13,'Advanced Medical Solutions','AMS LN',19,NULL,NULL,'453659',NULL,NULL,NULL,NULL,0.010000,'GB0004536594',24,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(325,1,'2012-05-22 14:17:57',NULL,13,'Albemarle & Bond','ABM LN',19,NULL,NULL,'34311',NULL,NULL,NULL,NULL,0.010000,'GB0000343110',18,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(326,1,'2012-05-22 14:17:57',NULL,13,'Alternative Networks','AN. LN',19,NULL,NULL,'B05KXX8',NULL,NULL,NULL,NULL,0.010000,'GB00B05KXX82',42,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(327,1,'2012-05-22 14:17:57',NULL,13,'Augean','AUG LN',19,NULL,NULL,'B02H2F7',NULL,NULL,NULL,NULL,0.010000,'GB00B02H2F76',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(328,1,'2012-05-22 14:17:57',NULL,13,'Begbies Traynor','BEG LN',19,NULL,NULL,'B0305S9',NULL,NULL,NULL,NULL,0.010000,'GB00B0305S97',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(329,1,'2012-05-22 14:17:57',NULL,13,'CareTech Holdings','CTH LN',19,NULL,NULL,'B0KWHQ0',NULL,NULL,NULL,NULL,0.010000,'GB00B0KWHQ09',24,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(330,1,'2012-05-22 14:17:57',NULL,13,'Cello Group','CLL LN',19,NULL,NULL,'B031076',NULL,NULL,NULL,NULL,0.010000,'GB00B0310763',30,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(331,1,'2012-05-22 14:17:57',NULL,13,'CVS Group','CVSG LN',19,NULL,NULL,'B286382',NULL,NULL,NULL,NULL,0.010000,'GB00B2863827',23,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(332,1,'2012-05-22 14:17:57',NULL,13,'Immunodiagnostic Systems','IDH LN',19,NULL,NULL,'B012YZ05',NULL,NULL,NULL,NULL,0.010000,'GB00B012YZ052',24,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(333,1,'2012-05-22 14:17:57',NULL,13,'Interior Services Group','ISG LN',19,NULL,NULL,'292595',NULL,NULL,NULL,NULL,0.010000,'GB0002925955',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(334,1,'2012-05-22 14:17:57',NULL,13,'Iomart Group','IOM LN',19,NULL,NULL,'428163',NULL,NULL,NULL,NULL,0.010000,'GB0004281639',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(335,1,'2012-05-22 14:17:57',NULL,13,'Majestic Wine','MJW LN',19,NULL,NULL,'B021F83',NULL,NULL,NULL,NULL,0.010000,'GB00B021F836',23,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(336,1,'2012-05-22 14:17:57',NULL,13,'May Gurney Integrated Services','MAYG LN',19,NULL,NULL,'B1528L4',NULL,NULL,NULL,NULL,0.010000,'GB00B1528L44',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(337,1,'2012-05-22 14:17:57',NULL,13,'Michelmersh Brick Holdings','MBH LN',19,NULL,NULL,'B013H06',NULL,NULL,NULL,NULL,0.010000,'GB00B013H060',47,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(338,1,'2012-05-22 14:17:57',NULL,13,'NWF Group','NWF LN',19,NULL,NULL,'652360',NULL,NULL,NULL,NULL,0.010000,'GB0006523608',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(339,1,'2012-05-22 14:17:57',NULL,13,'Nationwide Accident Repair Services','NARS LN',19,NULL,NULL,'B15RR67',NULL,NULL,NULL,NULL,0.010000,'GB00B15RR673',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(340,1,'2012-05-22 14:17:57',NULL,13,'Next Fifteen Communications','NFC LN',19,NULL,NULL,'3002605',NULL,NULL,NULL,NULL,0.010000,'GB0030026057',30,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(341,1,'2012-05-22 14:17:57',NULL,13,'Prezzo','PRZ LN',19,NULL,NULL,'B07G3K1',NULL,NULL,NULL,NULL,0.010000,'GB00B07G3K12',43,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(342,1,'2012-05-22 14:17:57',NULL,13,'Redhall Group','RHL LN',19,NULL,NULL,'111203',NULL,NULL,NULL,NULL,0.010000,'GB0001112035',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(343,1,'2012-05-22 14:17:57',NULL,13,'Renew Holdings','RNWH LN',19,NULL,NULL,'535900',NULL,NULL,NULL,NULL,0.010000,'GB0005359004',47,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(344,1,'2012-05-22 14:17:57',NULL,13,'RWS Holdings','RWS LN',19,NULL,NULL,'3367393',NULL,NULL,NULL,NULL,0.010000,'GB0033673939',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(345,1,'2012-05-22 14:17:57',NULL,13,'Staffline Group','STAF LN',19,NULL,NULL,'B040L80',NULL,NULL,NULL,NULL,0.010000,'GB00B040L800',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(346,1,'2012-05-22 14:17:57',NULL,13,'Sweett Group','CSG LN',19,NULL,NULL,'B23QD10',NULL,NULL,NULL,NULL,0.010000,'GB00B23QD109',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(347,1,'2012-05-22 14:17:57',NULL,13,'Tanfield Group','TAN LN',19,NULL,NULL,'B4QHFM9',NULL,NULL,NULL,NULL,0.010000,'GB00B4QHFM95',25,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(348,1,'2012-05-22 14:17:57',NULL,13,'Matchtech Group plc','MTEC LN',19,NULL,NULL,'B1FMDQ4',NULL,NULL,NULL,NULL,0.010000,'GB00B1FMDQ43',46,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(349,1,'2012-05-22 14:17:57',NULL,13,'Maxima Holdings plc','MXM LN',19,NULL,NULL,'B034R74',NULL,NULL,NULL,NULL,0.010000,'GB00B034R743',39,NULL,NULL,16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,9,NULL,NULL,NULL,NULL,NULL,0),(350,1,'2012-05-31 09:25:40',NULL,13,'Incadea','INCA LN',6,'',NULL,'',NULL,NULL,NULL,NULL,0.010000,'JE00B3Q0J740',39,NULL,NULL,2,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0),(351,1,'2012-07-19 11:18:51',NULL,13,'Consolidated General Minerals','CGM LN',19,'',NULL,'B0T4LB0',NULL,NULL,NULL,NULL,0.010000,'',31,NULL,NULL,32,NULL,NULL,NULL,NULL,'',NULL,NULL,'CGM.L',NULL,NULL,9,NULL,'',NULL,'','',0),(352,1,'2012-08-06 09:44:57',NULL,13,'East West Resources','EWR LN',19,'',NULL,'0376314',NULL,NULL,NULL,NULL,0.010000,'',31,NULL,NULL,17,NULL,NULL,NULL,NULL,'',NULL,NULL,'',NULL,NULL,9,NULL,'',NULL,'','',0);
+/*!40000 ALTER TABLE `secs` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-10-24 10:33:45
