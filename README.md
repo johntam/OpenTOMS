@@ -70,8 +70,11 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 	following two pages from your browser. I'm assuming you have set up Apache according to the above
 	steps so that http://localhost is pointing to the root of the project source folder.
 
-	> http://localhost/groups/build_acl	
+	> 
+	> http://localhost/groups/build_acl
+	> 	
 	> http://localhost/users/initDB
+	> 
 
 	*The first of the two pages above must be run again every time you add a new page or element 
 	to the project!*
