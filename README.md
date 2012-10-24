@@ -70,12 +70,14 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 	following two pages from your browser. I'm assuming you have set up Apache according to the above
 	steps so that http://localhost is pointing to the root of the project source folder.
 
-	> http://localhost/groups/build_acl
-	> 	
+	> http://localhost/groups/build_acl	
 	> http://localhost/users/initDB
 
-	The first of the two pages above must be run again every time you add a new page or element 
-	to the project!
+	*The first of the two pages above must be run again every time you add a new page or element 
+	to the project!*
+
+	The second page above also creates the first login, an administrator login with username of admin
+	and no password.
 
 8. 	Login in the system using the admin user (no password) set up in step 7 above and go to the
 	Fund page (under Standing Data menu). Add a new fund and call it whatever you like. Then go the
