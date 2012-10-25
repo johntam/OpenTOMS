@@ -42,7 +42,7 @@ if (isset($_POST['bsubmit']))
 	<table width=400>
 		<tr>
 			<td>
-				<h1>ASAP To Do List</h1>
+				<h1>OpenTOMS To Do List (Deprecated)</h1>
 			</td>
 		</tr>
 	

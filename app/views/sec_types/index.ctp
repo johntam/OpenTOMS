@@ -25,7 +25,6 @@
 	</tr>
 	<tr>
 		<th>Id</th>
-		<th>TRADAR Sec Type</th>
 		<th>Sec Type Name</th>
 		<th>Bond</th>
 		<th>Deriv</th>
@@ -41,7 +40,6 @@
 	<?php foreach ($sectypes as $sectype): ?>
 		<tr<?php echo $cycle->cycle('', ' class="altrow"');?>>
 			<td style="width: 5%;"><?php echo $sectype['SecType']['id']; ?></td>
-			<td><?php echo $sectype['SecType']['sec_type']; ?></td>
 			<td><?php echo $sectype['SecType']['sec_type_name']; ?></td>
 			<td><?php echo $sectype['SecType']['bond']; ?></td>
 			<td><?php echo $sectype['SecType']['deriv']; ?></td>

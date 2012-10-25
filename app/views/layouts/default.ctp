@@ -50,8 +50,8 @@
 <?php echo $this->Html->css('asap.generic'); ?>
 </head>
 <body>
-<a href="/users/welcome"><img src="/img/asaplogo.png" alt="ASAP Logo" width="340" height="85" /></a>
-</br></br>
+<a href="/users/welcome"><img src="/img/opentoms_logo.jpg" alt="OpenTOMS Logo" width="340" height="85" /></a>
+
 
 <!-- If you'd like some sort of menu to 
 show up on all of your views, include it here -->

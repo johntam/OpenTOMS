@@ -21,7 +21,7 @@
 <table style="width: 50%; margin-left: 25%;">
 <tr>
 	<td style="text-align: center;">
-		<h1>Welcome to ASAP</h1>
+		<h1>Welcome to OpenTOMS</h1>
 		</br>
 	</td>
 </tr>
