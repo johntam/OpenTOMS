@@ -53,7 +53,10 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
         	</Directory>
 
 5.	In the /app/config/database.php file, put in the details for the database that you
-	created in step 2 above so that the system can locate its database.
+	created in step 2 above so that the system can locate its database. You might want to
+	run the line below before changing this file so that you don't commit your changes:
+	
+	> git update-index --assume-unchanged database.php
 
 6.	Things to make sure that it will all work.
 
@@ -65,7 +68,7 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 	> Apache user) can read the files. Also important that www-data can browse all folders (set the
 	> x on the folders)
 	> 
-	> Ensure that all directories under /app/tmp/cache are chmoded 777.
+	> Ensure that the /app/tmp/cache folder and all its subfolders are chmod'ed 777.
 
 7. 	CakePHP uses an ACL system to control access to pages. The ACL parameters are stored in the
 	aros, acos and aros_acos tables in the database. These tables can be initialised by running the
