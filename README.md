@@ -64,6 +64,8 @@ For Windows users you can download WAMP from <http://www.wampserver.com/>
 	> Ensure that the directories have the proper permissions so that the www-data (default
 	> Apache user) can read the files. Also important that www-data can browse all folders (set the
 	> x on the folders)
+	> 
+	> Ensure that all directories under /app/tmp/cache are chmoded 777.
 
 7. 	CakePHP uses an ACL system to control access to pages. The ACL parameters are stored in the
 	aros, acos and aros_acos tables in the database. These tables can be initialised by running the
